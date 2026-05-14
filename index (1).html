@@ -1,0 +1,2413 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบประเมิน MR — รพ.มหาสารคาม v5</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@400;600;700&display=swap');
+:root{
+  /* Core palette */
+  --blue:#2563eb;--blue-light:#eff6ff;--blue-dark:#1d4ed8;--blue-mid:#3b82f6;
+  --green:#059669;--green-light:#ecfdf5;--green-dark:#047857;
+  --red:#dc2626;--red-light:#fff1f2;--red-dark:#b91c1c;
+  --yellow:#d97706;--yellow-light:#fffbeb;--yellow-dark:#b45309;
+  --orange:#ea580c;--orange-light:#fff7ed;
+  --purple:#7c3aed;--purple-light:#f5f3ff;
+  --indigo:#4338ca;--indigo-light:#eef2ff;
+  --teal:#0d9488;--teal-light:#f0fdfa;
+  --gray:#64748b;--gray-light:#f8fafc;--border:#e2e8f0;--border-md:#cbd5e1;
+  --text:#0f172a;--text-muted:#64748b;--text-light:#94a3b8;
+  --bg:#f0f4ff;--white:#ffffff;
+  --radius:10px;--radius-lg:16px;--radius-xl:20px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.08),0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg:0 20px 60px rgba(0,0,0,0.12),0 8px 24px rgba(0,0,0,0.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Sarabun',sans-serif;font-size:14px;background:#f0f4ff;color:var(--text);min-height:100vh;}
+
+/* TOPBAR */
+.topbar{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 60%,#4338ca 100%);color:white;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(37,99,235,.4);}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-icon{width:36px;height:36px;background:rgba(255,255,255,.18);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.topbar-title{font-size:15px;font-weight:700;letter-spacing:.01em;}
+.topbar-sub{font-size:11px;opacity:.85;margin-top:1px;font-weight:500;}
+.sync-status{font-size:12px;background:rgba(255,255,255,.15);padding:5px 14px;border-radius:20px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:background .2s;border:1px solid rgba(255,255,255,.2);}
+.sync-status:hover{background:rgba(255,255,255,.25);}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#34d399;flex-shrink:0;box-shadow:0 0 6px #34d399;}
+.sync-dot.offline{background:#f87171;box-shadow:0 0 6px #f87171;}
+.sync-dot.loading{background:#fbbf24;animation:pulse 1s infinite;box-shadow:0 0 6px #fbbf24;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes shimmer{0%{background-position:-1000px 0}100%{background-position:1000px 0}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+
+.container{max-width:1400px;margin:0 auto;padding:1.25rem;}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-xl);padding:5px;margin-bottom:1.25rem;box-shadow:var(--shadow-md);}
+.tab{flex:1;padding:9px 8px;border:none;background:transparent;border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.tab:hover{background:var(--blue-light);color:var(--blue);}
+.tab.active{background:linear-gradient(135deg,var(--blue),var(--indigo));color:white;box-shadow:0 2px 10px rgba(37,99,235,.4);}
+.sec{display:none;animation:fadeIn .25s ease;}.sec.active{display:block;}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.4rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.card:hover{box-shadow:var(--shadow-md);}
+.card-title{font-size:12px;font-weight:800;color:#1e3a8a;text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.card-title::before{content:'';display:block;width:4px;height:14px;background:linear-gradient(to bottom,#2563eb,#4338ca);border-radius:2px;box-shadow:0 0 6px rgba(37,99,235,.35);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+label{font-size:11px;font-weight:800;color:#334155;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;}
+input[type=text],input[type=date],select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border-md);border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;color:var(--text);background:var(--white);outline:none;transition:all .2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+input[readonly]{background:var(--gray-light);color:var(--text-muted);}
+
+/* QUESTION ITEMS */
+.q-item{border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:10px;transition:all .2s;background:white;}
+.q-item:has(.ob.sp,.ob.sf,.ob.si,.ob.sw){border-color:#bfdbfe;background:linear-gradient(to bottom right,#fafcff,white);}
+.q-meta{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.q-num{font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-light);padding:2px 9px;border-radius:20px;border:1px solid #bfdbfe;}
+.bdg{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;}
+.bdg-core{background:var(--indigo-light);color:var(--indigo);}
+.bdg-info{background:var(--gray-light);color:var(--gray);}
+.bdg-me{background:var(--yellow-light);color:var(--yellow);}
+.q-text{font-size:13px;font-weight:700;color:#0f172a;margin-bottom:10px;line-height:1.55;}
+.opts{display:flex;gap:7px;flex-wrap:wrap;}
+.ob{padding:7px 20px;border-radius:20px;border:1.5px solid var(--border-md);background:var(--gray-light);font-family:'Sarabun',sans-serif;font-size:13px;cursor:pointer;color:var(--text-muted);transition:all .18s;font-weight:500;}
+.ob:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light);transform:translateY(-1px);}
+.ob.sp{background:var(--green-light);color:var(--green-dark);border-color:#6ee7b7;box-shadow:0 2px 6px rgba(5,150,105,.15);}
+.ob.sf{background:var(--red-light);color:var(--red-dark);border-color:#fca5a5;box-shadow:0 2px 6px rgba(220,38,38,.15);}
+.ob.si{background:var(--blue-light);color:var(--blue-dark);border-color:#93c5fd;box-shadow:0 2px 6px rgba(37,99,235,.15);}
+.ob.sw{background:var(--yellow-light);color:var(--yellow-dark);border-color:#fcd34d;box-shadow:0 2px 6px rgba(217,119,6,.15);}
+.me-box{background:linear-gradient(135deg,#fffbeb,#fef9e7);border:1.5px solid #fcd34d;border-radius:var(--radius-lg);padding:16px;margin-top:12px;box-shadow:0 2px 8px rgba(217,119,6,.1);}
+.me-title{font-size:12px;font-weight:700;color:var(--yellow-dark);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.me-section{margin-bottom:12px;}
+.me-label{font-size:11px;font-weight:700;color:#92400e;margin-bottom:7px;}
+.chip-row{display:flex;gap:5px;flex-wrap:wrap;}
+.sev-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border-md);font-size:12px;font-weight:700;cursor:pointer;background:white;color:var(--gray);font-family:'Sarabun',sans-serif;transition:all .18s;}
+.sev-btn:hover{border-color:#f59e0b;color:#92400e;background:var(--yellow-light);}
+.sev-btn.sel{background:var(--yellow-light);color:var(--yellow-dark);border-color:#f59e0b;box-shadow:0 2px 6px rgba(217,119,6,.2);}
+.sev-btn.sel-high{background:var(--red-light);color:var(--red-dark);border-color:#fca5a5;box-shadow:0 2px 6px rgba(220,38,38,.2);}
+.chip{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border-md);font-size:12px;cursor:pointer;background:white;color:var(--gray);font-family:'Sarabun',sans-serif;transition:all .18s;}
+.chip:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light);}
+.chip.sel{background:var(--teal-light);color:var(--teal);border-color:#5eead4;box-shadow:0 2px 6px rgba(13,148,136,.15);}
+.res-pass{background:linear-gradient(135deg,var(--green-light),#d1fae5);border:1px solid #6ee7b7;border-radius:var(--radius-lg);padding:14px 18px;margin-top:14px;display:none;animation:fadeIn .3s ease;}
+.res-fail{background:linear-gradient(135deg,var(--red-light),#ffe4e6);border:1px solid #fca5a5;border-radius:var(--radius-lg);padding:14px 18px;margin-top:14px;display:none;animation:fadeIn .3s ease;}
+.res-title{font-size:14px;font-weight:700;}
+.res-pass .res-title{color:var(--green-dark);}
+.res-fail .res-title{color:var(--red-dark);}
+.res-sub{font-size:12px;color:var(--text-muted);margin-top:4px;}
+.btn-row{display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap;}
+.btn-p{background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:white;border:none;padding:10px 24px;border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(37,99,235,.45);}
+.btn-p:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-s{background:white;color:var(--text);border:1.5px solid var(--border-md);padding:10px 18px;border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;cursor:pointer;transition:all .15s;}
+.btn-s:hover{background:var(--gray-light);border-color:var(--blue);}
+.btn-g{background:linear-gradient(135deg,var(--green),var(--green-dark));color:white;border:none;padding:10px 18px;border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(5,150,105,.3);}
+.btn-g:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(5,150,105,.4);}
+.btn-o{background:linear-gradient(135deg,var(--orange),#c2410c);color:white;border:none;padding:10px 18px;border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(234,88,12,.3);}
+.btn-o:hover{transform:translateY(-1px);}
+.btn-purple{background:linear-gradient(135deg,var(--purple),var(--indigo));color:white;border:none;padding:10px 18px;border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(124,58,237,.3);}
+.btn-purple:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.45);}
+.btn-r{background:linear-gradient(135deg,var(--red),var(--red-dark));color:white;border:none;padding:7px 12px;border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-r:hover{opacity:.9;}
+.btn-edit{background:var(--blue-light);color:var(--blue-dark);border:1px solid #bfdbfe;padding:7px 12px;border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-edit:hover{background:var(--blue);color:white;}
+
+/* MULTISELECT DROPDOWN */
+.ms-wrap{position:relative;}
+.ms-trigger{width:100%;padding:9px 12px;border:1.5px solid var(--border-md);border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;color:var(--text);background:var(--white);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:all .2s;}
+.ms-trigger:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+.ms-trigger.active{border-color:var(--blue);}
+.ms-panel{position:absolute;top:calc(100% + 5px);left:0;right:0;background:white;border:1.5px solid var(--blue);border-radius:var(--radius-lg);z-index:300;max-height:260px;overflow-y:auto;box-shadow:var(--shadow-lg);display:none;}
+.ms-panel.open{display:block;animation:fadeIn .15s ease;}
+.ms-search{padding:8px;}
+.ms-search input{border:1px solid var(--border);border-radius:var(--radius);padding:5px 8px;font-size:12px;font-family:'Sarabun',sans-serif;width:100%;}
+.ms-all{padding:7px 12px;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;}
+.ms-all:hover{background:var(--blue-light);}
+.ms-opt{padding:7px 12px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--text);transition:background .1s;}
+.ms-opt:hover{background:var(--blue-light);}
+.ms-opt input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--blue);}
+.ms-badge{background:linear-gradient(135deg,var(--blue),var(--indigo));color:white;border-radius:20px;padding:0 7px;font-size:11px;font-weight:700;}
+
+.frow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;align-items:flex-end;}
+.frow>div{flex:1;min-width:120px;}
+.search-bar{display:flex;gap:8px;margin-bottom:1rem;align-items:center;}
+.search-bar input{flex:1;max-width:340px;}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius-lg);border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{text-align:left;padding:9px 10px;border-bottom:2px solid #94a3b8;font-weight:800;color:#1e293b;font-size:11px;white-space:nowrap;background:#e2e8f0;position:sticky;top:0;letter-spacing:.04em;}
+th[onclick]:hover{background:#cbd5e1;color:var(--blue);}
+td{padding:7px 10px;border-bottom:1px solid var(--border);color:#1e293b;vertical-align:middle;font-weight:500;}
+tr:hover td{background:#eff6ff;}
+.tag{display:inline-block;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap;letter-spacing:.02em;}
+.tag-p{background:#d1fae5;color:#065f46;border:1.5px solid #6ee7b7;}
+.tag-f{background:#fee2e2;color:#991b1b;border:1.5px solid #fca5a5;}
+.tag-i{background:#dbeafe;color:#1e40af;border:1.5px solid #93c5fd;}
+.tag-w{background:#fef3c7;color:#78350f;border:1.5px solid #fcd34d;}
+.tag-g{background:#f1f5f9;color:#334155;border:1.5px solid #94a3b8;}
+.tag-o{background:#ffedd5;color:#9a3412;border:1.5px solid #fb923c;}
+
+/* DASHBOARD METRICS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:1.5rem;}
+.met{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem 1rem;text-align:center;box-shadow:var(--shadow);transition:all .2s;position:relative;overflow:hidden;}
+.met::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;}
+.met:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.met-p::before{background:linear-gradient(90deg,var(--green),var(--teal));}
+.met-f::before{background:linear-gradient(90deg,var(--red),#f97316);}
+.met-w::before{background:linear-gradient(90deg,var(--yellow),#f59e0b);}
+.met-b::before{background:linear-gradient(90deg,var(--blue),var(--indigo));}
+.met-val{font-size:30px;font-weight:800;color:var(--text);letter-spacing:-.5px;}
+.met-lbl{font-size:11px;font-weight:600;color:#475569;margin-top:5px;line-height:1.4;}
+.met-p .met-val{color:#065f46;}
+.met-f .met-val{color:#991b1b;}
+.met-w .met-val{color:#78350f;}
+.met-b .met-val{color:#1e3a8a;}
+
+/* BARS */
+.bar-wrap{margin-bottom:1rem;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;animation:slideIn .3s ease;}
+.bar-lbl{min-width:160px;font-size:12px;font-weight:700;color:#1e293b;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar-track{flex:1;background:#e2e8f0;border-radius:8px;height:28px;position:relative;overflow:hidden;border:2px solid #cbd5e1;box-shadow:inset 0 1px 3px rgba(0,0,0,.08);}
+.bar-fill{height:28px;border-radius:6px;position:absolute;left:0;top:0;transition:width .6s cubic-bezier(.4,0,.2,1);opacity:.35;}
+.bar-pct{position:absolute;left:12px;right:12px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:800;color:#0f172a;text-shadow:0 1px 2px rgba(255,255,255,.9);white-space:nowrap;}
+
+/* SECTION TITLES in dashboard */
+.sec-title{font-size:13px;font-weight:800;color:#1e293b;margin:1.4rem 0 10px;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:8px;}
+.sec-title::before{content:'';display:block;width:4px;height:16px;background:linear-gradient(to bottom,#2563eb,#4338ca);border-radius:3px;box-shadow:0 0 6px rgba(37,99,235,.4);}
+.empty{text-align:center;padding:4rem 2rem;color:var(--text-muted);font-size:14px;}
+.empty::before{content:'📭';display:block;font-size:40px;margin-bottom:12px;}
+.loading-txt{text-align:center;padding:3rem;color:var(--blue);font-size:14px;}
+.toast{position:fixed;bottom:28px;right:28px;color:white;padding:12px 20px;border-radius:var(--radius);font-size:13px;font-family:'Sarabun',sans-serif;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;background:#1e293b;box-shadow:var(--shadow-lg);}
+.toast.show{opacity:1;}
+.toast.ok{background:linear-gradient(135deg,var(--green),var(--teal));}
+.toast.err{background:linear-gradient(135deg,var(--red),#9f1239);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:var(--radius-xl);max-width:720px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:fadeIn .25s ease;}
+.modal-header{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:10;}
+.modal-title{font-size:15px;font-weight:700;color:var(--text);}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);padding:4px 8px;border-radius:var(--radius);transition:background .15s;}
+.modal-close:hover{background:var(--red-light);color:var(--red);}
+.modal-body{padding:1.4rem;}
+.modal-footer{padding:1rem 1.4rem;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;position:sticky;bottom:0;background:white;}
+
+/* CHART GRID */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:640px){.chart-grid{grid-template-columns:1fr;}.g2,.g3{grid-template-columns:1fr;}.bar-lbl{min-width:100px;}}
+.mini-chart{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem;box-shadow:var(--shadow);}
+.mini-chart-title{font-size:12px;font-weight:800;color:#1e3a8a;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:7px;}
+.mini-chart-title::before{content:'';display:block;width:3px;height:12px;background:linear-gradient(to bottom,#2563eb,#7c3aed);border-radius:2px;box-shadow:0 0 4px rgba(37,99,235,.3);}
+
+.export-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
+.sub-q{border-left:3px solid #bfdbfe;padding-left:12px;margin-left:12px;margin-top:8px;background:linear-gradient(to right,#f8fbff,white);border-radius:0 var(--radius) var(--radius) 0;padding-top:8px;padding-bottom:4px;}
+
+/* SAMPLING ALERT CARDS */
+.alert-card{border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:10px;border-left:4px solid;animation:fadeIn .3s ease;}
+.alert-danger{background:#fff1f2;border-color:#dc2626;}
+.alert-warning{background:#fffbeb;border-color:#d97706;}
+.alert-ok{background:#ecfdf5;border-color:#059669;}
+.alert-title{font-size:13px;font-weight:700;margin-bottom:4px;}
+.alert-danger .alert-title{color:#dc2626;}
+.alert-warning .alert-title{color:#d97706;}
+.alert-ok .alert-title{color:#059669;}
+.sampling-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:1rem;}
+.sample-card{background:white;border:2px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;text-align:center;transition:all .2s;box-shadow:var(--shadow);}
+.sample-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.sample-card.danger{border-color:#fca5a5;background:linear-gradient(135deg,#fff1f2,white);}
+.sample-card.warning{border-color:#fde68a;background:linear-gradient(135deg,#fffbeb,white);}
+.sample-card.ok{border-color:#a7f3d0;background:linear-gradient(135deg,#ecfdf5,white);}
+.sample-n{font-size:26px;font-weight:700;margin-bottom:2px;}
+.sample-card.danger .sample-n{color:#dc2626;}
+.sample-card.warning .sample-n{color:#d97706;}
+.sample-card.ok .sample-n{color:#059669;}
+.sample-ward{font-size:11px;color:var(--text-muted);font-weight:600;margin-bottom:3px;line-height:1.4;}
+.sample-need{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px;}
+.sample-card.danger .sample-need{background:#fee2e2;color:#dc2626;}
+.sample-card.warning .sample-need{background:#fef3c7;color:#d97706;}
+.sample-card.ok .sample-need{background:#d1fae5;color:#059669;}
+
+/* LOGIN SCREEN */
+#login-screen{position:fixed;inset:0;z-index:9000;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#312e81 100%);display:flex;align-items:center;justify-content:center;}
+.login-box{background:white;border-radius:24px;padding:40px 44px;width:380px;max-width:95vw;box-shadow:0 32px 80px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.1);text-align:center;animation:fadeIn .4s ease;}
+.login-logo{width:64px;height:64px;background:linear-gradient(135deg,#2563eb,#4338ca);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 18px;box-shadow:0 8px 24px rgba(37,99,235,.4);}
+.login-title{font-size:20px;font-weight:800;color:#1e293b;margin-bottom:4px;}
+.login-sub{font-size:12px;color:#64748b;margin-bottom:28px;}
+.login-field{text-align:left;margin-bottom:16px;}
+.login-field label{font-size:11px;font-weight:800;color:#334155;margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:.06em;}
+.login-field input{width:100%;padding:11px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:14px;font-family:'Sarabun',sans-serif;color:#1e293b;transition:all .2s;outline:none;}
+.login-field input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15);}
+.login-btn{width:100%;padding:12px;background:linear-gradient(135deg,#2563eb,#4338ca);color:white;border:none;border-radius:10px;font-size:15px;font-weight:800;font-family:'Sarabun',sans-serif;cursor:pointer;transition:all .2s;margin-top:4px;box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,.45);}
+.login-err{color:#dc2626;font-size:12px;font-weight:700;margin-top:10px;min-height:18px;background:#fff1f2;border-radius:6px;padding:6px 10px;display:none;}
+.login-user-badge{position:fixed;top:18px;right:18px;background:rgba(255,255,255,.15);color:white;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;z-index:201;display:none;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.2);}
+
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" style="display:none;">
+  <div class="login-box">
+    <div class="login-logo">💊</div>
+    <div class="login-title">ระบบประเมิน MR</div>
+    <div class="login-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v5</div>
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:11px;color:#1d4ed8;margin-bottom:20px;text-align:left;"><b>💊 เฉพาะเภสัชกร รพ.มหาสารคาม</b><br>ชื่อผู้ใช้: ชื่อของคุณ (ภาษาอังกฤษ)<br>รหัสผ่าน: <b>รหัสส่วนตัวของคุณ</b></div>
+    <div class="login-field">
+      <label>ชื่อผู้ใช้</label>
+      <input type="text" id="login-user" placeholder="ชื่อผู้ใช้..." onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"/>
+    </div>
+    <div style="font-size:10px;color:#64748b;margin-bottom:12px;">💡 ต้องการเปลี่ยนรหัส? แจ้ง Admin ได้เลย</div>
+    <div class="login-field">
+      <label>รหัสผ่านส่วนตัว</label>
+      <input type="password" id="login-pass" placeholder="รหัสผ่านของคุณ..." onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div id="login-confirm-wrap" style="display:none;"><input type="hidden" id="login-confirm"/></div>
+    <button class="login-btn" onclick="doLogin()">🔐 เข้าสู่ระบบ</button>
+    <div class="login-err" id="login-err">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</div>
+  </div>
+</div>
+
+<!-- User badge in topbar -->
+<div class="login-user-badge" id="user-badge" style="display:none!important;">
+  <span>👤</span><span id="user-badge-name"></span>
+  <span style="opacity:.5;margin:0 2px;">|</span>
+  <span style="cursor:pointer;opacity:.8;" onclick="resetMyPassword()" title="เปลี่ยนรหัสผ่าน">🔑</span>
+  <span style="opacity:.3;">|</span>
+  <span style="cursor:pointer;opacity:.8;" onclick="doLogout()">ออก</span>
+</div>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-icon">💊</div>
+    <div>
+      <div class="topbar-title">ระบบประเมิน Medication Reconciliation</div>
+      <div class="topbar-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v5</div>
+    </div>
+  </div>
+  <div class="sync-status" onclick="checkConn()" title="คลิกตรวจสอบการเชื่อมต่อ">
+    <div class="sync-dot loading" id="sync-dot"></div>
+    <span id="sync-txt">กำลังเชื่อมต่อ...</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('form',this)">📝 กรอกข้อมูล</button>
+    <button class="tab" onclick="showTab('records',this)">📋 ข้อมูลที่บันทึก</button>
+    <button class="tab" onclick="showTab('dash',this)">📊 Dashboard</button>
+  </div>
+
+  <!-- ===== FORM ===== -->
+  <div id="sec-form" class="sec active">
+    <div class="card">
+      <div class="card-title">ข้อมูลทั่วไป</div>
+      <div class="g3">
+        <div><label>AN (เลข Admission) *</label><input type="text" id="f-an" placeholder="เช่น 6800001"/></div>
+        <div><label>วันที่ประเมิน *</label><input type="date" id="f-date"/></div>
+        <div>
+          <label>ผู้ประเมิน</label>
+          <div style="display:flex;gap:6px;">
+            <input type="text" id="f-eval" placeholder="ชื่อผู้ประเมิน" style="flex:1;"/>
+            <button class="btn-s" onclick="saveEval()" title="จำชื่อนี้" style="padding:8px 10px;font-size:12px;white-space:nowrap;">💾 จำ</button>
+          </div>
+          <div id="saved-evals" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;"></div>
+        </div>
+      </div>
+      <div class="g3">
+        <div>
+          <label>หอผู้ป่วย *</label>
+          <select id="f-ward" onchange="onWardChange()"><option value="">-- เลือกหอผู้ป่วย --</option></select>
+        </div>
+        <div>
+          <label>ระบบ</label>
+          <select id="f-sys">
+            <option value="">--</option>
+            <option value="1">1 · SCAN</option>
+            <option value="2">2 · Hybrid</option>
+            <option value="3">3 · Paperless</option>
+            <option value="4">4 · ผสมผสาน (ย้ายตึกข้ามระบบ)</option>
+          </select>
+        </div>
+        <div><label>กลุ่มงาน CLT</label><input type="text" id="f-clt" readonly/></div>
+      </div>
+      <div class="g2">
+        <div>
+          <label>ขั้นตอน MR *</label>
+          <select id="f-step">
+            <option value="">-- เลือกขั้นตอน --</option>
+            <option value="1">1 · แรกรับ (ภายใน 24 ชม.)</option>
+            <option value="2">2 · ย้ายตึก</option>
+            <option value="3">3 · หลังผ่าตัด Post-op</option>
+            <option value="4">4 · กลับบ้าน / Refer</option>
+          </select>
+        </div>
+        <div><label>หมายเหตุ</label><input type="text" id="f-note" placeholder="(ไม่บังคับ)"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">หัวข้อประเมิน 8 ข้อ</div>
+      <div id="q-wrap"></div>
+      <div id="res-pass" class="res-pass">
+        <div class="res-title">✅ ผ่านเกณฑ์ · นับเป็น MR Coverage</div>
+        <div class="res-sub">ครบ 3 เงื่อนไข: พบใบ MR ในเวลา + มีคำสั่งยา + มีลายเซนต์แพทย์</div>
+      </div>
+      <div id="res-fail" class="res-fail">
+        <div class="res-title">❌ ไม่ผ่านเกณฑ์</div>
+        <div class="res-sub" id="res-reason"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-p" id="btn-save" onclick="saveRec()">💾 บันทึกข้อมูล</button>
+        <button class="btn-s" onclick="clearAll()">🔄 ล้างฟอร์ม</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RECORDS ===== -->
+  <div id="sec-records" class="sec">
+    <div class="card">
+      <div class="card-title">ค้นหาและกรองข้อมูล</div>
+      <div class="search-bar">
+        <input type="text" id="r-search" placeholder="🔍 ค้นหา AN หรือชื่อผู้ประเมิน..." oninput="renderRec()"/>
+        <button class="btn-p" onclick="loadAndFilter()">🔄 โหลดข้อมูล</button>
+        <button class="btn-s" style="font-size:12px;" onclick="document.getElementById('edit-help-banner').style.display='block'">❓ วิธีแก้ไข/ลบ</button>
+      </div>
+      <div class="frow">
+        <div>
+          <label>หอผู้ป่วย</label>
+          <div class="ms-wrap" id="ms-rward"></div>
+        </div>
+        <div>
+          <label>CLT</label>
+          <div class="ms-wrap" id="ms-rclt"></div>
+        </div>
+        <div>
+          <label>ระบบ</label>
+          <div class="ms-wrap" id="ms-rsys"></div>
+        </div>
+        <div>
+          <label>ขั้นตอน</label>
+          <div class="ms-wrap" id="ms-rstep"></div>
+        </div>
+      </div>
+      <div class="frow">
+        <div>
+          <label>ปีงบประมาณ</label>
+          <div class="ms-wrap" id="ms-ryr"></div>
+        </div>
+        <div>
+          <label>ไตรมาส</label>
+          <div class="ms-wrap" id="ms-rq"></div>
+        </div>
+        <div>
+          <label>เดือน</label>
+          <div class="ms-wrap" id="ms-rmon"></div>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:6px;">
+          <button class="btn-p" onclick="renderRec()">🔍 กรอง</button>
+          <button class="btn-s" onclick="clearFilters()">✖ ล้าง</button>
+        </div>
+      </div>
+      <div class="export-row" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-g" onclick="doExportCSV()">📥 CSV</button>
+          <button class="btn-o" onclick="doExportExcel()">📊 Excel</button>
+          <button class="btn-purple" onclick="doExportPPT()">🎯 PPT สรุปงาน</button>
+        </div>
+        <button onclick="clearAllData()" style="background:linear-gradient(135deg,#dc2626,#9f1239);color:white;border:none;padding:10px 18px;border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(220,38,38,.3);transition:all .2s;" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+          🗑 ล้างข้อมูลทั้งหมด
+        </button>
+      </div>
+
+      <!-- วิธีแก้ไข/ลบ banner -->
+      <div id="edit-help-banner" style="background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1.5px solid #93c5fd;border-radius:12px;padding:14px 18px;margin-bottom:12px;display:none;" >
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#1d4ed8;margin-bottom:6px;">📌 วิธีแก้ไขและลบข้อมูล</div>
+            <div style="font-size:12px;color:#374151;line-height:1.9;">
+              <span style="display:inline-block;background:#1d4ed8;color:white;border-radius:4px;padding:2px 8px;font-size:11px;margin-right:4px;">👁 ดู</span> ดูรายละเอียดทั้งหมดของแฟ้มนั้น<br>
+              <span style="display:inline-block;background:#059669;color:white;border-radius:4px;padding:2px 8px;font-size:11px;margin-right:4px;">✏️ แก้</span> แก้ไขข้อมูลทุกช่อง แล้วกด <b>"บันทึกการแก้ไข"</b> — ข้อมูลจะอัปเดตใน Google Sheets ทันที<br>
+              <span style="display:inline-block;background:#dc2626;color:white;border-radius:4px;padding:2px 8px;font-size:11px;margin-right:4px;">🗑 ลบ</span> ลบรายการออกจาก Google Sheets (ระบบจะขอยืนยันก่อน)<br>
+              <span style="color:#6b7280;font-size:11px;">💡 หากแก้แล้วไม่เห็นการเปลี่ยนแปลง ให้กด "โหลดข้อมูล" อีกครั้ง</span>
+            </div>
+          </div>
+          <button onclick="document.getElementById('edit-help-banner').style.display='none'" style="background:none;border:none;color:#9ca3af;font-size:18px;cursor:pointer;padding:0 0 0 12px;">✕</button>
+        </div>
+      </div>
+
+      <div id="rec-wrap"><div class="empty">กด "โหลดข้อมูล" เพื่อดึงข้อมูลจาก Google Sheets</div></div>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div id="sec-dash" class="sec">
+    <div class="card">
+      <div class="card-title">เงื่อนไขแสดงผล Dashboard</div>
+      <div class="frow">
+        <div>
+          <label>ปีงบประมาณ</label>
+          <div class="ms-wrap" id="ms-dyr"></div>
+        </div>
+        <div>
+          <label>ไตรมาส</label>
+          <div class="ms-wrap" id="ms-dq"></div>
+        </div>
+        <div>
+          <label>เดือน</label>
+          <div class="ms-wrap" id="ms-dmon"></div>
+        </div>
+        <div>
+          <label>หอผู้ป่วย</label>
+          <div class="ms-wrap" id="ms-dward"></div>
+        </div>
+        <div>
+          <label>CLT</label>
+          <div class="ms-wrap" id="ms-dclt"></div>
+        </div>
+        <div>
+          <label>ระบบ</label>
+          <div class="ms-wrap" id="ms-dsys"></div>
+        </div>
+        <div style="display:flex;align-items:flex-end;">
+          <button class="btn-p" onclick="loadAndDash()">📊 แสดงผล</button>
+        </div>
+      </div>
+      <div id="dash-wrap"><div class="empty">เลือกเงื่อนไขแล้วกด "แสดงผล"</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✏️ แก้ไขข้อมูล</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="edit-body"></div>
+    <div class="modal-footer">
+      <button class="btn-s" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn-p" onclick="saveEdit()">💾 บันทึกการแก้ไข</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW MODAL -->
+<div class="modal-overlay" id="view-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📄 รายละเอียด</div>
+      <button class="modal-close" onclick="document.getElementById('view-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body" id="view-body"></div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyT0UctH68eNbqewlSCXIyirecIaplpjbTBtzUo9OS3VPEmzZR9lFeyCu3s3Pc7C7pk7g/exec';
+
+const WARDS = [
+  // CLT อายุรกรรม
+  {n:"อายุรกรรมพิเศษ ชั้น 2",s:"1",c:"อายุรกรรม"},
+  {n:"อายุรกรรมพิเศษ ชั้น 3",s:"1",c:"อายุรกรรม"},
+  {n:"อายุรกรรมพิเศษรวมชั้น 9",s:"1",c:"อายุรกรรม"},
+  {n:"อายุรกรรมพิเศษรวมชั้น 10/สงฆ์อาพาธ",s:"1",c:"อายุรกรรม"},
+  {n:"Stroke",s:"1",c:"อายุรกรรม"},
+  {n:"อายุรกรรมชาย 1",s:"1",c:"อายุรกรรม"},
+  {n:"อายุรกรรมชาย 2",s:"1",c:"อายุรกรรม"},
+  {n:"อายุรกรรมหญิง 1",s:"1",c:"อายุรกรรม"},
+  {n:"อายุรกรรมหญิง 2",s:"1",c:"อายุรกรรม"},
+  {n:"ICUอายุรกรรม 1",s:"1",c:"อายุรกรรม"},
+  {n:"ICUอายุรกรรม 2",s:"1",c:"อายุรกรรม"},
+  {n:"ICUอายุรกรรม 3",s:"1",c:"อายุรกรรม"},
+  {n:"CCU",s:"1",c:"อายุรกรรม"},
+  {n:"ศัลยกรรมยูโร",s:"3",c:"อายุรกรรม"},
+  // CLT ENT
+  {n:"ตา",s:"2",c:"ENT"},
+  {n:"หู คอ จมูก",s:"2",c:"ENT"},
+  {n:"60/4",s:"3",c:"ENT"},
+  // CLT ศัลยกรรม
+  {n:"ศัลยกรรมชาย",s:"3",c:"ศัลยกรรม"},
+  {n:"60/3",s:"3",c:"ศัลยกรรม"},
+  {n:"ศัลยกรรมทั่วไป",s:"3",c:"ศัลยกรรม"},
+  {n:"ICUtrauma 7",s:"3",c:"ศัลยกรรม"},
+  {n:"ศัลยกรรมอุบัติเหตุชั้น 8",s:"3",c:"ศัลยกรรม"},
+  {n:"ICU ศัลยกรรม",s:"3",c:"ศัลยกรรม"},
+  {n:"ICU เด็กและทั่วไป PICU",s:"3",c:"ศัลยกรรม"},
+  {n:"พิเศษอุบัติเหตุ ชั้น 10",s:"3",c:"ศัลยกรรม"},
+  {n:"พิเศษอุบัติเหตุ ชั้น 11",s:"3",c:"ศัลยกรรม"},
+  {n:"ศัลยกรรมหญิง",s:"3",c:"ศัลยกรรม"},
+  // CLT ศัลยกรรมกระดูก
+  {n:"60/5",s:"3",c:"ศัลยกรรมกระดูก"},
+  {n:"ศัลยกรรมกระดูกชาย",s:"3",c:"ศัลยกรรมกระดูก"},
+  {n:"ศัลยกรรมกระดูกหญิง",s:"3",c:"ศัลยกรรมกระดูก"},
+  // CLT สูติกรรม
+  {n:"ห้องคลอด",s:"1",c:"สูติกรรม"},
+  {n:"สูติกรรม สามัญ",s:"1",c:"สูติกรรม"},
+  {n:"สูติกรรม/นรีเวช พิเศษ",s:"1",c:"สูติกรรม"},
+  // CLT เด็ก
+  {n:"ทารกป่วย",s:"1",c:"เด็ก"},
+  {n:"เด็ก/กุมาร",s:"1",c:"เด็ก"},
+  {n:"ICU ทารกวิกฤติ",s:"1",c:"เด็ก"},
+  // อื่นๆ
+  {n:"ลีลาวดี",s:"3",c:"อื่นๆ"},
+  {n:"เวชกรรมฟื้นฟู",s:"3",c:"อื่นๆ"},
+  {n:"Home ward",s:"1",c:"อื่นๆ"}
+];
+
+const QS = [
+  {id:"q1",  t:"มียาโรคเรื้อรังหรือไม่",                                              o:["มี","ไม่มี"],           type:"info", dep:null},
+  {id:"q2",  t:"ยาโรคเรื้อรังเป็นยาภายใน รพ.มค / PCU หรือนอก รพ.มค",               o:["ใน รพ.","นอก รพ."],     type:"info", dep:{q:"q1",  v:"มี"},        sub:true},
+  {id:"q21", t:"ยาโรคเรื้อรังเป็นยานอก รพ.มค — อยู่ในจังหวัดหรือนอกจังหวัด",       o:["ในจังหวัด","นอกจังหวัด"],type:"info", dep:{q:"q2",  v:"นอก รพ."},  sub:true},
+  {id:"q22", t:"ยานอก รพ.มค ในจังหวัด — เลือก รพ. / แหล่งที่มา (ติ๊กได้มากกว่า 1)",  o:null,                     type:"info", dep:{q:"q21", v:"ในจังหวัด"},sub:true, hpick:true},
+  {id:"q23", t:"ยานอก รพ.มค ในจังหวัด — เป็นยา รพ.สต. / ร้านยา / คลินิก / อื่นๆ", o:null,                     type:"info", dep:{q:"q21", v:"ในจังหวัด"},sub:true, free:"ระบุแหล่งที่มา (รพ.สต./ร้านยา/คลินิก/อื่นๆ)..."},
+  {id:"q24", t:"ยานอก รพ.มค นอกจังหวัด — เลือกจังหวัด",                           o:null,                     type:"info", dep:{q:"q21", v:"นอกจังหวัด"},sub:true, provpick:true},
+  {id:"q24b",t:"ยานอก รพ.มค นอกจังหวัด — ระบุเพิ่มเติม (ถ้ามี)",                   o:null,                     type:"info", dep:{q:"q21", v:"นอกจังหวัด"},sub:true, free:"ระบุ รพ./คลินิก/ร้านยา (ถ้าต้องการ)..."},
+  {id:"q3",  t:"ยานอก รพ.มหาสารคาม — มีการลงจำนวนยาเหลือหรือไม่",                   o:["มี","ไม่มี"],           type:"info", dep:{q:"q2",  v:"นอก รพ."}},
+  {id:"q4",  t:"พบใบ MR ภายใน 24 ชั่วโมงหรือไม่",                                    o:["พบ","ไม่พบ"],           type:"core", dep:null},
+  {id:"q5",  t:"มีรายละเอียดคำสั่งการใช้ยาในใบ MR หรือไม่",                          o:["มี","ไม่มี"],           type:"core", dep:null},
+  {id:"q6",  t:"มีลายเซนต์แพทย์กำกับการสั่งใช้ยาหรือไม่",                            o:["มี","ไม่มี"],           type:"core", dep:null},
+  {id:"q7",  t:"พบการลงเวลารับประทานยาครั้งสุดท้าย (Last dose)",                     o:["พบ","ไม่พบ"],           type:"info", dep:null},
+  {id:"q8",  t:"พบ Medication Error (ME) ในใบ MR หรือไม่",                            o:["พบ","ไม่พบ"],           type:"me",   dep:null}
+];
+
+const ME_SEV = ["A","B","C","D","E","F","G","H","I"];
+const HIGH_SEV = ["E","F","G","H","I"];
+const MID_SEV = ["C","D"];
+const ME_TYPE = ["PE (Potential Error)","DE (Dispensing Error)","AE (Administration Error)"];
+const ME_KIND = ["Omission (ไม่ได้รับยา)","Wrong drug (ผิดชนิด)","Wrong dose (ผิดขนาด)","Wrong frequency (ความถี่ผิด)","Wrong route (ทางผิด)","Wrong time (เวลาผิด)","Commission (สั่งซ้ำ)","Other"];
+const SYSN = {"1":"SCAN","2":"Hybrid","3":"Paperless","4":"ผสมผสาน"};
+const STEPN = {"1":"แรกรับ","2":"ย้ายตึก","3":"Post-op","4":"กลับบ้าน"};
+const MONTHS_TH = ["ต.ค.","พ.ย.","ธ.ค.","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย."];
+const MONTHS_NUM = [10,11,12,1,2,3,4,5,6,7,8,9];
+const FY_LIST = ["2567","2568","2569","2570"];
+
+// รพ. ในจังหวัดมหาสารคาม
+const MK_HOSP = [
+  "รพ.สุทธาเวท",
+  "รพ.กันทรวิชัย",
+  "รพ.กุดรัง",
+  "รพ.วาปีปทุม",
+  "รพ.แกดำ",
+  "รพ.นาดูน",
+  "รพ.ยางสีสุราช",
+  "รพ.พยัคฆภูมิพิสัย",
+  "รพ.โกสุมพิสัย",
+  "รพ.ชื่นชม",
+  "รพ.เชียงยืน",
+  "รพ.นาเชือก",
+  "รพ.มหาสารคามอินเตอร์เนชั่นแนล",
+  "PCU",
+  "รพ.สต.",
+  "อื่นๆ (โปรดระบุ)"
+];
+
+// ===== 77 จังหวัด =====
+const PROVINCES = ["กระบี่", "กรุงเทพมหานคร", "กาญจนบุรี", "กาฬสินธุ์", "กำแพงเพชร", "ขอนแก่น", "จันทบุรี", "ฉะเชิงเทรา", "ชลบุรี", "ชัยนาท", "ชัยภูมิ", "ชุมพร", "เชียงราย", "เชียงใหม่", "ตรัง", "ตราด", "ตาก", "นครนายก", "นครปฐม", "นครพนม", "นครราชสีมา", "นครศรีธรรมราช", "นครสวรรค์", "นนทบุรี", "นราธิวาส", "น่าน", "บึงกาฬ", "บุรีรัมย์", "ปทุมธานี", "ประจวบคีรีขันธ์", "ปราจีนบุรี", "ปัตตานี", "พระนครศรีอยุธยา", "พะเยา", "พังงา", "พัทลุง", "พิจิตร", "พิษณุโลก", "เพชรบุรี", "เพชรบูรณ์", "แพร่", "ภูเก็ต", "มหาสารคาม", "มุกดาหาร", "แม่ฮ่องสอน", "ยโสธร", "ยะลา", "ร้อยเอ็ด", "ระนอง", "ระยอง", "ราชบุรี", "ลพบุรี", "ลำปาง", "ลำพูน", "เลย", "ศรีสะเกษ", "สกลนคร", "สงขลา", "สตูล", "สมุทรปราการ", "สมุทรสงคราม", "สมุทรสาคร", "สระแก้ว", "สระบุรี", "สิงห์บุรี", "สุโขทัย", "สุพรรณบุรี", "สุราษฎร์ธานี", "สุรินทร์", "หนองคาย", "หนองบัวลำภู", "อ่างทอง", "อำนาจเจริญ", "อุดรธานี", "อุตรดิตถ์", "อุทัยธานี", "อุบลราชธานี"];
+
+let ans = {}, meSevArr = [], meTypArr = [], meKindArr = [], hospArr = [], allRecs = [];
+let editId = null;
+
+// ===== TOAST =====
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ===== SYNC UI =====
+function setSyncUI(state, msg) {
+  const dot = document.getElementById('sync-dot');
+  const txt = document.getElementById('sync-txt');
+  dot.className = 'sync-dot' + (state==='ok' ? '' : state==='err' ? ' offline' : ' loading');
+  txt.textContent = msg;
+}
+
+// ===== GAS CALL =====
+async function gasCall(params) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'gcb_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+    params.callback = cbName;
+    const url = new URL(GAS_URL);
+    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+    const timer = setTimeout(() => { cleanup(); reject(new Error('timeout')); }, 20000);
+    function cleanup() {
+      clearTimeout(timer); delete window[cbName];
+      const s = document.getElementById(cbName); if (s) s.remove();
+    }
+    window[cbName] = function(data) { cleanup(); resolve(data); };
+    const script = document.createElement('script');
+    script.id = cbName;
+    script.src = url.toString();
+    script.onerror = () => { cleanup(); reject(new Error('load error')); };
+    document.head.appendChild(script);
+  });
+}
+
+async function checkConn() {
+  setSyncUI('loading', 'กำลังเชื่อมต่อ...');
+  try {
+    const r = await gasCall({action:'getAll'});
+    if (r.ok) {
+      allRecs = r.data || [];
+      setSyncUI('ok', `เชื่อมต่อแล้ว · ${allRecs.length} รายการ`);
+    } else setSyncUI('err', 'เชื่อมต่อไม่ได้');
+  } catch(e) { setSyncUI('err', 'ออฟไลน์'); }
+}
+
+// ===== MULTISELECT =====
+const msState = {};
+
+function createMS(containerId, opts, placeholder, key) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  msState[key] = {selected: [], opts};
+  const html = `
+    <button class="ms-trigger" id="mst-${key}" onclick="toggleMS('${key}',event)">
+      <span id="mslbl-${key}">${placeholder}</span>
+      <span>▾</span>
+    </button>
+    <div class="ms-panel" id="msp-${key}">
+      <div class="ms-search"><input type="text" placeholder="ค้นหา..." oninput="filterMS('${key}',this.value)"/></div>
+      <div class="ms-all" onclick="selectAllMS('${key}')"><input type="checkbox" id="msall-${key}"/> เลือกทั้งหมด (${opts.length})</div>
+      <div id="msopts-${key}">${renderMSOpts(key, opts, '')}</div>
+    </div>`;
+  container.innerHTML = html;
+}
+
+function renderMSOpts(key, opts, q) {
+  const s = msState[key].selected;
+  return opts.filter(o => !q || o.toLowerCase().includes(q.toLowerCase())).map(o =>
+    `<div class="ms-opt"><input type="checkbox" ${s.includes(o)?'checked':''} onchange="toggleMSOpt('${key}','${o.replace(/'/g,"\\'")}',this)"/>${o}</div>`
+  ).join('');
+}
+
+function filterMS(key, q) {
+  const el = document.getElementById('msopts-'+key);
+  if (el) el.innerHTML = renderMSOpts(key, msState[key].opts, q);
+}
+
+function toggleMS(key, e) {
+  e.stopPropagation();
+  const panel = document.getElementById('msp-'+key);
+  const btn = document.getElementById('mst-'+key);
+  const isOpen = panel.classList.contains('open');
+  // close all
+  document.querySelectorAll('.ms-panel').forEach(p=>p.classList.remove('open'));
+  document.querySelectorAll('.ms-trigger').forEach(b=>b.classList.remove('active'));
+  if (!isOpen) { panel.classList.add('open'); btn.classList.add('active'); }
+}
+
+function toggleMSOpt(key, val, cb) {
+  const s = msState[key].selected;
+  if (cb.checked) { if (!s.includes(val)) s.push(val); }
+  else { const i = s.indexOf(val); if (i>-1) s.splice(i,1); }
+  updateMSLabel(key);
+}
+
+function selectAllMS(key) {
+  const st = msState[key];
+  const allCb = document.getElementById('msall-'+key);
+  if (st.selected.length === st.opts.length) {
+    st.selected = [];
+    if(allCb) allCb.checked = false;
+  } else {
+    st.selected = [...st.opts];
+    if(allCb) allCb.checked = true;
+  }
+  document.getElementById('msopts-'+key).innerHTML = renderMSOpts(key, st.opts, '');
+  updateMSLabel(key);
+}
+
+function updateMSLabel(key) {
+  const s = msState[key].selected;
+  const lbl = document.getElementById('mslbl-'+key);
+  if (!lbl) return;
+  if (s.length === 0) lbl.innerHTML = msState[key].opts.length > 0 ? '<span style="color:var(--gray)">ทั้งหมด</span>' : '<span style="color:var(--gray)">—</span>';
+  else if (s.length === msState[key].opts.length) lbl.innerHTML = '<span>ทั้งหมด <span class="ms-badge">'+s.length+'</span></span>';
+  else lbl.innerHTML = s.slice(0,2).join(', ') + (s.length>2 ? ` <span class="ms-badge">+${s.length-2}</span>` : '');
+}
+
+function getMSVal(key) { return msState[key] ? msState[key].selected : []; }
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.ms-panel').forEach(p=>p.classList.remove('open'));
+  document.querySelectorAll('.ms-trigger').forEach(b=>b.classList.remove('active'));
+});
+
+// ===== INIT =====
+function initUI() {
+  // Form ward select
+  const fw = document.getElementById('f-ward');
+  WARDS.forEach(w => fw.innerHTML += `<option value="${w.n}" data-s="${w.s}" data-c="${w.c}">${w.n}</option>`);
+
+  const allWards = WARDS.map(w=>w.n);
+  const allCLTs = [...new Set(WARDS.map(w=>w.c))].sort();
+  const allSys = ["SCAN","Hybrid","Paperless","ผสมผสาน"];
+  const allSteps = ["แรกรับ","ย้ายตึก","Post-op","กลับบ้าน"];
+  const allQs = ["Q1 (ต.ค.–ธ.ค.)","Q2 (ม.ค.–มี.ค.)","Q3 (เม.ย.–มิ.ย.)","Q4 (ก.ค.–ก.ย.)"];
+
+  // Records filters
+  createMS('ms-rward', allWards, 'ทั้งหมด', 'rward');
+  createMS('ms-rclt', allCLTs, 'ทั้งหมด', 'rclt');
+  createMS('ms-rsys', allSys, 'ทั้งหมด', 'rsys');
+  createMS('ms-rstep', allSteps, 'ทั้งหมด', 'rstep');
+  createMS('ms-ryr', FY_LIST, 'ทั้งหมด', 'ryr');
+  createMS('ms-rq', allQs, 'ทั้งหมด', 'rq');
+  createMS('ms-rmon', MONTHS_TH, 'ทั้งหมด', 'rmon');
+
+  // Dashboard filters
+  createMS('ms-dyr', FY_LIST, 'ทั้งหมด', 'dyr');
+  createMS('ms-dq', allQs, 'ทั้งหมด', 'dq');
+  createMS('ms-dmon', MONTHS_TH, 'ทั้งหมด', 'dmon');
+  createMS('ms-dward', allWards, 'ทั้งหมด', 'dward');
+  createMS('ms-dclt', allCLTs, 'ทั้งหมด', 'dclt');
+  createMS('ms-dsys', allSys, 'ทั้งหมด', 'dsys');
+
+  loadSavedEvals();
+}
+
+function onWardChange() {
+  const sel = document.getElementById('f-ward');
+  const opt = sel.options[sel.selectedIndex];
+  if (opt && opt.dataset.s) {
+    document.getElementById('f-sys').value = opt.dataset.s;
+    document.getElementById('f-clt').value = opt.dataset.c || '';
+  }
+}
+
+// ===== EVALUATOR MEMORY =====
+function saveEval() {
+  const val = document.getElementById('f-eval').value.trim();
+  if (!val) return;
+  let evals = JSON.parse(localStorage.getItem('mr_evals')||'[]');
+  if (!evals.includes(val)) { evals.push(val); localStorage.setItem('mr_evals', JSON.stringify(evals)); }
+  loadSavedEvals();
+  toast('จำชื่อแล้ว: '+val, 'ok');
+}
+
+function loadSavedEvals() {
+  const evals = JSON.parse(localStorage.getItem('mr_evals')||'[]');
+  const wrap = document.getElementById('saved-evals');
+  wrap.innerHTML = evals.map(e =>
+    `<span style="background:var(--blue-light);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;"
+      onclick="document.getElementById('f-eval').value='${e}'">
+      ${e}
+      <span onclick="removeEval('${e}');event.stopPropagation();" style="opacity:.6;font-size:10px;">✕</span>
+    </span>`
+  ).join('');
+}
+
+function removeEval(name) {
+  let evals = JSON.parse(localStorage.getItem('mr_evals')||'[]');
+  evals = evals.filter(e=>e!==name);
+  localStorage.setItem('mr_evals', JSON.stringify(evals));
+  loadSavedEvals();
+}
+
+// ===== BUILD QUESTIONS =====
+const Q_LABEL = {q1:"1",q2:"2",q21:"2.1",q22:"2.2",q23:"2.3",q24:"2.4",q3:"3",q4:"4",q5:"5",q6:"6",q7:"7",q8:"8"};
+
+// Check whether a question should be visible given current ans{}
+function qVisible(q) {
+  if (!q.dep) return true;
+  // parent must also be visible AND have the required answer
+  const parent = QS.find(p => p.id === q.dep.q);
+  return qVisible(parent) && ans[q.dep.q] === q.dep.v;
+}
+
+// Re-evaluate and show/hide ALL questions based on current ans{}
+function refreshVisible() {
+  QS.forEach(q => {
+    const el = document.getElementById('qi_' + q.id);
+    if (el) el.style.display = qVisible(q) ? '' : 'none';
+  });
+}
+
+function buildQ() {
+  const wrap = document.getElementById('q-wrap');
+  wrap.innerHTML = '';
+  QS.forEach(q => {
+    const div = document.createElement('div');
+    div.className = 'q-item' + (q.sub ? ' sub-q' : '');
+    div.id = 'qi_' + q.id;
+    div.style.display = qVisible(q) ? '' : 'none';
+    const bc = q.type==='core' ? 'bdg-core' : q.type==='me' ? 'bdg-me' : 'bdg-info';
+    const bt = q.type==='core' ? 'เกณฑ์หลัก' : q.type==='me' ? 'ME' : 'ข้อมูลเพิ่มเติม';
+    const dispNum = Q_LABEL[q.id] || q.id;
+    const optsHtml = q.o ? `<div class="opts">${q.o.map(o => `<button class="ob${ans[q.id]===o ? getSelCls(q,o) : ''}" onclick="pickOpt('${q.id}','${o}',this)">${o}</button>`).join('')}</div>` : '';
+    const freeHtml = q.free ? `<input type="text" class="free-ans" id="free_${q.id}" placeholder="${q.free}" style="margin-top:8px;" oninput="ans['${q.id}']=this.value" value="${ans[q.id]||''}"/>` : '';
+    const provpickHtml = q.provpick ? `
+      <div style="margin-top:8px;">
+        <div style="margin-bottom:6px;font-size:11px;color:var(--text-muted);">เลือกจังหวัด (คลิกได้มากกว่า 1)</div>
+        <input type="text" id="prov-search-${q.id}" placeholder="พิมพ์เพื่อค้นหาจังหวัด..." 
+          style="width:100%;padding:7px 10px;border:1.5px solid var(--border-md);border-radius:var(--radius);font-size:12px;font-family:'Sarabun',sans-serif;margin-bottom:8px;"
+          oninput="filterProvs('${q.id}',this.value)"/>
+        <div class="chip-row" id="prov-wrap-${q.id}" style="max-height:160px;overflow-y:auto;padding:4px;">
+          ${PROVINCES.map(p=>`<button class="chip${(ans['${q.id}']||'').includes(p)?' sel':''}" 
+            onclick="toggleProv('${q.id}','${p}',this)">${p}</button>`).join('')}
+          <button class="chip${(ans['${q.id}']||'').includes('อื่นๆ')?' sel':''}" 
+            onclick="toggleProv('${q.id}','อื่นๆ',this)">อื่นๆ</button>
+        </div>
+      </div>` : '';
+        const hpickHtml = q.hpick ? `
+      <div style="margin-top:8px;">
+        <div class="chip-row" id="hpick-wrap">${MK_HOSP.map(h=>`<button class="chip${hospArr.includes(h)?' sel':''}" onclick="toggleHosp('${h.replace(/'/g,"\\'")}',this)">${h}</button>`).join('')}</div>
+        <input type="text" id="free_q22_other" placeholder="ระบุชื่อ รพ./สถานพยาบาลอื่นๆ..." style="margin-top:6px;display:${hospArr.includes('อื่นๆ (โปรดระบุ)')?'':'none'};" oninput="ans['q22_other']=this.value" value="${ans['q22_other']||''}"/>
+      </div>` : '';
+    const meHtml = q.id==='q8' ? `
+      <div id="me-box" style="display:${ans['q8']==='พบ'?'':'none'};" class="me-box">
+        <div class="me-title">รายละเอียด Medication Error</div>
+        <div class="me-section">
+          <div class="me-label">ระดับความรุนแรง — Severity (เลือกได้มากกว่า 1)</div>
+          <div class="chip-row">${ME_SEV.map(s=>`<button class="sev-btn${meSevArr.includes(s)?(HIGH_SEV.includes(s)?' sel-high':' sel'):''}" onclick="toggleSev('${s}',this)">${s}</button>`).join('')}</div>
+        </div>
+        <div class="me-section">
+          <div class="me-label">ประเภท ME (เลือกได้มากกว่า 1)</div>
+          <div class="chip-row">${ME_TYPE.map(t=>`<button class="chip${meTypArr.includes(t)?' sel':''}" onclick="toggleChip(meTypArr,'${t.replace(/'/g,"\\'")}',this)">${t}</button>`).join('')}</div>
+        </div>
+        <div class="me-section">
+          <div class="me-label">ชนิดความคลาดเคลื่อน (เลือกได้มากกว่า 1)</div>
+          <div class="chip-row">${ME_KIND.map(k=>`<button class="chip${meKindArr.includes(k)?' sel':''}" onclick="toggleChip(meKindArr,'${k.replace(/'/g,"\\'")}',this)">${k}</button>`).join('')}</div>
+        </div>
+        <div class="me-section">
+          <div class="me-label">รายละเอียด / รายการยาที่เกิด ME</div>
+          <textarea id="me-detail" rows="2" placeholder="เช่น ชื่อยา, สาเหตุ, แนวทางแก้ไข...">${ans['q8_detail']||''}</textarea>
+        </div>
+      </div>` : '';
+    div.innerHTML = `
+      <div class="q-meta">
+        <span class="q-num">ข้อ ${dispNum}</span>
+        <span class="bdg ${bc}">${bt}</span>
+      </div>
+      <div class="q-text">${q.t}</div>
+      ${optsHtml}${freeHtml}${provpickHtml}${hpickHtml}${meHtml}`;
+    wrap.appendChild(div);
+  });
+}
+
+function getSelCls(q, val) {
+  if (q.type==='core') return (val==='พบ'||val==='มี') ? ' sp' : ' sf';
+  if (q.type==='me')   return val==='พบ' ? ' sw' : ' sp';
+  return ' si';
+}
+
+function pickOpt(id, val, btn) {
+  ans[id] = val;
+  // highlight selected button
+  btn.closest('.opts').querySelectorAll('.ob').forEach(b => b.className='ob');
+  const q = QS.find(q => q.id === id);
+  btn.classList.add(...getSelCls(q, val).trim().split(' '));
+
+  // When a parent answer changes: clear answers of all children that are now hidden
+  function clearHidden(parentId) {
+    QS.forEach(dq => {
+      if (!dq.dep || dq.dep.q !== parentId) return;
+      if (!qVisible(dq)) {
+        delete ans[dq.id];
+        if (dq.id === 'q22') { hospArr = []; }
+        clearHidden(dq.id);
+      }
+    });
+  }
+  clearHidden(id);
+
+  // Re-evaluate visibility for all questions
+  refreshVisible();
+
+  // ME detail box
+  if (id === 'q8') {
+    const mb = document.getElementById('me-box');
+    if (mb) mb.style.display = val==='พบ' ? '' : 'none';
+    if (val!=='พบ') { meSevArr=[]; meTypArr=[]; meKindArr=[]; }
+  }
+  calcRes();
+}
+
+function toggleSev(s, btn) {
+  const idx = meSevArr.indexOf(s);
+  if (idx>-1) { meSevArr.splice(idx,1); btn.className='sev-btn'; }
+  else { meSevArr.push(s); btn.className = HIGH_SEV.includes(s) ? 'sev-btn sel-high' : 'sev-btn sel'; }
+}
+
+function toggleChip(arr, val, btn) {
+  const idx = arr.indexOf(val);
+  if (idx>-1) { arr.splice(idx,1); btn.className='chip'; }
+  else { arr.push(val); btn.className='chip sel'; }
+}
+
+function toggleProv(qid, val, btn) {
+  const key = qid;
+  if (!window._provArr) window._provArr = {};
+  if (!window._provArr[key]) window._provArr[key] = [];
+  const arr = window._provArr[key];
+  const idx = arr.indexOf(val);
+  if (idx > -1) { arr.splice(idx, 1); btn.className = 'chip'; }
+  else { arr.push(val); btn.className = 'chip sel'; }
+  ans[key] = arr.join(', ');
+}
+
+function filterProvs(qid, keyword) {
+  const wrap = document.getElementById('prov-wrap-' + qid);
+  if (!wrap) return;
+  const kw = keyword.trim().toLowerCase();
+  wrap.querySelectorAll('button.chip').forEach(btn => {
+    btn.style.display = (!kw || btn.textContent.toLowerCase().includes(kw)) ? '' : 'none';
+  });
+}
+
+function toggleHosp(val, btn) {
+  const idx = hospArr.indexOf(val);
+  if (idx>-1) { hospArr.splice(idx,1); btn.className='chip'; }
+  else { hospArr.push(val); btn.className='chip sel'; }
+  ans['q22'] = hospArr.join(', ');
+  // show/hide "other" free text
+  const ot = document.getElementById('free_q22_other');
+  if (ot) ot.style.display = hospArr.includes('อื่นๆ (โปรดระบุ)') ? '' : 'none';
+}
+
+function calcRes() {
+  const rp=document.getElementById('res-pass');
+  const rf=document.getElementById('res-fail');
+  rp.style.display='none'; rf.style.display='none';
+  if (ans['q4']===undefined||ans['q5']===undefined||ans['q6']===undefined) return;
+  const p4=ans['q4']==='พบ', p5=ans['q5']==='มี', p6=ans['q6']==='มี';
+  if (!p4) {
+    rf.style.display='block';
+    document.getElementById('res-reason').textContent='ไม่พบใบ MR ภายใน 24 ชม. — ถือว่าไม่ผ่านทันที';
+  } else if (p4&&p5&&p6) {
+    rp.style.display='block';
+  } else {
+    const miss=[];
+    if(!p5)miss.push('ข้อ 5 คำสั่งยา'); if(!p6)miss.push('ข้อ 6 ลายเซนต์แพทย์');
+    rf.style.display='block';
+    document.getElementById('res-reason').textContent='ขาด: '+miss.join(' และ ');
+  }
+}
+
+function getStatus() { return (ans['q4']==='พบ'&&ans['q5']==='มี'&&ans['q6']==='มี') ? 'pass' : 'fail'; }
+
+// ===== DATE HELPERS =====
+function isoToThai(d) {
+  if (!d) return '-';
+  // Handle "Sat May 09 2026 00:00:00 GMT+0700" format from Google Sheets
+  const dt = new Date(d.toString());
+  if (!isNaN(dt)) {
+    const day = dt.getDate();
+    const mon = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][dt.getMonth()];
+    const yr = (dt.getFullYear() + 543).toString().slice(-2);
+    return `${day} ${mon} ${yr}`;
+  }
+  // fallback ISO yyyy-mm-dd
+  const p=d.toString().split('-');
+  if(p.length===3) return `${+p[2]} ${['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][+p[1]]} ${(+p[0]+543).toString().slice(-2)}`;
+  return d;
+}
+function getFY(d) {
+  if (!d) return '';
+  const dt=new Date(d); const m=dt.getMonth()+1; const y=dt.getFullYear()+543;
+  return m>=10 ? (y+1).toString() : y.toString();
+}
+function getQ(d) {
+  if (!d) return '';
+  const m=new Date(d).getMonth()+1;
+  if(m>=10) return 'Q1 (ต.ค.–ธ.ค.)';
+  if(m<=3) return 'Q2 (ม.ค.–มี.ค.)';
+  if(m<=6) return 'Q3 (เม.ย.–มิ.ย.)';
+  return 'Q4 (ก.ค.–ก.ย.)';
+}
+function getMon(d) {
+  if (!d) return '';
+  const m=new Date(d).getMonth()+1;
+  const i=MONTHS_NUM.indexOf(m);
+  return i>=0 ? MONTHS_TH[i] : '';
+}
+function getSysName(val) { return SYSN[String(val)]||val||'-'; }
+
+// ===== SAVE =====
+async function saveRec() {
+  const an=document.getElementById('f-an').value.trim();
+  const date=document.getElementById('f-date').value;
+  const ward=document.getElementById('f-ward').value;
+  const sys=document.getElementById('f-sys').value;
+  const clt=document.getElementById('f-clt').value;
+  const step=document.getElementById('f-step').value;
+  const ev=document.getElementById('f-eval').value.trim();
+  const note=document.getElementById('f-note').value.trim();
+
+  if (!an||!date||!ward||!step) { toast('กรุณากรอก AN, วันที่, หอผู้ป่วย และขั้นตอนให้ครบ','err'); return; }
+  if (ans['q4']===undefined||ans['q5']===undefined||ans['q6']===undefined) { toast('กรุณาตอบข้อ 4, 5, 6 ก่อนบันทึก','err'); return; }
+
+  const btn=document.getElementById('btn-save');
+  btn.disabled=true; btn.textContent='กำลังบันทึก...';
+
+  const rec = {
+    id: Date.now(), an, date, ward, clt,
+    sys: sys||WARDS.find(w=>w.n===ward)?.s||'-',
+    step, evaluator:ev, note,
+    q1:ans['q1']||'-', q2:ans['q2']||'-',
+    q21:ans['q21']||'-', q22:ans['q22']||'-', q22other:ans['q22_other']||'-',
+    q23:ans['q23']||'-', q24:ans['q24']||'-',
+    q3:ans['q3']||'-', q4:ans['q4']||'-', q5:ans['q5']||'-', q6:ans['q6']||'-',
+    q7:ans['q7']||'-', q8:ans['q8']||'-',
+    meSev: meSevArr.length?meSevArr.join(','):'-',
+    meTyp: meTypArr.length?meTypArr.join(' / '):'-',
+    meKind: meKindArr.length?meKindArr.join(' / '):'-',
+    meDetail: document.getElementById('me-detail')?.value||'-',
+    pass: getStatus(), fy: getFY(date), quarter: getQ(date), month: getMon(date)
+  };
+
+  try {
+    const r = await gasCall({action:'save', record:JSON.stringify(rec)});
+    if (r.ok) { toast('บันทึกสำเร็จ · AN: '+an,'ok'); clearAll(); }
+    else toast('บันทึกไม่สำเร็จ: '+r.msg,'err');
+  } catch(e) { toast('เชื่อมต่อไม่ได้','err'); }
+  btn.disabled=false; btn.textContent='💾 บันทึกข้อมูล';
+}
+
+function clearAll() {
+  ['f-an','f-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-date').value=new Date().toISOString().substring(0,10);
+  ['f-ward','f-sys','f-step'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-clt').value='';
+  ans={}; meSevArr=[]; meTypArr=[]; meKindArr=[]; hospArr=[];
+  buildQ();  // full rebuild so button states reset cleanly
+  document.getElementById('res-pass').style.display='none';
+  document.getElementById('res-fail').style.display='none';
+}
+
+// ===== RECORDS LOAD =====
+async function loadAndFilter() {
+  document.getElementById('rec-wrap').innerHTML='<div class="loading-txt">⏳ กำลังโหลดข้อมูล...</div>';
+  try {
+    const r=await gasCall({action:'getAll'});
+    if (r.ok) { allRecs=r.data||[]; renderRec(); setSyncUI('ok',`เชื่อมต่อแล้ว · ${allRecs.length} รายการ`); }
+    else document.getElementById('rec-wrap').innerHTML='<div class="empty">โหลดไม่สำเร็จ: '+r.msg+'</div>';
+  } catch(e) { document.getElementById('rec-wrap').innerHTML='<div class="empty">เชื่อมต่อไม่ได้</div>'; }
+}
+
+function clearFilters() {
+  ['rward','rclt','rsys','rstep','ryr','rq','rmon'].forEach(k=>{
+    if(msState[k]) msState[k].selected=[];
+    updateMSLabel(k);
+    const el=document.getElementById('msopts-'+k);
+    if(el) el.innerHTML=renderMSOpts(k,msState[k].opts,'');
+  });
+  document.getElementById('r-search').value='';
+  renderRec();
+}
+
+function getFilt() {
+  const q=document.getElementById('r-search')?.value?.toLowerCase()||'';
+  const wards=getMSVal('rward');
+  const clts=getMSVal('rclt');
+  const syss=getMSVal('rsys');
+  const steps=getMSVal('rstep');
+  const yrs=getMSVal('ryr');
+  const qs=getMSVal('rq');
+  const mons=getMSVal('rmon');
+  return allRecs.filter(r=>{
+    if (q && !(r.an||'').toLowerCase().includes(q) && !(r.evaluator||'').toLowerCase().includes(q)) return false;
+    if (wards.length && !wards.includes(r.ward)) return false;
+    if (clts.length && !clts.includes(r.clt)) return false;
+    if (syss.length && !syss.includes(getSysName(r.sys))) return false;
+    if (steps.length && !steps.includes(STEPN[r.step]||r.step)) return false;
+    if (yrs.length && !yrs.includes(String(r.fy||''))) return false;
+    if (qs.length && !qs.map(normQ).includes(normQ(r.quarter||r.q||''))) return false;
+    if (mons.length && !mons.includes(r.month||getMon(r.date)||'')) return false;
+    return true;
+  });
+}
+
+function renderRec() {
+  const data=getFilt();
+  const wrap=document.getElementById('rec-wrap');
+  if(!data.length){wrap.innerHTML='<div class="empty">ไม่พบข้อมูลที่ตรงเงื่อนไข</div>';return;}
+
+  // Sort state
+  const sk = window._sortKey || '_default';
+  const sd = window._sortDir || -1; // -1=desc, 1=asc
+  function sortIcon(key) {
+    if (sk !== key) return '<span style="opacity:.25;font-size:10px;margin-left:3px;">⇅</span>';
+    return sd === 1 ? '<span style="color:var(--blue);font-size:10px;margin-left:3px;">▲</span>' : '<span style="color:var(--blue);font-size:10px;margin-left:3px;">▼</span>';
+  }
+  function thBtn(label, key, extra='') {
+    return `<th style="cursor:pointer;user-select:none;${extra}" onclick="window._sortKey='${key}';window._sortDir=(window._sortKey==='${key}'&&window._sortDir===1)?-1:1;renderRec();">${label}${sortIcon(key)}</th>`;
+  }
+
+  // Apply sort
+  let sorted = data.slice().reverse(); // default newest first
+  if (sk && sk !== '_default') {
+    sorted = data.slice().sort((a,b)=>{
+      let va='', vb='';
+      if(sk==='an'){va=a.an||'';vb=b.an||'';}
+      else if(sk==='date'){va=new Date(a.date||0);vb=new Date(b.date||0);return sd*(va-vb);}
+      else if(sk==='ward'){va=a.ward||'';vb=b.ward||'';}
+      else if(sk==='clt'){va=a.clt||'';vb=b.clt||'';}
+      else if(sk==='sys'){va=getSysName(a.sys);vb=getSysName(b.sys);}
+      else if(sk==='step'){va=STEPN[a.step]||a.step||'';vb=STEPN[b.step]||b.step||'';}
+      else if(sk==='q'){va=normQ(a.quarter||a.q||'');vb=normQ(b.quarter||b.q||'');}
+      else if(sk==='fy'){va=a.fy||'';vb=b.fy||'';}
+      else if(sk==='mr'){va=rv(a,'q4','q4_mr_form_24h');vb=rv(b,'q4','q4_mr_form_24h');}
+      else if(sk==='drug'){va=rv(a,'q5','q5_drug_order');vb=rv(b,'q5','q5_drug_order');}
+      else if(sk==='sign'){va=rv(a,'q6','q6_doctor_sign');vb=rv(b,'q6','q6_doctor_sign');}
+      else if(sk==='pass'){va=a.pass||'';vb=b.pass||'';}
+      else if(sk==='me'){va=rv(a,'q8','q8_me_found');vb=rv(b,'q8','q8_me_found');}
+      else if(sk==='sev'){va=a.meSev||'';vb=b.meSev||'';}
+      else if(sk==='eval'){va=a.evaluator||'';vb=b.evaluator||'';}
+      return sd * va.toString().localeCompare(vb.toString(), 'th');
+    });
+  }
+
+  wrap.innerHTML=`<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">พบ <b>${data.length}</b> รายการ
+    <span style="margin-left:12px;font-size:11px;color:var(--blue);cursor:pointer;" onclick="document.getElementById('edit-help-banner').style.display='block'">❓ วิธีแก้ไข/ลบข้อมูล</span>
+    <span style="margin-left:8px;font-size:11px;color:var(--text-muted);">คลิกหัวตารางเพื่อเรียงลำดับ</span>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr>
+      ${thBtn('AN','an')}
+      ${thBtn('วันที่','date')}
+      ${thBtn('หอผู้ป่วย','ward')}
+      ${thBtn('CLT','clt')}
+      ${thBtn('ระบบ','sys')}
+      ${thBtn('ขั้นตอน','step')}
+      ${thBtn('ไตรมาส','q')}
+      ${thBtn('ปีงบ','fy')}
+      ${thBtn('ใบ MR','mr')}
+      ${thBtn('คำสั่งยา','drug')}
+      ${thBtn('ลายเซนต์','sign')}
+      ${thBtn('ผล','pass')}
+      ${thBtn('ME','me')}
+      ${thBtn('Severity','sev')}
+      ${thBtn('ผู้ประเมิน','eval')}
+      <th colspan="3">จัดการ</th>
+    </tr></thead>
+    <tbody>${sorted.map(r=>`<tr>
+      <td><b>${r.an||'-'}</b></td>
+      <td style="white-space:nowrap;font-size:11px;">${isoToThai(r.date)}</td>
+      <td style="font-size:11px;max-width:100px;overflow:hidden;text-overflow:ellipsis;">${r.ward||'-'}</td>
+      <td><span class="tag tag-i">${r.clt||'-'}</span></td>
+      <td><span class="tag tag-g">${getSysName(r.sys)}</span></td>
+      <td style="white-space:nowrap;font-size:11px;">${STEPN[r.step]||r.step||'-'}</td>
+      <td style="font-size:11px;">${(r.quarter||r.q||'-').replace(/\s*\(.*\)/,'')}</td>
+      <td>${r.fy||'-'}</td>
+      <td><span class="tag ${rv(r,'q4','q4_mr_form_24h')==='พบ'?'tag-p':'tag-f'}">${rv(r,'q4','q4_mr_form_24h')}</span></td>
+      <td><span class="tag ${rv(r,'q5','q5_drug_order')==='มี'?'tag-p':'tag-f'}">${rv(r,'q5','q5_drug_order')}</span></td>
+      <td><span class="tag ${rv(r,'q6','q6_doctor_sign')==='มี'?'tag-p':'tag-f'}">${rv(r,'q6','q6_doctor_sign')}</span></td>
+      <td><span class="tag ${r.pass==='pass'?'tag-p':'tag-f'}">${r.pass==='pass'?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td>
+      <td><span class="tag ${rv(r,'q8','q8_me_found')==='พบ'?'tag-w':'tag-g'}">${rv(r,'q8','q8_me_found')}</span></td>
+      <td style="font-size:11px;">${r.meSev&&r.meSev!=='-'?`<span class="tag ${HIGH_SEV.some(h=>r.meSev.includes(h))?'tag-f':MID_SEV.some(m=>r.meSev.includes(m))?'tag-w':'tag-i'}">${r.meSev}</span>`:'-'}</td>
+      <td style="font-size:11px;">${r.evaluator||'-'}</td>
+      <td><button class="btn-edit" onclick="viewRec('${r.id}')">👁 ดู</button></td>
+      <td><button class="btn-edit" onclick="openEdit('${r.id}')">✏️ แก้</button></td>
+      <td><button class="btn-r" onclick="delRec('${r.id}')">🗑 ลบ</button></td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+// ===== VIEW =====
+function viewRec(id) {
+  const r=allRecs.find(x=>String(x.id)===String(id));
+  if(!r) return;
+  const q4v=rv(r,'q4','q4_mr_form_24h');
+  const q5v=rv(r,'q5','q5_drug_order');
+  const q6v=rv(r,'q6','q6_doctor_sign');
+  const q8v=rv(r,'q8','q8_me_found');
+  document.getElementById('view-body').innerHTML=`
+    <div class="g2" style="margin-bottom:12px;">
+      <div><b>AN:</b> ${r.an}</div><div><b>วันที่:</b> ${isoToThai(r.date)}</div>
+      <div><b>หอผู้ป่วย:</b> ${r.ward}</div><div><b>CLT:</b> ${r.clt}</div>
+      <div><b>ระบบ:</b> ${getSysName(r.sys)}</div><div><b>ขั้นตอน:</b> ${STEPN[r.step]||r.step}</div>
+      <div><b>ผู้ประเมิน:</b> ${r.evaluator||'-'}</div><div><b>ปีงบ / ไตรมาส:</b> ${r.fy||'-'} / ${(r.quarter||r.q||'-').replace(/\s*\(.*\)/,'')}</div>
+    </div>
+    <hr style="margin:12px 0;border-color:var(--border);">
+    <table style="font-size:12px;width:100%;">
+      <thead><tr><th>ข้อ</th><th>หัวข้อ</th><th>คำตอบ</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>ยาโรคเรื้อรัง</td><td>${rv(r,'q1')}</td></tr>
+        <tr><td>2</td><td>ยาใน/นอก รพ.</td><td>${rv(r,'q2')}</td></tr>
+        <tr><td>2.1</td><td>ในจังหวัด/นอกจังหวัด</td><td>${rv(r,'q21')}</td></tr>
+        <tr><td>2.2</td><td>อำเภอในจังหวัด</td><td>${rv(r,'q22')}</td></tr>
+        <tr><td>2.3</td><td>แหล่งยาในจังหวัด</td><td>${rv(r,'q23')}</td></tr>
+        <tr><td>2.4</td><td>แหล่งยานอกจังหวัด</td><td>${rv(r,'q24')}</td></tr>
+        <tr><td>3</td><td>ยาเหลือ</td><td>${rv(r,'q3')}</td></tr>
+        <tr style="background:#f0f4ff;"><td>4 ⭐</td><td>พบใบ MR 24 ชม.</td><td><span class="tag ${q4v==='พบ'?'tag-p':'tag-f'}">${q4v}</span></td></tr>
+        <tr style="background:#f0f4ff;"><td>5 ⭐</td><td>คำสั่งการใช้ยา</td><td><span class="tag ${q5v==='มี'?'tag-p':'tag-f'}">${q5v}</span></td></tr>
+        <tr style="background:#f0f4ff;"><td>6 ⭐</td><td>ลายเซนต์แพทย์</td><td><span class="tag ${q6v==='มี'?'tag-p':'tag-f'}">${q6v}</span></td></tr>
+        <tr><td>7</td><td>Last dose</td><td>${rv(r,'q7','q7_last_dose')}</td></tr>
+        <tr><td>8</td><td>พบ ME</td><td><span class="tag ${q8v==='พบ'?'tag-w':'tag-g'}">${q8v}</span></td></tr>
+      </tbody>
+    </table>
+    ${q8v==='พบ'?`
+    <div class="me-box" style="margin-top:12px;">
+      <div class="me-title">รายละเอียด ME</div>
+      <div style="margin-bottom:4px;"><b>Severity:</b> ${r.meSev||'-'}</div>
+      <div style="margin-bottom:4px;"><b>ประเภท:</b> ${r.meTyp||'-'}</div>
+      <div style="margin-bottom:4px;"><b>ชนิด:</b> ${r.meKind||'-'}</div>
+      <div><b>รายละเอียด:</b> ${r.meDetail||'-'}</div>
+    </div>`:''}
+    <div style="margin-top:12px;padding:12px 16px;border-radius:8px;background:${r.pass==='pass'?'var(--green-light)':'var(--red-light)'};border:1px solid ${r.pass==='pass'?'#84e1bc':'#f8b4b4'};">
+      <b>ผลการประเมิน: ${r.pass==='pass'?'✅ ผ่านเกณฑ์ (MR Coverage)':'❌ ไม่ผ่านเกณฑ์'}</b>
+    </div>
+    ${r.note&&r.note!=='-'?`<div style="margin-top:8px;font-size:12px;color:var(--text-muted);">💬 หมายเหตุ: ${r.note}</div>`:''}`;
+  document.getElementById('view-modal').classList.add('open');
+}
+
+// ===== EDIT =====
+function openEdit(id) {
+  editId = id;
+  const r = allRecs.find(x=>String(x.id)===String(id));
+  if (!r) return;
+  // helper: get value trying multiple key variants
+  const rv = (...keys) => { for(const k of keys){ if(r[k]&&r[k]!=='-') return r[k]; } return '-'; };
+  document.getElementById('edit-body').innerHTML=`
+    <div class="g3">
+      <div><label>AN</label><input type="text" id="e-an" value="${r.an||''}"/></div>
+      <div><label>วันที่ประเมิน</label><input type="date" id="e-date" value="${r.date||''}"/></div>
+      <div><label>ผู้ประเมิน</label><input type="text" id="e-eval" value="${r.evaluator||''}"/></div>
+    </div>
+    <div class="g3">
+      <div><label>หอผู้ป่วย</label>
+        <select id="e-ward">
+          ${WARDS.map(w=>`<option value="${w.n}" ${r.ward===w.n?'selected':''}>${w.n}</option>`).join('')}
+        </select>
+      </div>
+      <div><label>ระบบ</label>
+        <select id="e-sys">
+          <option value="1" ${String(r.sys)==='1'?'selected':''}>SCAN</option>
+          <option value="2" ${String(r.sys)==='2'?'selected':''}>Hybrid</option>
+          <option value="3" ${String(r.sys)==='3'?'selected':''}>Paperless</option>
+          <option value="4" ${String(r.sys)==='4'?'selected':''}>ผสมผสาน</option>
+        </select>
+      </div>
+      <div><label>CLT</label><input type="text" id="e-clt" value="${r.clt||''}"/></div>
+    </div>
+    <div class="g2">
+      <div><label>ขั้นตอน</label>
+        <select id="e-step">
+          <option value="1" ${r.step==='1'||r.step===1?'selected':''}>แรกรับ</option>
+          <option value="2" ${r.step==='2'||r.step===2?'selected':''}>ย้ายตึก</option>
+          <option value="3" ${r.step==='3'||r.step===3?'selected':''}>Post-op</option>
+          <option value="4" ${r.step==='4'||r.step===4?'selected':''}>กลับบ้าน</option>
+        </select>
+      </div>
+      <div><label>หมายเหตุ</label><input type="text" id="e-note" value="${r.note||''}"/></div>
+    </div>
+    <hr style="margin:12px 0;border-color:var(--border);">
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;">หัวข้อประเมิน</div>
+    <div class="g3">
+      <div><label>ข้อ 1 ยาโรคเรื้อรัง</label>
+        <select id="e-q1">
+          <option value="-">-</option>
+          <option value="มี" ${'มี'===rv('q1')?'selected':''}>มี</option>
+          <option value="ไม่มี" ${'ไม่มี'===rv('q1')?'selected':''}>ไม่มี</option>
+        </select></div>
+      <div><label>ข้อ 2 ยาใน/นอก รพ.</label>
+        <select id="e-q2">
+          <option value="-">-</option>
+          <option value="ใน รพ." ${'ใน รพ.'===rv('q2')?'selected':''}>ใน รพ.</option>
+          <option value="นอก รพ." ${'นอก รพ.'===rv('q2')?'selected':''}>นอก รพ.</option>
+        </select></div>
+      <div><label>ข้อ 2.1 ใน/นอกจังหวัด</label>
+        <select id="e-q21">
+          <option value="-">-</option>
+          <option value="ในจังหวัด" ${'ในจังหวัด'===rv('q21')?'selected':''}>ในจังหวัด</option>
+          <option value="นอกจังหวัด" ${'นอกจังหวัด'===rv('q21')?'selected':''}>นอกจังหวัด</option>
+        </select></div>
+    </div>
+    <div class="g3">
+      <div><label>ข้อ 2.2 อำเภอในจังหวัด</label><input type="text" id="e-q22" value="${rv('q22')=='-'?'':rv('q22')}"/></div>
+      <div><label>ข้อ 2.3 แหล่งยาในจังหวัด</label><input type="text" id="e-q23" value="${rv('q23')=='-'?'':rv('q23')}"/></div>
+      <div><label>ข้อ 2.4 แหล่งยานอกจังหวัด</label><input type="text" id="e-q24" value="${rv('q24')=='-'?'':rv('q24')}"/></div>
+    </div>
+    <div class="g3">
+      <div><label>ข้อ 3 ยาเหลือ</label>
+        <select id="e-q3">
+          <option value="-">-</option>
+          <option value="มี" ${'มี'===rv('q3')?'selected':''}>มี</option>
+          <option value="ไม่มี" ${'ไม่มี'===rv('q3')?'selected':''}>ไม่มี</option>
+        </select></div>
+      <div><label>ข้อ 7 Last dose</label>
+        <select id="e-q7">
+          <option value="-">-</option>
+          <option value="พบ" ${'พบ'===rv('q7','q7_last_dose')?'selected':''}>พบ</option>
+          <option value="ไม่พบ" ${'ไม่พบ'===rv('q7','q7_last_dose')?'selected':''}>ไม่พบ</option>
+        </select></div>
+      <div><label>ข้อ 8 พบ ME</label>
+        <select id="e-q8">
+          <option value="ไม่พบ" ${'ไม่พบ'===rv('q8','q8_me_found')?'selected':''}>ไม่พบ</option>
+          <option value="พบ" ${'พบ'===rv('q8','q8_me_found')?'selected':''}>พบ</option>
+        </select></div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin:12px 0 8px;text-transform:uppercase;">⭐ เกณฑ์หลัก (ข้อ 4, 5, 6)</div>
+    <div class="g3">
+      <div><label>ข้อ 4 ⭐ ใบ MR 24 ชม.</label>
+        <select id="e-q4">
+          <option value="พบ" ${'พบ'===rv('q4','q4_mr_form_24h')?'selected':''}>พบ</option>
+          <option value="ไม่พบ" ${'ไม่พบ'===rv('q4','q4_mr_form_24h')?'selected':''}>ไม่พบ</option>
+        </select></div>
+      <div><label>ข้อ 5 ⭐ คำสั่งยา</label>
+        <select id="e-q5">
+          <option value="มี" ${'มี'===rv('q5','q5_drug_order')?'selected':''}>มี</option>
+          <option value="ไม่มี" ${'ไม่มี'===rv('q5','q5_drug_order')?'selected':''}>ไม่มี</option>
+        </select></div>
+      <div><label>ข้อ 6 ⭐ ลายเซนต์</label>
+        <select id="e-q6">
+          <option value="มี" ${'มี'===rv('q6','q6_doctor_sign')?'selected':''}>มี</option>
+          <option value="ไม่มี" ${'ไม่มี'===rv('q6','q6_doctor_sign')?'selected':''}>ไม่มี</option>
+        </select></div>
+    </div>
+    <div class="g3">
+      <div><label>ME Severity</label><input type="text" id="e-mesev" value="${r.meSev&&r.meSev!=='-'?r.meSev:''}"/></div>
+      <div><label>ME ประเภท</label><input type="text" id="e-metyp" value="${r.meTyp&&r.meTyp!=='-'?r.meTyp:''}"/></div>
+      <div><label>ME ชนิด</label><input type="text" id="e-mekind" value="${r.meKind&&r.meKind!=='-'?r.meKind:''}"/></div>
+    </div>
+    <div><label>ME รายละเอียด</label><textarea id="e-medetail" rows="2">${r.meDetail&&r.meDetail!=='-'?r.meDetail:''}</textarea></div>`;
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+async function saveEdit() {
+  const r=allRecs.find(x=>String(x.id)===String(editId));
+  if(!r) return;
+  const q4=document.getElementById('e-q4').value;
+  const q5=document.getElementById('e-q5').value;
+  const q6=document.getElementById('e-q6').value;
+  const pass=(q4==='พบ'&&q5==='มี'&&q6==='มี')?'pass':'fail';
+  const date=document.getElementById('e-date').value;
+  const upd={...r,
+    an:document.getElementById('e-an').value,
+    date, ward:document.getElementById('e-ward').value,
+    sys:document.getElementById('e-sys').value,
+    clt:document.getElementById('e-clt').value,
+    step:document.getElementById('e-step').value,
+    evaluator:document.getElementById('e-eval').value,
+    note:document.getElementById('e-note').value,
+    q1:document.getElementById('e-q1').value,
+    q2:document.getElementById('e-q2').value,
+    q21:document.getElementById('e-q21').value,
+    q22:document.getElementById('e-q22').value||'-',
+    q23:document.getElementById('e-q23').value||'-',
+    q24:document.getElementById('e-q24').value||'-',
+    q3:document.getElementById('e-q3').value,
+    q4:q4, q5:q5, q6:q6,
+    q7:document.getElementById('e-q7').value,
+    q8:document.getElementById('e-q8').value,
+    meSev:document.getElementById('e-mesev').value||'-',
+    meTyp:document.getElementById('e-metyp').value||'-',
+    meKind:document.getElementById('e-mekind').value||'-',
+    meDetail:document.getElementById('e-medetail').value||'-',
+    pass, fy:getFY(date), quarter:getQ(date), month:getMon(date)
+  };
+  try {
+    const res=await gasCall({action:'update', record:JSON.stringify(upd)});
+    if(res.ok){
+      const idx=allRecs.findIndex(x=>String(x.id)===String(editId));
+      if(idx>=0) allRecs[idx]=upd;
+      toast('แก้ไขสำเร็จ','ok'); closeModal(); renderRec();
+    } else toast('แก้ไขไม่สำเร็จ: '+res.msg,'err');
+  } catch(e){ toast('เชื่อมต่อไม่ได้','err'); }
+}
+
+function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
+
+async function delRec(id) {
+  if(!confirm('ยืนยันลบรายการนี้?')) return;
+  try {
+    const r=await gasCall({action:'delete', id:String(id)});
+    if(r.ok){ toast('ลบแล้ว','ok'); allRecs=allRecs.filter(x=>String(x.id)!==String(id)); renderRec(); }
+    else toast('ลบไม่สำเร็จ','err');
+  } catch(e){ toast('เชื่อมต่อไม่ได้','err'); }
+}
+
+// ===== EXPORT =====
+// Helper: get field value from record, trying multiple key variants
+function rv(r,...keys){ for(const k of keys){ if(r[k]!==undefined&&r[k]!==null&&r[k]!=='-'&&r[k]!=='') return r[k]; } return '-'; }
+
+function recToRow(r) {
+  return [
+    r.an, isoToThai(r.date), r.ward, r.clt, getSysName(r.sys), STEPN[r.step]||r.step,
+    (r.quarter||r.q||'').replace(/\s*\(.*\)/,''), r.fy, r.month||getMon(r.date),
+    rv(r,'q1'), rv(r,'q2'), rv(r,'q21'), rv(r,'q22'),
+    rv(r,'q23'), rv(r,'q24'), rv(r,'q3'),
+    rv(r,'q4','q4_mr_form_24h'), rv(r,'q5','q5_drug_order'), rv(r,'q6','q6_doctor_sign'),
+    rv(r,'q7','q7_last_dose'), rv(r,'q8','q8_me_found'),
+    r.meSev||'-', r.meTyp||'-', r.meKind||'-', r.meDetail||'-',
+    r.pass==='pass'?'ผ่าน':'ไม่ผ่าน', r.evaluator||'-', r.note||'-'
+  ];
+}
+
+const HDR = ['AN','วันที่','หอผู้ป่วย','CLT','ระบบ','ขั้นตอน','ไตรมาส','ปีงบ','เดือน',
+  'ยาโรคเรื้อรัง','ยาใน/นอกรพ.','ใน/นอกจังหวัด','อำเภอ','แหล่งยาในจังหวัด','แหล่งยานอกจังหวัด',
+  'ยาเหลือ','พบใบMR','คำสั่งยา','ลายเซนต์','Last dose','พบME',
+  'ME Severity','ME Type','ME ชนิด','ME Detail','ผล','ผู้ประเมิน','หมายเหตุ'];
+
+function doExportCSV() {
+  const data=getFilt();
+  if(!data.length){toast('ไม่มีข้อมูล','err');return;}
+  const rows=data.map(recToRow);
+  const csv='\ufeff'+[HDR,...rows].map(r=>r.map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='MR_Assessment_'+new Date().toISOString().substring(0,10)+'.csv';
+  a.click();
+  toast('Export CSV สำเร็จ (ภาษาไทยครบ)','ok');
+}
+
+function doExportExcel() {
+  const data=getFilt();
+  if(!data.length){toast('ไม่มีข้อมูล','err');return;}
+  const rows=data.map(recToRow);
+  // Build HTML table that Excel can open with Thai encoding
+  const htmlTable=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+  <head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>MR Assessment</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head>
+  <body><table border="1">
+    <thead><tr>${HDR.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c||''}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table></body></html>`;
+  const blob=new Blob(['\ufeff'+htmlTable],{type:'application/vnd.ms-excel;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='MR_Assessment_'+new Date().toISOString().substring(0,10)+'.xls';
+  a.click();
+  toast('Export Excel สำเร็จ (ภาษาไทยครบ)','ok');
+}
+
+function doExportPPT() {
+  const data=getFilt();
+  if(!data.length){toast('ไม่มีข้อมูล','err');return;}
+  const total=data.length;
+  const passed=data.filter(r=>r.pass==='pass').length;
+  const failed=total-passed;
+  const pct=(passed/total*100).toFixed(1);
+  const meRecs=data.filter(r=>rv(r,'q8','q8_me_found')==='พบ');
+  const meAll=meRecs.length;
+  const meHigh=meRecs.filter(r=>HIGH_SEV.some(h=>(r.meSev||'').includes(h))).length;
+  const meCplus=meRecs.filter(r=>[...MID_SEV,...HIGH_SEV].some(s=>(r.meSev||'').includes(s))).length;
+  const mePct=(meAll/total*100).toFixed(1);
+
+  // CLT, Ward, Sys stats
+  const cltSt={}, wardSt={}, sysSt={};
+  data.forEach(r=>{
+    const c=r.clt||'ไม่ระบุ'; if(!cltSt[c])cltSt[c]={t:0,p:0}; cltSt[c].t++; if(r.pass==='pass')cltSt[c].p++;
+    const w=r.ward||'ไม่ระบุ'; if(!wardSt[w])wardSt[w]={t:0,p:0}; wardSt[w].t++; if(r.pass==='pass')wardSt[w].p++;
+    const s=getSysName(r.sys); if(!sysSt[s])sysSt[s]={t:0,p:0}; sysSt[s].t++; if(r.pass==='pass')sysSt[s].p++;
+  });
+
+  // Q counts
+  function qc(getter,val){return data.filter(r=>getter(r)===val).length;}
+  const q1yes=qc(r=>rv(r,'q1'),'มี'), q1no=qc(r=>rv(r,'q1'),'ไม่มี');
+  const q2in=qc(r=>rv(r,'q2'),'ใน รพ.'), q2out=qc(r=>rv(r,'q2'),'นอก รพ.');
+  const q21in=qc(r=>rv(r,'q21'),'ในจังหวัด'), q21out=qc(r=>rv(r,'q21'),'นอกจังหวัด');
+  const q3yes=qc(r=>rv(r,'q3'),'มี'), q3no=qc(r=>rv(r,'q3'),'ไม่มี');
+  const q4y=qc(r=>rv(r,'q4','q4_mr_form_24h'),'พบ'), q4n=total-q4y;
+  const q5y=qc(r=>rv(r,'q5','q5_drug_order'),'มี'), q5n=total-q5y;
+  const q6y=qc(r=>rv(r,'q6','q6_doctor_sign'),'มี'), q6n=total-q6y;
+  const q7y=qc(r=>rv(r,'q7','q7_last_dose'),'พบ'), q7n=qc(r=>rv(r,'q7','q7_last_dose'),'ไม่พบ');
+
+  // ME severity/kind
+  const sevSt={}, kindSt={};
+  meRecs.forEach(r=>{
+    (r.meSev||'').split(',').forEach(s=>{s=s.trim();if(s&&s!=='-')sevSt[s]=(sevSt[s]||0)+1;});
+    (r.meKind||'').split('/').forEach(k=>{k=k.trim();if(k&&k!=='-')kindSt[k]=(kindSt[k]||0)+1;});
+  });
+
+  // Ward rows for PPT
+  const wardFail=Object.entries(wardSt).filter(([w,s])=>s.p/s.t<0.8).sort((a,b)=>a[1].p/a[1].t-b[1].p/b[1].t);
+  const wardPass=Object.entries(wardSt).filter(([w,s])=>s.p/s.t>=0.8).sort((a,b)=>b[1].p/b[1].t-a[1].p/a[1].t);
+  const wardAllSorted=[...wardFail,...wardPass];
+
+  function pBar(p,w=180){const pn=parseFloat(p);const col=pn>=80?'#34d399':pn>=60?'#fbbf24':'#f87171';return `<div style="display:flex;align-items:center;gap:8px;"><div style="width:${w}px;background:rgba(255,255,255,.1);border-radius:4px;height:14px;overflow:hidden;"><div style="width:${Math.min(100,pn).toFixed(0)}%;height:14px;background:${col};border-radius:4px;"></div></div><span style="font-size:12px;font-weight:700;color:${col};">${p}%</span></div>`;}
+
+  const dateStr=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+
+  const pptHtml=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Sarabun',sans-serif;}
+    body{background:#0f172a;color:white;}
+    .slide{width:960px;min-height:540px;margin:0 auto 24px;padding:44px 52px;border-radius:20px;position:relative;overflow:hidden;page-break-after:always;}
+    .s1{background:linear-gradient(135deg,#1e3a8a 0%,#1a56db 50%,#1e40af 100%);}
+    .s-dark{background:#1e293b;}
+    .s-ward{background:#0f2744;}
+    .s-q{background:#1a2535;}
+    .s-me{background:#2d1a0e;}
+    h1{font-size:30px;font-weight:700;line-height:1.2;}
+    h2{font-size:20px;font-weight:700;margin-bottom:14px;color:#93c5fd;}
+    h3{font-size:14px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+    .sub{font-size:13px;opacity:.65;margin-top:5px;}
+    .kpi-row{display:flex;gap:12px;margin:20px 0;}
+    .kpi{background:rgba(255,255,255,.09);border-radius:12px;padding:16px 20px;flex:1;text-align:center;border:1px solid rgba(255,255,255,.06);}
+    .kpi-val{font-size:34px;font-weight:700;}
+    .kpi-lbl{font-size:11px;opacity:.65;margin-top:3px;line-height:1.4;}
+    .kpi-sm{padding:10px 14px;}
+    .kpi-sm .kpi-val{font-size:22px;}
+    .green{color:#34d399;}.red{color:#f87171;}.yellow{color:#fbbf24;}.blue{color:#60a5fa;}.gray{color:#94a3b8;}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;}
+    th{padding:7px 10px;background:rgba(255,255,255,.1);text-align:left;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;}
+    td{padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;}
+    .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+    .b-green{background:#065f46;color:#34d399;}.b-red{background:#7f1d1d;color:#f87171;}.b-yellow{background:#78350f;color:#fbbf24;}.b-blue{background:#1e3a8a;color:#93c5fd;}.b-gray{background:#374151;color:#9ca3af;}
+    .footer{position:absolute;bottom:16px;right:32px;font-size:10px;opacity:.3;}
+    .hdr-bar{height:4px;border-radius:2px;margin-bottom:20px;}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+    .section-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px;}
+    .q-row{display:flex;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+    .q-num{width:36px;font-size:11px;font-weight:700;color:#60a5fa;}
+    .q-lbl{flex:1;font-size:12px;}
+    .q-val{font-size:12px;font-weight:600;}
+    @media print{body{background:white;color:#1e293b;}@page{size:landscape;margin:0;}
+      .kpi{background:#f1f5f9;border-color:#e2e8f0;}.s1{background:linear-gradient(135deg,#1e3a8a,#1a56db);}
+      .s-dark,.s-ward,.s-q,.s-me{background:#f8fafc;color:#1e293b;}
+      h2{color:#1e40af;}table td,table th{color:#374151;}
+      th{background:#e2e8f0;}td{border-color:#e5e7eb;}
+      .sub,.footer,.section-lbl{color:#64748b;}
+      .kpi-lbl{color:#64748b;}}
+  </style></head><body>
+
+  <!-- SLIDE 1: หน้าปก -->
+  <div class="slide s1">
+    <div class="hdr-bar" style="background:rgba(255,255,255,.2);"></div>
+    <h1>สรุปผลการประเมิน<br>Medication Reconciliation (MR)</h1>
+    <div class="sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment</div>
+    <div class="sub">สร้างเมื่อ ${dateStr}</div>
+    <div class="kpi-row" style="margin-top:28px;">
+      <div class="kpi"><div class="kpi-val">${total}</div><div class="kpi-lbl">แฟ้มที่ประเมิน<br>ทั้งหมด</div></div>
+      <div class="kpi"><div class="kpi-val ${parseFloat(pct)>=80?'green':'red'}">${pct}%</div><div class="kpi-lbl">MR Coverage<br><b>เป้า ≥ 80%</b></div></div>
+      <div class="kpi"><div class="kpi-val green">${passed}</div><div class="kpi-lbl">ผ่านเกณฑ์</div></div>
+      <div class="kpi"><div class="kpi-val red">${failed}</div><div class="kpi-lbl">ไม่ผ่านเกณฑ์</div></div>
+      <div class="kpi"><div class="kpi-val yellow">${meAll}</div><div class="kpi-lbl">พบ ME<br>ทั้งหมด</div></div>
+      <div class="kpi"><div class="kpi-val ${meHigh>0?'red':'green'}">${meHigh}</div><div class="kpi-lbl">ME ระดับ E+<br><b>เป้า = 0</b></div></div>
+    </div>
+    <div class="footer">MR Assessment System · รพ.มหาสารคาม</div>
+  </div>
+
+  <!-- SLIDE 2: ตัวชี้วัดหลัก + CLT -->
+  <div class="slide s-dark">
+    <div class="hdr-bar" style="background:#3b82f6;"></div>
+    <div class="two-col">
+      <div>
+        <h2>ตัวชี้วัดหลัก MR</h2>
+        <table>
+          <thead><tr><th>ตัวชี้วัด</th><th>ผล</th><th>เป้า</th><th>สถานะ</th></tr></thead>
+          <tbody>
+            <tr><td>% MR Coverage</td><td><b>${pct}%</b></td><td>≥ 80%</td><td><span class="badge ${parseFloat(pct)>=80?'b-green':'b-red'}">${parseFloat(pct)>=80?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
+            <tr><td>ME ระดับ E+</td><td><b>${meHigh} ครั้ง</b></td><td>= 0</td><td><span class="badge ${meHigh===0?'b-green':'b-red'}">${meHigh===0?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
+            <tr><td>ME ระดับ C+ (%)</td><td><b>${total?(meCplus/total*100).toFixed(2):0}%</b></td><td>&lt; 1.5%</td><td><span class="badge ${total&&(meCplus/total*100)<1.5?'b-green':'b-red'}">${total&&(meCplus/total*100)<1.5?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
+            <tr><td>อัตราการพบ ME</td><td><b>${mePct}%</b></td><td>ต่ำสุด</td><td><span class="badge b-gray">ข้อมูล</span></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:16px;">
+          <h3>แยกตามระบบบันทึก</h3>
+          <table>
+            <thead><tr><th>ระบบ</th><th>ทั้งหมด</th><th>ผ่าน</th><th>%</th></tr></thead>
+            <tbody>${Object.entries(sysSt).map(([s,v])=>{const p=(v.p/v.t*100).toFixed(1);return`<tr><td>${s}</td><td>${v.t}</td><td>${v.p}</td><td><span class="badge ${parseFloat(p)>=80?'b-green':'b-red'}">${p}%</span></td></tr>`;}).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <h2>ผลรายกลุ่มงาน CLT</h2>
+        <table>
+          <thead><tr><th>CLT</th><th>ทั้งหมด</th><th>ผ่าน</th><th>ไม่ผ่าน</th><th>% Cover</th></tr></thead>
+          <tbody>${Object.entries(cltSt).map(([c,s])=>{const p=(s.p/s.t*100).toFixed(1);return`<tr style="background:${s.p/s.t>=0.8?'rgba(5,122,85,.15)':'rgba(200,30,30,.1)'}"><td><b>${c}</b></td><td>${s.t}</td><td class="green">${s.p}</td><td class="red">${s.t-s.p}</td><td>${pBar(p,100)}</td></tr>`;}).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="footer">MR Assessment System · รพ.มหาสารคาม</div>
+  </div>
+
+  <!-- SLIDE 3: สรุปรายหอผู้ป่วย -->
+  <div class="slide s-ward">
+    <div class="hdr-bar" style="background:#22c55e;"></div>
+    <h2>% MR Coverage รายหอผู้ป่วย</h2>
+    <table>
+      <thead><tr><th>หอผู้ป่วย</th><th>CLT</th><th>ทั้งหมด</th><th>ผ่าน</th><th>ไม่ผ่าน</th><th>% Coverage</th><th>สถานะ</th></tr></thead>
+      <tbody>
+        ${wardFail.map(([w,s])=>{const p=(s.p/s.t*100).toFixed(1);const clt=data.find(r=>(r.ward||'')===w)?.clt||'-';return`<tr style="background:rgba(200,30,30,.12);"><td style="font-weight:700;">${w}</td><td style="font-size:11px;">${clt}</td><td>${s.t}</td><td class="green">${s.p}</td><td style="color:#f87171;font-weight:700;">${s.t-s.p}</td><td>${pBar(p)}</td><td><span class="badge b-red">❌ ยังไม่ผ่าน</span></td></tr>`;}).join('')}
+        ${wardPass.map(([w,s])=>{const p=(s.p/s.t*100).toFixed(1);const clt=data.find(r=>(r.ward||'')===w)?.clt||'-';return`<tr><td>${w}</td><td style="font-size:11px;">${clt}</td><td>${s.t}</td><td class="green">${s.p}</td><td class="gray">${s.t-s.p}</td><td>${pBar(p)}</td><td><span class="badge b-green">✅ ผ่าน</span></td></tr>`;}).join('')}
+      </tbody>
+    </table>
+    <div class="footer">MR Assessment System · รพ.มหาสารคาม</div>
+  </div>
+
+  <!-- SLIDE 4: สรุปผลทุกข้อประเมิน -->
+  <div class="slide s-q">
+    <div class="hdr-bar" style="background:#a78bfa;"></div>
+    <h2>สรุปผลแต่ละข้อประเมิน (ภาพรวม)</h2>
+    <div class="two-col">
+      <div>
+        <div class="q-row"><div class="q-num">ข้อ 1</div><div class="q-lbl">มียาโรคเรื้อรัง</div><div class="q-val"><span class="badge b-green">มี ${q1yes}</span> <span class="badge b-gray">ไม่มี ${q1no}</span></div></div>
+        <div class="q-row"><div class="q-num">ข้อ 2</div><div class="q-lbl">ยาใน รพ. / นอก รพ.</div><div class="q-val"><span class="badge b-green">ใน ${q2in}</span> <span class="badge b-yellow">นอก ${q2out}</span></div></div>
+        <div class="q-row"><div class="q-num">2.1</div><div class="q-lbl">ยานอก — ใน/นอกจังหวัด</div><div class="q-val"><span class="badge b-blue">ในจว. ${q21in}</span> <span class="badge b-gray">นอกจว. ${q21out}</span></div></div>
+        <div class="q-row"><div class="q-num">ข้อ 3</div><div class="q-lbl">ลงจำนวนยาเหลือ</div><div class="q-val"><span class="badge b-green">มี ${q3yes}</span> <span class="badge b-red">ไม่มี ${q3no}</span></div></div>
+        <div class="q-row" style="background:rgba(59,130,246,.1);border-radius:6px;padding:8px 6px;margin:4px 0;"><div class="q-num" style="color:#fbbf24;">4 ⭐</div><div class="q-lbl" style="font-weight:700;">พบใบ MR ภายใน 24 ชม.</div><div class="q-val"><span class="badge b-green">พบ ${q4y}</span> <span class="badge b-red">ไม่พบ ${q4n}</span></div></div>
+        <div class="q-row" style="background:rgba(59,130,246,.1);border-radius:6px;padding:8px 6px;margin:4px 0;"><div class="q-num" style="color:#fbbf24;">5 ⭐</div><div class="q-lbl" style="font-weight:700;">มีคำสั่งการใช้ยา</div><div class="q-val"><span class="badge b-green">มี ${q5y}</span> <span class="badge b-red">ไม่มี ${q5n}</span></div></div>
+        <div class="q-row" style="background:rgba(59,130,246,.1);border-radius:6px;padding:8px 6px;margin:4px 0;"><div class="q-num" style="color:#fbbf24;">6 ⭐</div><div class="q-lbl" style="font-weight:700;">มีลายเซนต์แพทย์</div><div class="q-val"><span class="badge b-green">มี ${q6y}</span> <span class="badge b-red">ไม่มี ${q6n}</span></div></div>
+        <div class="q-row"><div class="q-num">ข้อ 7</div><div class="q-lbl">พบการลง Last dose</div><div class="q-val"><span class="badge b-green">พบ ${q7y}</span> <span class="badge b-red">ไม่พบ ${q7n}</span></div></div>
+        <div class="q-row" style="background:rgba(146,64,14,.15);border-radius:6px;padding:8px 6px;margin:4px 0;"><div class="q-num" style="color:#fbbf24;">ข้อ 8</div><div class="q-lbl" style="font-weight:700;">พบ Medication Error</div><div class="q-val"><span class="badge b-red">พบ ${meAll}</span> <span class="badge b-green">ไม่พบ ${total-meAll}</span></div></div>
+      </div>
+      <div>
+        <h3>ข้อที่ยังบกพร่อง (ต้องแก้ไข)</h3>
+        ${[
+          {q:'4',lbl:'ใบ MR ภายใน 24 ชม.',n:q4n,t:total},
+          {q:'5',lbl:'คำสั่งการใช้ยา',n:q5n,t:total},
+          {q:'6',lbl:'ลายเซนต์แพทย์',n:q6n,t:total},
+          {q:'7',lbl:'Last dose',n:q7n,t:q7y+q7n},
+          {q:'3',lbl:'ลงยาเหลือ',n:q3no,t:q3yes+q3no},
+        ].filter(x=>x.n>0).map(x=>`
+          <div style="margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:12px;">ข้อ ${x.q} — ${x.lbl}</span>
+              <span class="badge b-red">${x.n} ราย (${x.t?(x.n/x.t*100).toFixed(0):0}%)</span>
+            </div>
+            ${x.t?`<div style="background:rgba(255,255,255,.08);border-radius:4px;height:10px;overflow:hidden;"><div style="width:${(x.n/x.t*100).toFixed(0)}%;height:10px;background:#f87171;"></div></div>`:''}
+          </div>`).join('')||'<div class="badge b-green" style="font-size:13px;padding:8px 16px;">✅ ทุกข้อผ่านครบ</div>'}
+        <div style="margin-top:16px;">
+          <h3>หอที่ยังไม่ผ่าน 80%</h3>
+          ${wardFail.length?wardFail.map(([w,s])=>{const p=(s.p/s.t*100).toFixed(0);return`<div style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;flex:1;padding-right:8px;">${w}</span><span class="badge b-red">${p}%</span></div>`;}).join(''):'<span class="badge b-green">ทุกหอผ่านแล้ว ✅</span>'}
+        </div>
+      </div>
+    </div>
+    <div class="footer">MR Assessment System · รพ.มหาสารคาม</div>
+  </div>
+
+  <!-- SLIDE 5: Medication Error รายละเอียด -->
+  <div class="slide s-me">
+    <div class="hdr-bar" style="background:#f59e0b;"></div>
+    <h2 style="color:#fbbf24;">⚠️ รายละเอียด Medication Error</h2>
+    <div class="three-col" style="margin-bottom:20px;">
+      <div class="kpi kpi-sm"><div class="kpi-val yellow">${meAll}</div><div class="kpi-lbl">ME ทั้งหมด</div></div>
+      <div class="kpi kpi-sm"><div class="kpi-val ${meHigh>0?'red':'green'}">${meHigh}</div><div class="kpi-lbl">ME ระดับ E+ (เป้า=0)</div></div>
+      <div class="kpi kpi-sm"><div class="kpi-val yellow">${mePct}%</div><div class="kpi-lbl">อัตรา ME</div></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <h3>ME แยก Severity</h3>
+        ${Object.keys(sevSt).length?`<table>
+          <thead><tr><th>Severity</th><th>จำนวน</th><th>ระดับ</th></tr></thead>
+          <tbody>${Object.entries(sevSt).sort((a,b)=>a[0].localeCompare(b[0])).map(([s,n])=>{
+            const hi=HIGH_SEV.includes(s),mid=MID_SEV.includes(s);
+            return`<tr><td><span class="badge ${hi?'b-red':mid?'b-yellow':'b-green'}" style="font-weight:700;">${s}</span></td><td>${n}</td><td style="font-size:11px;">${hi?'🔴 สูง (รายงานทันที)':mid?'🟡 ปานกลาง':'🟢 ต่ำ'}</td></tr>`;
+          }).join('')}</tbody>
+        </table>`:'<div class="badge b-green">ไม่พบ ME</div>'}
+        <div style="margin-top:14px;">
+          <h3>ชนิดความคลาดเคลื่อน</h3>
+          ${Object.keys(kindSt).length?`<table>
+            <thead><tr><th>ชนิด</th><th>จำนวน</th></tr></thead>
+            <tbody>${Object.entries(kindSt).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<tr><td style="font-size:11px;">${k}</td><td>${n}</td></tr>`).join('')}</tbody>
+          </table>`:'<div style="font-size:12px;opacity:.6;">ไม่มีข้อมูล</div>'}
+        </div>
+      </div>
+      <div>
+        <h3>ME แยกรายหอผู้ป่วย</h3>
+        <table>
+          <thead><tr><th>หอ</th><th>พบ ME</th><th>% ME</th></tr></thead>
+          <tbody>${Object.entries(wardSt).filter(([w,s])=>{return data.filter(r=>(r.ward||'ไม่ระบุ')===w&&rv(r,'q8','q8_me_found')==='พบ').length>0;}).map(([w,s])=>{
+            const me=data.filter(r=>(r.ward||'ไม่ระบุ')===w&&rv(r,'q8','q8_me_found')==='พบ').length;
+            const mePctW=(me/s.t*100).toFixed(0);
+            return`<tr><td style="font-size:11px;">${w}</td><td><span class="badge b-yellow">${me}</span></td><td style="font-size:11px;">${mePctW}%</td></tr>`;
+          }).join('')||'<tr><td colspan="3" style="opacity:.5;">ไม่พบ ME ในหอใด</td></tr>'}
+          </tbody>
+        </table>
+        ${meRecs.length&&meRecs.some(r=>r.meDetail&&r.meDetail!=='-')?`
+        <div style="margin-top:14px;">
+          <h3>รายการ ME (AN)</h3>
+          <table>
+            <thead><tr><th>AN</th><th>หอ</th><th>Sev</th><th>รายละเอียด</th></tr></thead>
+            <tbody>${meRecs.map(r=>`<tr><td><b>${r.an}</b></td><td style="font-size:10px;">${(r.ward||'-').substring(0,14)}</td><td><span class="badge ${HIGH_SEV.some(h=>(r.meSev||'').includes(h))?'b-red':MID_SEV.some(m=>(r.meSev||'').includes(m))?'b-yellow':'b-green'}" style="font-size:10px;">${r.meSev||'-'}</span></td><td style="font-size:10px;">${r.meDetail&&r.meDetail!=='-'?r.meDetail.substring(0,40)+(r.meDetail.length>40?'…':''):r.meKind||'-'}</td></tr>`).join('')}</tbody>
+          </table>
+        </div>`:''}
+      </div>
+    </div>
+    <div class="footer">MR Assessment System · รพ.มหาสารคาม</div>
+  </div>
+
+  <!-- SLIDE 6: ข้อเสนอแนะ -->
+  <div class="slide s-dark">
+    <div class="hdr-bar" style="background:#34d399;"></div>
+    <h2>ข้อเสนอแนะและแนวทางพัฒนา</h2>
+    <div class="two-col">
+      <div>
+        <h3>ประเด็นที่ต้องพัฒนา</h3>
+        ${parseFloat(pct)<80?`<div style="background:rgba(200,30,30,.15);border-radius:8px;padding:10px 14px;margin-bottom:10px;border-left:3px solid #f87171;">
+          <div style="font-size:13px;font-weight:700;color:#f87171;">MR Coverage ยังต่ำกว่าเป้า</div>
+          <div style="font-size:11px;margin-top:4px;opacity:.8;">ปัจจุบัน ${pct}% เป้าหมาย ≥ 80% — ต้องเพิ่มอีก ${(80-parseFloat(pct)).toFixed(1)}%</div>
+        </div>`:''}
+        ${q4n>0?`<div style="background:rgba(200,30,30,.12);border-radius:8px;padding:10px 14px;margin-bottom:8px;border-left:3px solid #f87171;">
+          <div style="font-size:12px;font-weight:700;">ข้อ 4: ใบ MR ไม่ครบใน 24 ชม. — ${q4n} ราย</div>
+          <div style="font-size:11px;margin-top:2px;opacity:.7;">แนวทาง: กำหนดผู้รับผิดชอบดำเนินการ MR ทันทีหลังรับใหม่</div>
+        </div>`:''}
+        ${q5n>0?`<div style="background:rgba(200,30,30,.12);border-radius:8px;padding:10px 14px;margin-bottom:8px;border-left:3px solid #f87171;">
+          <div style="font-size:12px;font-weight:700;">ข้อ 5: ขาดรายละเอียดคำสั่งยา — ${q5n} ราย</div>
+          <div style="font-size:11px;margin-top:2px;opacity:.7;">แนวทาง: ทบทวนแบบฟอร์ม ตรวจสอบความครบถ้วน</div>
+        </div>`:''}
+        ${q6n>0?`<div style="background:rgba(200,30,30,.12);border-radius:8px;padding:10px 14px;margin-bottom:8px;border-left:3px solid #f87171;">
+          <div style="font-size:12px;font-weight:700;">ข้อ 6: ขาดลายเซนต์แพทย์ — ${q6n} ราย</div>
+          <div style="font-size:11px;margin-top:2px;opacity:.7;">แนวทาง: แพทย์ลงนามกำกับคำสั่งยาทุกราย</div>
+        </div>`:''}
+        ${meHigh>0?`<div style="background:rgba(200,30,30,.15);border-radius:8px;padding:10px 14px;margin-bottom:8px;border-left:3px solid #ef4444;">
+          <div style="font-size:12px;font-weight:700;color:#f87171;">ME ระดับ E+ — ${meHigh} ครั้ง (ต้องรายงาน)</div>
+          <div style="font-size:11px;margin-top:2px;opacity:.7;">แนวทาง: รายงานทันที วิเคราะห์ Root Cause และป้องกันซ้ำ</div>
+        </div>`:''}
+        ${parseFloat(pct)>=80&&q4n===0&&q5n===0&&q6n===0&&meHigh===0?`<div style="background:rgba(5,122,85,.15);border-radius:8px;padding:14px;border-left:3px solid #34d399;">
+          <div style="font-size:13px;font-weight:700;color:#34d399;">✅ ทุกตัวชี้วัดผ่านเกณฑ์</div>
+          <div style="font-size:11px;margin-top:4px;opacity:.8;">รักษามาตรฐานต่อเนื่องและขยายผลสู่หอที่ยังพัฒนาได้</div>
+        </div>`:''}
+      </div>
+      <div>
+        <h3>สรุปคะแนนตัวชี้วัด</h3>
+        <table>
+          <thead><tr><th>ตัวชี้วัด</th><th>ผลลัพธ์</th><th>สถานะ</th></tr></thead>
+          <tbody>
+            <tr><td>% MR Coverage</td><td>${pct}%</td><td><span class="badge ${parseFloat(pct)>=80?'b-green':'b-red'}">${parseFloat(pct)>=80?'✅':'❌'}</span></td></tr>
+            <tr><td>ME ระดับ E+</td><td>${meHigh} ครั้ง</td><td><span class="badge ${meHigh===0?'b-green':'b-red'}">${meHigh===0?'✅':'❌'}</span></td></tr>
+            <tr><td>ME ระดับ C+ (%)</td><td>${total?(meCplus/total*100).toFixed(2):0}%</td><td><span class="badge ${total&&(meCplus/total*100)<1.5?'b-green':'b-red'}">${total&&(meCplus/total*100)<1.5?'✅':'❌'}</span></td></tr>
+            <tr><td>ข้อ 4 พบใบ MR</td><td>${((q4y/total)*100).toFixed(0)}%</td><td><span class="badge ${q4n===0?'b-green':'b-yellow'}">${q4n===0?'✅':'⚠️'}</span></td></tr>
+            <tr><td>ข้อ 7 Last dose</td><td>${(q7y+q7n>0?(q7y/(q7y+q7n)*100).toFixed(0):0)}%</td><td><span class="badge ${q7n===0?'b-green':'b-yellow'}">${q7n===0?'✅':'⚠️'}</span></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,.05);border-radius:8px;">
+          <div style="font-size:11px;color:#94a3b8;line-height:1.8;">
+            📅 ข้อมูลจาก ${total} แฟ้ม<br>
+            🏥 ${Object.keys(wardSt).length} หอผู้ป่วย · ${Object.keys(cltSt).length} กลุ่มงาน CLT<br>
+            📊 หอผ่าน 80%: ${wardPass.length} หอ · ยังไม่ผ่าน: ${wardFail.length} หอ
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">สร้างโดย MR Assessment System · รพ.มหาสารคาม · ${dateStr}</div>
+  </div>
+
+  <script>window.onload=()=>window.print()<\/script>
+  </body></html>`;
+
+  const blob=new Blob([pptHtml],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const win=window.open(url,'_blank');
+  if(!win){const a=document.createElement('a');a.href=url;a.download='MR_Summary.html';a.click();toast('ดาวน์โหลดไฟล์สรุปแล้ว (เปิดแล้ว Ctrl+P บันทึก PDF)','ok');}
+  else toast('เปิดหน้าสรุป — กด Ctrl+P เพื่อบันทึก PDF/พิมพ์','ok');
+}
+
+// ===== DASHBOARD =====
+async function loadAndDash() {
+  document.getElementById('dash-wrap').innerHTML='<div class="loading-txt">⏳ กำลังโหลด...</div>';
+  try {
+    const r=await gasCall({action:'getAll'});
+    if(r.ok){allRecs=r.data||[];renderDash();}
+    else document.getElementById('dash-wrap').innerHTML='<div class="empty">โหลดไม่สำเร็จ</div>';
+  } catch(e){document.getElementById('dash-wrap').innerHTML='<div class="empty">เชื่อมต่อไม่ได้</div>';}
+}
+
+function normQ(q) {
+  if (!q) return '';
+  const m = String(q).match(/Q[1-4]/i);
+  return m ? m[0].toUpperCase() : String(q);
+}
+
+function getDashFilt() {
+  const yrs=getMSVal('dyr');
+  const qs=getMSVal('dq');
+  const mons=getMSVal('dmon');
+  const wards=getMSVal('dward');
+  const clts=getMSVal('dclt');
+  const syss=getMSVal('dsys');
+  return allRecs.filter(r=>{
+    if(yrs.length&&!yrs.includes(String(r.fy||'')))return false;
+    if(qs.length&&!qs.map(normQ).includes(normQ(r.quarter||r.q||'')))return false;
+    if(mons.length&&!mons.includes(r.month||getMon(r.date)||''))return false;
+    if(wards.length&&!wards.includes(r.ward))return false;
+    if(clts.length&&!clts.includes(r.clt))return false;
+    if(syss.length&&!syss.includes(getSysName(r.sys)))return false;
+    return true;
+  });
+}
+
+function makeBar(label, pass, total) {
+  const p=(pass/total*100);
+  const col=p>=80?'#16a34a':p>=60?'#d97706':'#dc2626';
+  const bgLight=p>=80?'rgba(22,163,74,.18)':p>=60?'rgba(217,119,6,.18)':'rgba(220,38,38,.18)';
+  const lbl=label.length>22?label.substring(0,21)+'…':label;
+  const pStr=`${p.toFixed(0)}% (${pass}/${total})`;
+  return `<div class="bar-row">
+    <div class="bar-lbl">${lbl}</div>
+    <div class="bar-track" style="background:#dde3ee;">
+      <div class="bar-fill" style="width:${p.toFixed(0)}%;background:${bgLight};"></div>
+      <span class="bar-pct" style="color:${col};font-size:13px;font-weight:800;text-shadow:none;left:0;right:0;text-align:left;padding-left:10px;">${pStr}</span>
+    </div>
+  </div>`;
+}
+
+function groupBy(arr, keyFn) {
+  return arr.reduce((acc,r)=>{const k=keyFn(r);if(!acc[k])acc[k]={t:0,p:0};acc[k].t++;if(r.pass==='pass')acc[k].p++;return acc;},{});
+}
+
+function clearAllData() {
+  if (!currentUser || currentUser.role !== 'admin') {
+    toast('เฉพาะ Admin เท่านั้นที่ลบข้อมูลทั้งหมดได้', 'err');
+    return;
+  }
+  const n = allRecs.length;
+  if (!n) { toast('ไม่มีข้อมูลให้ลบ', 'err'); return; }
+  const c1 = confirm(`⚠️ คุณกำลังจะลบข้อมูลทั้งหมด ${n} รายการ\n\nการกระทำนี้ไม่สามารถย้อนกลับได้!\nกด OK เพื่อยืนยัน`);
+  if (!c1) return;
+  const c2 = confirm(`🔴 ยืนยันอีกครั้ง: ลบข้อมูล ${n} รายการออกจาก Google Sheets ใช่ไหม?`);
+  if (!c2) return;
+  const loadBtn = document.querySelector('button[onclick="loadAndFilter()"]');
+  if (loadBtn) { loadBtn.disabled = true; loadBtn.textContent = '⏳ กำลังลบ...'; }
+  let deleted = 0;
+  const ids = allRecs.map(r => r.id).filter(Boolean);
+  if (!ids.length) { toast('ไม่พบ row ID — ลบไม่ได้', 'err'); return; }
+  // Delete one by one using existing delRec logic but silently
+  function deleteNext(i) {
+    if (i >= ids.length) {
+      allRecs = [];
+      renderRec();
+      if (loadBtn) { loadBtn.disabled = false; loadBtn.textContent = '🔄 โหลดข้อมูล'; }
+      toast(`✅ ลบข้อมูลทั้งหมด ${deleted} รายการเรียบร้อย`, 'ok');
+      return;
+    }
+    const id = ids[i];
+    fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete', id })
+    }).then(() => { deleted++; deleteNext(i + 1); })
+      .catch(() => deleteNext(i + 1));
+  }
+  deleteNext(0);
+}
+
+
+function renderDash() {
+  const data=getDashFilt();
+  const wrap=document.getElementById('dash-wrap');
+  if(!data.length){wrap.innerHTML='<div class="empty">ไม่มีข้อมูลที่ตรงเงื่อนไข<br><small style="color:var(--text-muted);">ลองล้าง filter หรือกด "แสดงผล" อีกครั้ง</small></div>';return;}
+
+  const total=data.length;
+  const passed=data.filter(r=>r.pass==='pass').length;
+  const pct=(passed/total*100).toFixed(1);
+  const meRecs=data.filter(r=>rv(r,'q8','q8_me_found')==='พบ');
+  const meAll=meRecs.length;
+  const meHigh=meRecs.filter(r=>HIGH_SEV.some(h=>(r.meSev||'').includes(h))).length;
+  const meCplus=meRecs.filter(r=>[...MID_SEV,...HIGH_SEV].some(s=>(r.meSev||'').includes(s))).length;
+
+  const wardSt=groupBy(data,r=>r.ward||'ไม่ระบุ');
+  const cltSt=groupBy(data,r=>r.clt||'ไม่ระบุ');
+  const sysSt=groupBy(data,r=>getSysName(r.sys));
+  const stepSt=groupBy(data,r=>STEPN[r.step]||r.step||'-');
+  const monSt=groupBy(data,r=>r.month||getMon(r.date)||'ไม่ระบุ');
+
+  const wardArr=Object.entries(wardSt).sort((a,b)=>{
+    const pa=a[1].p/a[1].t, pb=b[1].p/b[1].t;
+    if(pa<0.8&&pb>=0.8)return -1; if(pa>=0.8&&pb<0.8)return 1;
+    return b[1].t-a[1].t;
+  });
+
+  const sevSt={};
+  meRecs.forEach(r=>{(r.meSev||'').split(',').forEach(s=>{s=s.trim();if(s&&s!=='-'){sevSt[s]=(sevSt[s]||0)+1;}});});
+  const typSt={};
+  meRecs.forEach(r=>{(r.meTyp||'').split('/').forEach(s=>{s=s.trim();if(s&&s!=='-'){typSt[s]=(typSt[s]||0)+1;}});});
+  const kindSt={};
+  meRecs.forEach(r=>{(r.meKind||'').split('/').forEach(s=>{s=s.trim();if(s&&s!=='-'){kindSt[s]=(kindSt[s]||0)+1;}});});
+
+  const monArr=MONTHS_TH.filter(m=>monSt[m]).map(m=>[m,monSt[m]]);
+
+  // Q-stat helper: count values
+  function qCount(recs, getter, posVal) {
+    const counts={};
+    recs.forEach(r=>{const v=getter(r);if(v&&v!=='-'){counts[v]=(counts[v]||0)+1;}});
+    const t=Object.values(counts).reduce((a,b)=>a+b,0);
+    if(!t) return {html:'<span style="color:var(--gray);font-size:12px;">ไม่มีข้อมูล</span>',pos:0,neg:0,t:0};
+    const html=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([v,n])=>{
+      const p=(n/t*100).toFixed(0); const isPos=v===posVal;
+      return `<span class="tag ${isPos?'tag-p':'tag-f'}" style="margin:2px;">${v} <b>${n}</b> (${p}%)</span>`;
+    }).join(' ');
+    return {html, pos:counts[posVal]||0, neg:t-(counts[posVal]||0), t};
+  }
+
+  const hospSt={};
+  data.forEach(r=>{const h=rv(r,'q22');if(h!=='-')h.split(',').forEach(x=>{x=x.trim();if(x){hospSt[x]=(hospSt[x]||0)+1;}});});
+
+  // Per-ward Q detail
+  function wardQDetail(ward) {
+    const wr=data.filter(r=>(r.ward||'ไม่ระบุ')===ward);
+    const wt=wr.length;
+    if(!wt) return '';
+    function qcw(getter,posVal){
+      const counts={};
+      wr.forEach(r=>{const v=getter(r);if(v&&v!=='-'){counts[v]=(counts[v]||0)+1;}});
+      const tot=Object.values(counts).reduce((a,b)=>a+b,0);
+      if(!tot) return '-';
+      return Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([v,n])=>{
+        const p=(n/tot*100).toFixed(0); const isPos=v===posVal;
+        return `<span class="tag ${isPos?'tag-p':'tag-f'}" style="margin:1px;font-size:11px;">${v} ${n}</span>`;
+      }).join(' ');
+    }
+    const rows = [
+      {q:'1', lbl:'ยาโรคเรื้อรัง', get:r=>rv(r,'q1'), pos:'มี'},
+      {q:'2', lbl:'ยาใน/นอก รพ.', get:r=>rv(r,'q2'), pos:'ใน รพ.'},
+      {q:'2.1', lbl:'ใน/นอกจังหวัด', get:r=>rv(r,'q21'), pos:'ในจังหวัด'},
+      {q:'3', lbl:'ลงยาเหลือ', get:r=>rv(r,'q3'), pos:'มี'},
+      {q:'4⭐', lbl:'พบใบ MR 24 ชม.', get:r=>rv(r,'q4','q4_mr_form_24h'), pos:'พบ', core:true},
+      {q:'5⭐', lbl:'คำสั่งยา', get:r=>rv(r,'q5','q5_drug_order'), pos:'มี', core:true},
+      {q:'6⭐', lbl:'ลายเซนต์แพทย์', get:r=>rv(r,'q6','q6_doctor_sign'), pos:'มี', core:true},
+      {q:'7', lbl:'Last dose', get:r=>rv(r,'q7','q7_last_dose'), pos:'พบ'},
+      {q:'8', lbl:'พบ ME', get:r=>rv(r,'q8','q8_me_found'), pos:'ไม่พบ', me:true},
+    ];
+    return `<tr><td colspan="4" style="padding:0;">
+      <table style="width:100%;font-size:11px;border-top:1px dashed var(--border);">
+        <thead><tr style="background:#f0f4ff;">
+          <th style="padding:4px 8px;width:40px;">ข้อ</th>
+          <th style="padding:4px 8px;">หัวข้อ</th>
+          <th style="padding:4px 8px;">ผล</th>
+        </tr></thead>
+        <tbody>
+          ${rows.map(row=>`<tr style="background:${row.core?'#f0f4ff':row.me?'#fffbeb':'white'};">
+            <td style="padding:3px 8px;font-weight:700;color:${row.me?'var(--yellow)':'var(--blue)'};">${row.q}</td>
+            <td style="padding:3px 8px;">${row.lbl}</td>
+            <td style="padding:3px 8px;">${qcw(row.get,row.pos)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </td></tr>`;
+  }
+
+  // Ward pass/fail table rows with expandable detail
+  const wardPassRows=wardArr.filter(([w,s])=>s.p/s.t>=0.8).map(([w,s])=>{
+    const p=(s.p/s.t*100).toFixed(1);
+    const wid='wd_'+w.replace(/[^a-z0-9]/gi,'_');
+    return `<tr style="cursor:pointer;" onclick="document.getElementById('${wid}').style.display=document.getElementById('${wid}').style.display==='none'?'':'none'">
+      <td style="font-size:12px;">${w} <span style="font-size:10px;color:var(--blue);">▼ ดูรายละเอียด</span></td>
+      <td>${s.t}</td><td style="color:var(--green);font-weight:600;">${s.p}</td>
+      <td>${s.t-s.p}</td>
+      <td><span class="tag tag-p">${p}% ✅</span></td>
+    </tr>
+    <tr id="${wid}" style="display:none;">${wardQDetail(w)}</tr>`;
+  }).join('');
+
+  const wardFailRows=wardArr.filter(([w,s])=>s.p/s.t<0.8).map(([w,s])=>{
+    const p=(s.p/s.t*100).toFixed(1);
+    const wid='wd_'+w.replace(/[^a-z0-9]/gi,'_');
+    return `<tr style="background:#fff5f5;cursor:pointer;" onclick="document.getElementById('${wid}').style.display=document.getElementById('${wid}').style.display==='none'?'':'none'">
+      <td style="font-size:12px;font-weight:600;">${w} <span style="font-size:10px;color:var(--red);">▼ ดูรายละเอียด</span></td>
+      <td>${s.t}</td><td style="color:var(--green);font-weight:600;">${s.p}</td>
+      <td style="color:var(--red);font-weight:700;">${s.t-s.p}</td>
+      <td><span class="tag tag-f">${p}% ❌</span></td>
+    </tr>
+    <tr id="${wid}" style="display:none;background:#fff5f5;">${wardQDetail(w)}</tr>`;
+  }).join('');
+
+  // Global Q stats
+  const q1=qCount(data,r=>rv(r,'q1'),'มี');
+  const q2=qCount(data,r=>rv(r,'q2'),'ใน รพ.');
+  const q21=qCount(data,r=>rv(r,'q21'),'ในจังหวัด');
+  const q3=qCount(data,r=>rv(r,'q3'),'มี');
+  const q4=qCount(data,r=>rv(r,'q4','q4_mr_form_24h'),'พบ');
+  const q5=qCount(data,r=>rv(r,'q5','q5_drug_order'),'มี');
+  const q6=qCount(data,r=>rv(r,'q6','q6_doctor_sign'),'มี');
+  const q7=qCount(data,r=>rv(r,'q7','q7_last_dose'),'พบ');
+  const q8=qCount(data,r=>rv(r,'q8','q8_me_found'),'ไม่พบ');
+
+
+  // ========== SAMPLING MONITOR ==========
+  // Count AN per ward per month
+  const wardMonthCount = {};
+  data.forEach(r => {
+    const w = r.ward || 'ไม่ระบุ';
+    const mon = r.month || getMon(r.date) || '?';
+    const key = w + '||' + mon;
+    wardMonthCount[key] = (wardMonthCount[key] || 0) + 1;
+  });
+
+  // Get distinct months in filtered data
+  const distinctMons = [...new Set(data.map(r => r.month || getMon(r.date) || '?'))].filter(Boolean);
+  const distinctWards = [...new Set(data.map(r => r.ward || 'ไม่ระบุ'))];
+
+  // Per ward: get latest month's count and average
+  const samplingStatus = distinctWards.map(w => {
+    const counts = distinctMons.map(m => wardMonthCount[w + '||' + m] || 0);
+    const latestCount = counts[counts.length - 1] || 0;
+    const avgCount = counts.length ? (counts.reduce((a,b)=>a+b,0) / counts.length) : 0;
+    const minCount = Math.min(...counts);
+    return { w, latestCount, avgCount: avgCount.toFixed(1), minCount, counts, months: distinctMons };
+  });
+
+  const dangerWards = samplingStatus.filter(s => s.minCount < 5);
+  const warnWards = samplingStatus.filter(s => s.minCount >= 5 && s.minCount < 10);
+  const okWards = samplingStatus.filter(s => s.minCount >= 10);
+
+  const samplingHtml = `
+  <div class="sec-title" style="background:linear-gradient(90deg,#fff1f2,transparent);padding:6px 12px;border-radius:var(--radius);margin-top:1.5rem;">🎯 การติดตามความครอบคลุมการสุ่ม (เป้า ≥ 10 AN/เดือน/หอ)</div>
+
+  ${dangerWards.length ? `
+  <div class="alert-card alert-danger" style="margin-bottom:8px;">
+    <div class="alert-title">🔴 วิกฤต — ยังไม่ถึง 5 AN/เดือน: ${dangerWards.length} หอ</div>
+    <div style="font-size:12px;color:#9f1239;">ต้องเร่งสุ่มทันที เพิ่มจำนวนตัวอย่างก่อนสิ้นเดือน</div>
+  </div>` : ''}
+  ${warnWards.length ? `
+  <div class="alert-card alert-warning" style="margin-bottom:8px;">
+    <div class="alert-title">🟡 เกือบถึงเป้า — 5–9 AN/เดือน: ${warnWards.length} หอ</div>
+    <div style="font-size:12px;color:#78350f;">ยังต้องสุ่มเพิ่มให้ครบ 10 AN/เดือน</div>
+  </div>` : ''}
+  ${okWards.length === distinctWards.length ? `
+  <div class="alert-card alert-ok" style="margin-bottom:8px;">
+    <div class="alert-title">✅ ทุกหอสุ่มครบ ≥ 10 AN ทุกเดือนแล้ว!</div>
+  </div>` : ''}
+
+  <div class="sampling-grid">
+    ${samplingStatus.sort((a,b)=>a.minCount-b.minCount).map(s=>{
+      const cls = s.minCount < 5 ? 'danger' : s.minCount < 10 ? 'warning' : 'ok';
+      const need = s.minCount < 10 ? 10 - s.latestCount : 0;
+      const icon = s.minCount < 5 ? '🔴' : s.minCount < 10 ? '🟡' : '✅';
+      return `<div class="sample-card ${cls}">
+        <div class="sample-ward">${icon} ${s.w}</div>
+        <div class="sample-n">${s.latestCount}</div>
+        <div style="font-size:10px;color:var(--text-muted);">AN เดือนล่าสุด</div>
+        <div style="font-size:10px;color:var(--text-muted);">เฉลี่ย ${s.avgCount}/เดือน</div>
+        <div class="sample-need">${need > 0 ? `ต้องสุ่มเพิ่ม ${need} AN` : 'ครบแล้ว ✓'}</div>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div class="mini-chart" style="margin-bottom:1.5rem;overflow-x:auto;">
+    <div class="mini-chart-title">จำนวน AN ที่สุ่มแต่ละเดือน แยกรายหอ</div>
+    <table style="min-width:500px;">
+      <thead><tr>
+        <th>หอผู้ป่วย</th>
+        ${distinctMons.map(m=>`<th style="text-align:center;">${m}</th>`).join('')}
+        <th style="text-align:center;">เฉลี่ย</th>
+        <th style="text-align:center;">สถานะ</th>
+      </tr></thead>
+      <tbody>
+        ${samplingStatus.sort((a,b)=>a.minCount-b.minCount).map(s=>{
+          const cls = s.minCount < 5 ? '#fff1f2' : s.minCount < 10 ? '#fffbeb' : 'white';
+          return `<tr style="background:${cls};">
+            <td style="font-size:11px;font-weight:600;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.w}</td>
+            ${s.counts.map(c=>`<td style="text-align:center;font-weight:700;color:${c<5?'#dc2626':c<10?'#d97706':'#059669'};">${c}</td>`).join('')}
+            <td style="text-align:center;font-size:11px;">${s.avgCount}</td>
+            <td style="text-align:center;">
+              <span class="tag ${s.minCount<5?'tag-f':s.minCount<10?'tag-w':'tag-p'}">
+                ${s.minCount<5?'🔴 วิกฤต':s.minCount<10?'🟡 ต้องเพิ่ม':'✅ ครบ'}
+              </span>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>`;
+
+
+
+  // Evaluator stats
+  const evalSt = {};
+  data.forEach(r => {
+    const ev = r.evaluator || 'ไม่ระบุ';
+    if (!evalSt[ev]) evalSt[ev] = { t: 0, p: 0, me: 0 };
+    evalSt[ev].t++;
+    if (r.pass === 'pass') evalSt[ev].p++;
+    if (rv(r,'q8','q8_me_found') === 'พบ') evalSt[ev].me++;
+  });
+
+  const evalHtml = Object.keys(evalSt).length ? `
+  <div class="sec-title" style="margin-top:1.4rem;">👤 สรุปรายผู้ประเมิน</div>
+  <div class="mini-chart" style="margin-bottom:1rem;">
+    <table>
+      <thead><tr>
+        <th>ผู้ประเมิน</th>
+        <th style="text-align:center;">ประเมินทั้งหมด</th>
+        <th style="text-align:center;">ผ่าน</th>
+        <th style="text-align:center;">ไม่ผ่าน</th>
+        <th style="text-align:center;">% ผ่าน</th>
+        <th style="text-align:center;">พบ ME</th>
+      </tr></thead>
+      <tbody>
+        ${Object.entries(evalSt).sort((a,b)=>b[1].t-a[1].t).map(([ev,s])=>{
+          const pct=(s.p/s.t*100).toFixed(0);
+          return `<tr>
+            <td style="font-weight:700;"><span style="display:inline-flex;align-items:center;gap:6px;">
+              <span style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#4338ca);color:white;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;">${ev.charAt(0).toUpperCase()}</span>
+              ${ev}
+            </span></td>
+            <td style="text-align:center;font-weight:700;">${s.t}</td>
+            <td style="text-align:center;color:#065f46;font-weight:700;">${s.p}</td>
+            <td style="text-align:center;color:${s.t-s.p>0?'#991b1b':'#64748b'};font-weight:${s.t-s.p>0?'700':'400'};">${s.t-s.p}</td>
+            <td style="text-align:center;"><span class="tag ${parseInt(pct)>=80?'tag-p':'tag-f'}">${pct}%</span></td>
+            <td style="text-align:center;">${s.me>0?`<span class="tag tag-w">${s.me}</span>`:'<span style="color:var(--gray);">0</span>'}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>` : '';
+
+  wrap.innerHTML=`
+  <!-- KPI CARDS -->
+  <div class="metrics">
+    <div class="met met-b"><div class="met-val">${total}</div><div class="met-lbl">แฟ้มที่ประเมิน</div></div>
+    <div class="met ${parseFloat(pct)>=80?'met-p':'met-f'}"><div class="met-val">${pct}%</div><div class="met-lbl">MR Coverage<br><small>เป้า ≥ 80%</small></div></div>
+    <div class="met met-p"><div class="met-val">${passed}</div><div class="met-lbl">ผ่านเกณฑ์</div></div>
+    <div class="met met-f"><div class="met-val">${total-passed}</div><div class="met-lbl">ไม่ผ่านเกณฑ์</div></div>
+    <div class="met met-w"><div class="met-val">${meAll}</div><div class="met-lbl">พบ ME</div></div>
+    <div class="met ${meHigh>0?'met-f':'met-p'}"><div class="met-val">${meHigh}</div><div class="met-lbl">ME ระดับ E+<br><small>เป้า = 0</small></div></div>
+    <div class="met ${meCplus>0?'met-w':'met-p'}"><div class="met-val">${meCplus}</div><div class="met-lbl">ME ระดับ C+</div></div>
+  </div>
+
+  <!-- ตัวชี้วัดหลัก -->
+  <div class="sec-title">ตัวชี้วัดหลัก</div>
+  <div class="mini-chart" style="margin-bottom:1rem;">
+    <table><thead><tr><th>ตัวชี้วัด</th><th>ผล</th><th>เป้าหมาย</th><th>สถานะ</th></tr></thead>
+    <tbody>
+      <tr><td>% MR Coverage</td><td><b>${pct}%</b></td><td>≥ 80%</td><td><span class="tag ${parseFloat(pct)>=80?'tag-p':'tag-f'}">${parseFloat(pct)>=80?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
+      <tr><td>ME ระดับ E+</td><td><b>${meHigh} ครั้ง</b></td><td>= 0</td><td><span class="tag ${meHigh===0?'tag-p':'tag-f'}">${meHigh===0?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
+      <tr><td>ME ระดับ C+ (%)</td><td><b>${total?(meCplus/total*100).toFixed(2):0}%</b></td><td>&lt; 1.5%</td><td><span class="tag ${total&&(meCplus/total*100)<1.5?'tag-p':'tag-f'}">${total&&(meCplus/total*100)<1.5?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
+    </tbody></table>
+  </div>
+
+  <!-- ==================== SECTION: ข้อ 1 ยาโรคเรื้อรัง ==================== -->
+  <div class="sec-title" style="background:var(--gray-light);padding:6px 10px;border-radius:var(--radius);font-size:13px;">📋 ข้อ 1 — มียาโรคเรื้อรังหรือไม่</div>
+  <div class="chart-grid" style="margin-bottom:1rem;">
+    <div class="mini-chart">
+      <div class="mini-chart-title">ภาพรวมทั้งหมด</div>
+      <div style="margin-bottom:8px;">${q1.html}</div>
+      <div style="font-size:11px;color:var(--text-muted);">มียาโรคเรื้อรัง ${q1.pos} ราย / ไม่มี ${q1.neg} ราย</div>
+    </div>
+    <div class="mini-chart">
+      <div class="mini-chart-title">แยกรายหอผู้ป่วย</div>
+      <table style="font-size:11px;"><thead><tr><th>หอ</th><th>มี</th><th>ไม่มี</th></tr></thead><tbody>
+      ${wardArr.map(([w])=>{
+        const wr=data.filter(r=>(r.ward||'ไม่ระบุ')===w);
+        const yes=wr.filter(r=>rv(r,'q1')==='มี').length;
+        const no=wr.filter(r=>rv(r,'q1')==='ไม่มี').length;
+        return yes+no>0?`<tr><td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${w}</td><td style="color:var(--green);font-weight:600;">${yes}</td><td>${no}</td></tr>`:'';
+      }).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- ==================== SECTION: ข้อ 2 ยาใน/นอก รพ. ==================== -->
+  <div class="sec-title" style="background:var(--gray-light);padding:6px 10px;border-radius:var(--radius);font-size:13px;">💊 ข้อ 2 — ยาโรคเรื้อรังเป็นยาใน รพ.มค / PCU หรือนอก รพ.มค</div>
+  <div class="chart-grid" style="margin-bottom:1rem;">
+    <div class="mini-chart">
+      <div class="mini-chart-title">ภาพรวม</div>
+      <div style="margin-bottom:8px;">${q2.html}</div>
+      ${q21.t?`<div class="mini-chart-title" style="margin-top:10px;">ข้อ 2.1 — ในจังหวัด / นอกจังหวัด</div><div>${q21.html}</div>`:''}
+      ${(()=>{
+        const provSt={};
+        data.forEach(r=>{const h=rv(r,'q24');if(h&&h!=='-')h.split(',').forEach(x=>{x=x.trim();if(x){provSt[x]=(provSt[x]||0)+1;}});});
+        if(!Object.keys(provSt).length) return '';
+        const rows=Object.entries(provSt).sort((a,b)=>b[1]-a[1]);
+        return `<div class="mini-chart-title" style="margin-top:10px;">ข้อ 2.1 นอกจังหวัด — รายจังหวัดที่รับยา</div>
+          <table style="font-size:11px;"><thead><tr><th>จังหวัด</th><th>จำนวน</th><th>%</th></tr></thead><tbody>
+          ${rows.map(([p,n])=>`<tr><td>${p}</td><td><b>${n}</b></td><td>${(n/total*100).toFixed(0)}%</td></tr>`).join('')}
+          </tbody></table>`;
+      })()}
+      ${Object.keys(hospSt).length?`<div class="mini-chart-title" style="margin-top:10px;">ข้อ 2.2 — สถานพยาบาลในจังหวัด</div>
+      <table style="font-size:11px;"><thead><tr><th>สถานพยาบาล</th><th>จำนวน</th><th>%</th></tr></thead><tbody>
+      ${Object.entries(hospSt).sort((a,b)=>b[1]-a[1]).map(([h,n])=>`<tr><td>${h}</td><td>${n}</td><td>${(n/total*100).toFixed(0)}%</td></tr>`).join('')}
+      </tbody></table>`:''}
+    </div>
+    <div class="mini-chart">
+      <div class="mini-chart-title">แยกรายหอผู้ป่วย</div>
+      <table style="font-size:11px;"><thead><tr><th>หอ</th><th>ใน รพ.</th><th>นอก รพ.</th></tr></thead><tbody>
+      ${wardArr.map(([w])=>{
+        const wr=data.filter(r=>(r.ward||'ไม่ระบุ')===w);
+        const inH=wr.filter(r=>rv(r,'q2')==='ใน รพ.').length;
+        const outH=wr.filter(r=>rv(r,'q2')==='นอก รพ.').length;
+        return inH+outH>0?`<tr><td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${w}</td><td style="color:var(--green);">${inH}</td><td style="color:var(--orange);">${outH}</td></tr>`:'';
+      }).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- ==================== SECTION: ข้อ 3 ยาเหลือ ==================== -->
+  <div class="sec-title" style="background:var(--gray-light);padding:6px 10px;border-radius:var(--radius);font-size:13px;">💊 ข้อ 3 — มีการลงจำนวนยาเหลือ</div>
+  <div class="chart-grid" style="margin-bottom:1rem;">
+    <div class="mini-chart">
+      <div class="mini-chart-title">ภาพรวม</div>
+      <div>${q3.html}</div>
+    </div>
+    <div class="mini-chart">
+      <div class="mini-chart-title">แยกรายหอผู้ป่วย</div>
+      <table style="font-size:11px;"><thead><tr><th>หอ</th><th>มี</th><th>ไม่มี</th></tr></thead><tbody>
+      ${wardArr.map(([w])=>{
+        const wr=data.filter(r=>(r.ward||'ไม่ระบุ')===w);
+        const yes=wr.filter(r=>rv(r,'q3')==='มี').length;
+        const no=wr.filter(r=>rv(r,'q3')==='ไม่มี').length;
+        return yes+no>0?`<tr><td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${w}</td><td style="color:var(--green);">${yes}</td><td style="color:var(--red);">${no}</td></tr>`:'';
+      }).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- ==================== SECTION: ข้อ 4 5 6 เกณฑ์หลัก MR Coverage ==================== -->
+  <div class="sec-title" style="background:var(--blue-light);padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--blue);">⭐ ข้อ 4, 5, 6 — เกณฑ์หลัก MR Coverage</div>
+  <div class="mini-chart" style="margin-bottom:1rem;">
+    <div style="overflow-x:auto;">
+    <table><thead><tr>
+      <th>หอผู้ป่วย</th><th>ทั้งหมด</th><th>ผ่าน</th><th>ไม่ผ่าน</th><th>% Cover</th>
+      <th>4 พบใบ MR</th><th>ไม่พบ</th>
+      <th>5 คำสั่งยา</th><th>ไม่มี</th>
+      <th>6 ลายเซนต์</th><th>ไม่มี</th>
+    </tr></thead>
+    <tbody>
+    ${wardArr.map(([w,s])=>{
+      const wr=data.filter(r=>(r.ward||'ไม่ระบุ')===w);
+      const q4y=wr.filter(r=>rv(r,'q4','q4_mr_form_24h')==='พบ').length;
+      const q5y=wr.filter(r=>rv(r,'q5','q5_drug_order')==='มี').length;
+      const q6y=wr.filter(r=>rv(r,'q6','q6_doctor_sign')==='มี').length;
+      const pp=(s.p/s.t*100).toFixed(0);
+      const fail=s.p/s.t<0.8;
+      return `<tr style="background:${fail?'#fff5f5':'white'};">
+        <td style="font-size:11px;font-weight:${fail?'700':'400'};max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${w}</td>
+        <td>${s.t}</td>
+        <td style="color:var(--green);font-weight:600;">${s.p}</td>
+        <td style="color:var(--red);font-weight:${fail?'700':'400'}">${s.t-s.p}</td>
+        <td><span class="tag ${fail?'tag-f':'tag-p'}" style="font-size:11px;">${pp}%</span></td>
+        <td style="color:var(--green);">${q4y}</td><td style="color:${q4y<wr.length?'var(--red)':'var(--gray)'};">${wr.length-q4y}</td>
+        <td style="color:var(--green);">${q5y}</td><td style="color:${q5y<wr.length?'var(--red)':'var(--gray)'};">${wr.length-q5y}</td>
+        <td style="color:var(--green);">${q6y}</td><td style="color:${q6y<wr.length?'var(--red)':'var(--gray)'};">${wr.length-q6y}</td>
+      </tr>`;
+    }).join('')}
+    <tr style="background:var(--blue-light);font-weight:700;">
+      <td>รวม</td><td>${total}</td>
+      <td style="color:var(--green);">${passed}</td>
+      <td style="color:var(--red);">${total-passed}</td>
+      <td><span class="tag ${parseFloat(pct)>=80?'tag-p':'tag-f'}" style="font-size:11px;">${pct}%</span></td>
+      <td style="color:var(--green);">${q4.pos}</td><td style="color:var(--red);">${q4.neg}</td>
+      <td style="color:var(--green);">${q5.pos}</td><td style="color:var(--red);">${q5.neg}</td>
+      <td style="color:var(--green);">${q6.pos}</td><td style="color:var(--red);">${q6.neg}</td>
+    </tr>
+    </tbody></table>
+    </div>
+  </div>
+
+  <!-- ==================== SECTION: ข้อ 7 Last dose ==================== -->
+  <div class="sec-title" style="background:var(--gray-light);padding:6px 10px;border-radius:var(--radius);font-size:13px;">⏰ ข้อ 7 — พบการลงเวลารับประทานยาครั้งสุดท้าย (Last dose)</div>
+  <div class="chart-grid" style="margin-bottom:1rem;">
+    <div class="mini-chart">
+      <div class="mini-chart-title">ภาพรวม</div>
+      <div>${q7.html}</div>
+    </div>
+    <div class="mini-chart">
+      <div class="mini-chart-title">แยกรายหอผู้ป่วย</div>
+      <table style="font-size:11px;"><thead><tr><th>หอ</th><th>พบ</th><th>ไม่พบ</th></tr></thead><tbody>
+      ${wardArr.map(([w])=>{
+        const wr=data.filter(r=>(r.ward||'ไม่ระบุ')===w);
+        const yes=wr.filter(r=>rv(r,'q7','q7_last_dose')==='พบ').length;
+        const no=wr.filter(r=>rv(r,'q7','q7_last_dose')==='ไม่พบ').length;
+        return yes+no>0?`<tr><td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${w}</td><td style="color:var(--green);">${yes}</td><td style="color:var(--red);">${no}</td></tr>`:'';
+      }).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- ==================== SECTION: ข้อ 8 ME ==================== -->
+  <div class="sec-title" style="background:var(--yellow-light);padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--yellow);">⚠️ ข้อ 8 — Medication Error (ME)</div>
+  <div class="chart-grid" style="margin-bottom:1rem;">
+    <div class="mini-chart">
+      <div class="mini-chart-title">ภาพรวม ME</div>
+      <div style="margin-bottom:8px;">${q8.html}</div>
+      ${Object.keys(sevSt).length?`<div class="mini-chart-title" style="margin-top:10px;">Severity</div>
+      <table style="font-size:11px;"><thead><tr><th>Sev</th><th>จำนวน</th><th>ระดับ</th></tr></thead><tbody>
+      ${Object.entries(sevSt).sort((a,b)=>a[0].localeCompare(b[0])).map(([s,n])=>{
+        const hi=HIGH_SEV.includes(s),mid=MID_SEV.includes(s);
+        return`<tr><td><span class="tag ${hi?'tag-f':mid?'tag-w':'tag-i'}" style="font-weight:700;">${s}</span></td><td>${n}</td><td style="font-size:11px;">${hi?'🔴 สูง':mid?'🟡 ปานกลาง':'🟢 ต่ำ'}</td></tr>`;
+      }).join('')}</tbody></table>`:'<div style="font-size:12px;color:var(--gray);">ไม่พบ ME</div>'}
+      ${Object.keys(kindSt).length?`<div class="mini-chart-title" style="margin-top:10px;">ชนิดความคลาดเคลื่อน</div>
+      <table style="font-size:11px;"><thead><tr><th>ชนิด</th><th>จำนวน</th></tr></thead><tbody>
+      ${Object.entries(kindSt).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<tr><td>${k}</td><td>${n}</td></tr>`).join('')}</tbody></table>`:''}
+    </div>
+    <div class="mini-chart">
+      <div class="mini-chart-title">ME แยกรายหอผู้ป่วย</div>
+      <table style="font-size:11px;"><thead><tr><th>หอ</th><th>พบ ME</th><th>ไม่พบ</th><th>% ME</th></tr></thead><tbody>
+      ${wardArr.map(([w])=>{
+        const wr=data.filter(r=>(r.ward||'ไม่ระบุ')===w);
+        const me=wr.filter(r=>rv(r,'q8','q8_me_found')==='พบ').length;
+        const no=wr.length-me;
+        const mePct=(me/wr.length*100).toFixed(0);
+        return `<tr ${me>0?'style="background:#fffbeb;"':''}>
+          <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${w}</td>
+          <td style="color:${me>0?'var(--orange)':'var(--gray)'};font-weight:${me>0?'700':'400'};">${me}</td>
+          <td style="color:var(--green);">${no}</td>
+          <td>${me>0?`<span class="tag tag-w">${mePct}%</span>`:'<span style="color:var(--gray);">0%</span>'}</td>
+        </tr>`;
+      }).join('')}
+      </tbody></table>
+      ${meRecs.length?`<div class="mini-chart-title" style="margin-top:10px;">รายการ ME (AN ที่พบ)</div>
+      <table style="font-size:11px;"><thead><tr><th>AN</th><th>หอ</th><th>Sev</th><th>รายละเอียด</th></tr></thead><tbody>
+      ${meRecs.map(r=>`<tr>
+        <td><b>${r.an}</b></td>
+        <td style="font-size:10px;">${r.ward||'-'}</td>
+        <td>${r.meSev&&r.meSev!=='-'?`<span class="tag ${HIGH_SEV.some(h=>r.meSev.includes(h))?'tag-f':MID_SEV.some(m=>r.meSev.includes(m))?'tag-w':'tag-i'}" style="font-size:10px;">${r.meSev}</span>`:'-'}</td>
+        <td style="font-size:10px;">${r.meDetail&&r.meDetail!=='-'?r.meDetail:r.meKind||'-'}</td>
+      </tr>`).join('')}
+      </tbody></table>`:''}
+    </div>
+  </div>
+
+  <!-- ==================== SECTION: สรุปรายหอผู้ป่วย (เปิด/ปิดรายละเอียด) ==================== -->
+  <div class="sec-title" style="background:var(--blue-light);padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--blue);">🏥 สรุป MR Coverage รายหอผู้ป่วย (คลิกหอเพื่อดูรายละเอียดทุกข้อ)</div>
+  ${wardFailRows?`<div style="margin-bottom:6px;padding:6px 10px;background:var(--red-light);border-radius:var(--radius);font-size:12px;font-weight:700;color:var(--red);">
+    ❌ ยังไม่ผ่าน 80% จำนวน ${wardArr.filter(([w,s])=>s.p/s.t<0.8).length} หอ
+  </div>`:'<div style="margin-bottom:6px;padding:6px 10px;background:var(--green-light);border-radius:var(--radius);font-size:12px;font-weight:700;color:var(--green);">✅ ทุกหอผ่านเกณฑ์ 80% แล้ว</div>'}
+  <div class="mini-chart" style="margin-bottom:1rem;">
+    <table style="width:100%;">
+      <thead><tr><th>หอผู้ป่วย</th><th>ทั้งหมด</th><th>ผ่าน</th><th>ไม่ผ่าน</th><th>% Coverage</th></tr></thead>
+      <tbody>${wardFailRows||''}${wardPassRows||''}</tbody>
+    </table>
+  </div>
+
+  <!-- BAR CHART -->
+  <div class="sec-title">% MR Coverage รายหอผู้ป่วย</div>
+  <div class="bar-wrap">${wardArr.map(([w,s])=>makeBar(w,s.p,s.t)).join('')}</div>
+
+  <!-- CLT + SYSTEM -->
+  <div class="chart-grid">
+    <div class="mini-chart">
+      <div class="mini-chart-title">ผลรายกลุ่มงาน CLT</div>
+      <table><thead><tr><th>CLT</th><th>ทั้งหมด</th><th>ผ่าน</th><th>%</th><th>สถานะ</th></tr></thead>
+      <tbody>${Object.entries(cltSt).map(([c,s])=>{const p=(s.p/s.t*100).toFixed(1);return`<tr><td>${c}</td><td>${s.t}</td><td>${s.p}</td><td>${p}%</td><td><span class="tag ${parseFloat(p)>=80?'tag-p':'tag-f'}">${parseFloat(p)>=80?'✅':'❌'}</span></td></tr>`;}).join('')}</tbody></table>
+    </div>
+    <div class="mini-chart">
+      <div class="mini-chart-title">รายระบบ</div>
+      <table><thead><tr><th>ระบบ</th><th>ทั้งหมด</th><th>ผ่าน</th><th>%</th></tr></thead>
+      <tbody>${Object.entries(sysSt).map(([c,s])=>{const p=(s.p/s.t*100).toFixed(1);return`<tr><td>${c}</td><td>${s.t}</td><td>${s.p}</td><td><span class="tag ${parseFloat(p)>=80?'tag-p':'tag-f'}">${p}%</span></td></tr>`;}).join('')}</tbody></table>
+      <div class="mini-chart-title" style="margin-top:12px;">รายขั้นตอน</div>
+      <table><thead><tr><th>ขั้นตอน</th><th>ทั้งหมด</th><th>ผ่าน</th><th>%</th></tr></thead>
+      <tbody>${Object.entries(stepSt).map(([c,s])=>{const p=(s.p/s.t*100).toFixed(1);return`<tr><td>${c}</td><td>${s.t}</td><td>${s.p}</td><td><span class="tag ${parseFloat(p)>=80?'tag-p':'tag-f'}">${p}%</span></td></tr>`;}).join('')}</tbody></table>
+    </div>
+  </div>
+
+  ${monArr.length?`
+  <div class="sec-title">รายเดือน</div>
+  <div class="bar-wrap">${monArr.map(([m,s])=>makeBar(m,s.p,s.t)).join('')}</div>`:''}
+  ${evalHtml}
+  ${samplingHtml}
+  `;
+}
+function showTab(t, btn) {
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+t).classList.add('active');
+  btn.classList.add('active');
+  // auto-load when switching to records or dashboard
+  if (t==='records' && !allRecs.length) loadAndFilter();
+  if (t==='dash' && !allRecs.length) loadAndDash();
+}
+
+// ===== INIT =====
+document.getElementById('f-date').value=new Date().toISOString().substring(0,10);
+initUI();
+buildQ();
+checkConn();
+</script>
+</body>
+</html>
