@@ -60,7 +60,7 @@ body{font-family:'Sarabun',sans-serif;font-size:14px;background:#f0f4ff;color:va
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
 label{font-size:11px;font-weight:800;color:#334155;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;}
-input[type=text],input[type=date],select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border-md);border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;color:var(--text);background:var(--white);outline:none;transition:all .2s;}
+input[type=text],input[type=date],input[type=time],input[type=number],select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border-md);border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;color:var(--text);background:var(--white);outline:none;transition:all .2s;}
 input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12);}
 input[readonly]{background:var(--gray-light);color:var(--text-muted);}
 
@@ -350,6 +350,55 @@ tr:hover td{background:#eff6ff;}
       </div>
     </div>
 
+    <div class="card" id="research-card">
+      <div class="card-title">ข้อมูลเพิ่มเติมสำหรับงานวิจัย (ไม่บังคับ)</div>
+      <div class="g3">
+        <div>
+          <label>ช่วงศึกษา</label>
+          <select id="f-studyperiod">
+            <option value="">--</option>
+            <option value="Baseline">Baseline</option>
+            <option value="Post">Post</option>
+          </select>
+        </div>
+        <div><label>วันที่ระบบเริ่มใช้จริง (วอร์ด)</label><input type="date" id="f-golive"/></div>
+        <div><label>จำนวนรายการยาก่อนรับ</label><input type="number" id="f-drugcount" min="0" placeholder="เช่น 5"/></div>
+      </div>
+      <div class="g3">
+        <div><label>จำนวนแหล่งข้อมูลที่ใช้ทำ BPMH</label><input type="number" id="f-bpmhsource" min="0" placeholder="เช่น 2"/></div>
+        <div>
+          <label>มีใบ Refer ประกอบหรือไม่</label>
+          <select id="f-referdoc">
+            <option value="">--</option>
+            <option value="ใช่">ใช่</option>
+            <option value="ไม่ใช่">ไม่ใช่</option>
+          </select>
+        </div>
+        <div>
+          <label>Discrepancy ถึงตัวผู้ป่วยหรือไม่</label>
+          <select id="f-discreach">
+            <option value="">--</option>
+            <option value="ไม่มี discrepancy">ไม่มี discrepancy</option>
+            <option value="ใช่ (ถึงผู้ป่วยแล้ว)">ใช่ (ถึงผู้ป่วยแล้ว)</option>
+            <option value="ไม่ใช่ (แก้ไขก่อนถึงผู้ป่วย)">ไม่ใช่ (แก้ไขก่อนถึงผู้ป่วย)</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label>ประเภท Discrepancy (เลือกได้มากกว่า 1)</label>
+        <div class="chip-row" id="disc-type-wrap"></div>
+      </div>
+      <div class="g3">
+        <div><label>เวลาเริ่มทำ MR</label><input type="time" id="f-mrstart"/></div>
+        <div><label>เวลาสิ้นสุดทำ MR</label><input type="time" id="f-mrend"/></div>
+        <div><label>อายุผู้ป่วย (ปี)</label><input type="number" id="f-age" min="0" max="120" placeholder="เช่น 65"/></div>
+      </div>
+      <div class="g3">
+        <div><label>จำนวนโรคร่วม</label><input type="number" id="f-comorbid" min="0" placeholder="เช่น 3"/></div>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:-6px;">💡 ช่องเหล่านี้ไม่บังคับกรอก แต่ถ้าเป็นเคสในช่วงเก็บข้อมูลวิจัย ควรกรอกให้ครบเพื่อใช้วิเคราะห์ DiD และคำนวณต้นทุนภายหลัง</div>
+    </div>
+
     <div class="card">
       <div class="card-title">หัวข้อประเมิน 8 ข้อ</div>
       <div id="q-wrap"></div>
@@ -525,7 +574,6 @@ const WARDS = [
   {n:"อายุรกรรมชาย 2",s:"1",c:"อายุรกรรม"},
   {n:"อายุรกรรมหญิง 1",s:"1",c:"อายุรกรรม"},
   {n:"อายุรกรรมหญิง 2",s:"1",c:"อายุรกรรม"},
-  {n:"เฉพาะโรค",s:"1",c:"อายุรกรรม"},
   {n:"ICUอายุรกรรม 1",s:"1",c:"อายุรกรรม"},
   {n:"ICUอายุรกรรม 2",s:"1",c:"อายุรกรรม"},
   {n:"ICUอายุรกรรม 3",s:"1",c:"อายุรกรรม"},
@@ -585,6 +633,7 @@ const HIGH_SEV = ["E","F","G","H","I"];
 const MID_SEV = ["C","D"];
 const ME_TYPE = ["PE (Potential Error)","DE (Dispensing Error)","AE (Administration Error)"];
 const ME_KIND = ["Omission (ไม่ได้รับยา)","Wrong drug (ผิดชนิด)","Wrong dose (ผิดขนาด)","Wrong frequency (ความถี่ผิด)","Wrong route (ทางผิด)","Wrong time (เวลาผิด)","Commission (สั่งซ้ำ)","Other"];
+const DISC_TYPE = ["Omission","Commission","Dose","Frequency","Route","Duplication","Duration","ไม่มี discrepancy"];
 const SYSN = {"1":"SCAN","2":"Hybrid","3":"Paperless","4":"ผสมผสาน"};
 const STEPN = {"1":"แรกรับ","2":"ย้ายตึก","3":"Post-op","4":"กลับบ้าน"};
 const MONTHS_TH = ["ต.ค.","พ.ย.","ธ.ค.","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย."];
@@ -614,7 +663,7 @@ const MK_HOSP = [
 // ===== 77 จังหวัด =====
 const PROVINCES = ["กระบี่", "กรุงเทพมหานคร", "กาญจนบุรี", "กาฬสินธุ์", "กำแพงเพชร", "ขอนแก่น", "จันทบุรี", "ฉะเชิงเทรา", "ชลบุรี", "ชัยนาท", "ชัยภูมิ", "ชุมพร", "เชียงราย", "เชียงใหม่", "ตรัง", "ตราด", "ตาก", "นครนายก", "นครปฐม", "นครพนม", "นครราชสีมา", "นครศรีธรรมราช", "นครสวรรค์", "นนทบุรี", "นราธิวาส", "น่าน", "บึงกาฬ", "บุรีรัมย์", "ปทุมธานี", "ประจวบคีรีขันธ์", "ปราจีนบุรี", "ปัตตานี", "พระนครศรีอยุธยา", "พะเยา", "พังงา", "พัทลุง", "พิจิตร", "พิษณุโลก", "เพชรบุรี", "เพชรบูรณ์", "แพร่", "ภูเก็ต", "มหาสารคาม", "มุกดาหาร", "แม่ฮ่องสอน", "ยโสธร", "ยะลา", "ร้อยเอ็ด", "ระนอง", "ระยอง", "ราชบุรี", "ลพบุรี", "ลำปาง", "ลำพูน", "เลย", "ศรีสะเกษ", "สกลนคร", "สงขลา", "สตูล", "สมุทรปราการ", "สมุทรสงคราม", "สมุทรสาคร", "สระแก้ว", "สระบุรี", "สิงห์บุรี", "สุโขทัย", "สุพรรณบุรี", "สุราษฎร์ธานี", "สุรินทร์", "หนองคาย", "หนองบัวลำภู", "อ่างทอง", "อำนาจเจริญ", "อุดรธานี", "อุตรดิตถ์", "อุทัยธานี", "อุบลราชธานี"];
 
-let ans = {}, meSevArr = [], meTypArr = [], meKindArr = [], hospArr = [], allRecs = [];
+let ans = {}, meSevArr = [], meTypArr = [], meKindArr = [], hospArr = [], discTypeArr = [], allRecs = [];
 let editId = null;
 
 // ===== TOAST =====
@@ -774,7 +823,16 @@ function initUI() {
   createMS('ms-dclt', allCLTs, 'ทั้งหมด', 'dclt');
   createMS('ms-dsys', allSys, 'ทั้งหมด', 'dsys');
 
+  renderDiscTypeChips();
   loadSavedEvals();
+}
+
+function renderDiscTypeChips() {
+  const wrap = document.getElementById('disc-type-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = DISC_TYPE.map(t =>
+    `<button type="button" class="chip${discTypeArr.includes(t)?' sel':''}" onclick="toggleChip(discTypeArr,'${t.replace(/'/g,"\\'")}',this)">${t}</button>`
+  ).join('');
 }
 
 function onWardChange() {
@@ -1064,7 +1122,21 @@ async function saveRec() {
     meTyp: meTypArr.length?meTypArr.join(' / '):'-',
     meKind: meKindArr.length?meKindArr.join(' / '):'-',
     meDetail: document.getElementById('me-detail')?.value||'-',
-    pass: getStatus(), fy: getFY(date), quarter: getQ(date), month: getMon(date)
+    pass: getStatus(), fy: getFY(date), quarter: getQ(date), month: getMon(date),
+    // ===== ฟิลด์วิจัยเพิ่มเติม (ไม่บังคับ) =====
+    studyPeriod: document.getElementById('f-studyperiod').value || '-',
+    goLiveDate: document.getElementById('f-golive').value || '-',
+    drugCountPreAdmit: document.getElementById('f-drugcount').value || '-',
+    bpmhSourceCount: document.getElementById('f-bpmhsource').value || '-',
+    hasReferDoc: document.getElementById('f-referdoc').value || '-',
+    mrCompleteFull: getStatus()==='pass' ? 'ใช่' : 'ไม่ใช่',
+    discrepancyType: discTypeArr.length ? discTypeArr.join(' / ') : '-',
+    discrepancyReachedPatient: document.getElementById('f-discreach').value || '-',
+    mrStartTime: document.getElementById('f-mrstart').value || '-',
+    mrEndTime: document.getElementById('f-mrend').value || '-',
+    wardType: clt || '-',
+    patientAge: document.getElementById('f-age').value || '-',
+    comorbidityCount: document.getElementById('f-comorbid').value || '-'
   };
 
   try {
@@ -1080,6 +1152,11 @@ function clearAll() {
   document.getElementById('f-date').value=new Date().toISOString().substring(0,10);
   ['f-ward','f-sys','f-step'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-clt').value='';
+  // ล้างฟิลด์วิจัย
+  ['f-studyperiod','f-golive','f-drugcount','f-bpmhsource','f-referdoc','f-mrstart','f-mrend','f-age','f-comorbid','f-discreach'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  discTypeArr=[]; renderDiscTypeChips();
   ans={}; meSevArr=[]; meTypArr=[]; meKindArr=[]; hospArr=[];
   buildQ();  // full rebuild so button states reset cleanly
   document.getElementById('res-pass').style.display='none';
@@ -1256,6 +1333,22 @@ function viewRec(id) {
       <div style="margin-bottom:4px;"><b>ชนิด:</b> ${r.meKind||'-'}</div>
       <div><b>รายละเอียด:</b> ${r.meDetail||'-'}</div>
     </div>`:''}
+    ${(r.studyPeriod&&r.studyPeriod!=='-')||(r.discrepancyType&&r.discrepancyType!=='-')||(r.drugCountPreAdmit&&r.drugCountPreAdmit!=='-')?`
+    <div style="margin-top:12px;padding:12px 16px;border-radius:8px;background:var(--indigo-light);border:1px solid #c7d2fe;">
+      <div style="font-size:12px;font-weight:700;color:var(--indigo);margin-bottom:8px;">🔬 ข้อมูลวิจัยเพิ่มเติม</div>
+      <div style="font-size:12px;line-height:1.9;">
+        ช่วงศึกษา: <b>${r.studyPeriod&&r.studyPeriod!=='-'?r.studyPeriod:'-'}</b> ·
+        วันที่ระบบเริ่มใช้จริง: <b>${r.goLiveDate&&r.goLiveDate!=='-'?isoToThai(r.goLiveDate):'-'}</b><br>
+        จำนวนรายการยาก่อนรับ: <b>${r.drugCountPreAdmit||'-'}</b> ·
+        จำนวนแหล่งข้อมูล BPMH: <b>${r.bpmhSourceCount||'-'}</b> ·
+        มีใบ Refer: <b>${r.hasReferDoc||'-'}</b><br>
+        MR สมบูรณ์ครบองค์ประกอบ: <b>${r.mrCompleteFull||'-'}</b><br>
+        ประเภท Discrepancy: <b>${r.discrepancyType||'-'}</b> ·
+        ถึงผู้ป่วยหรือไม่: <b>${r.discrepancyReachedPatient||'-'}</b><br>
+        เวลาทำ MR: <b>${r.mrStartTime||'-'} – ${r.mrEndTime||'-'}</b><br>
+        อายุผู้ป่วย: <b>${r.patientAge||'-'}</b> ปี · จำนวนโรคร่วม: <b>${r.comorbidityCount||'-'}</b>
+      </div>
+    </div>`:''}
     <div style="margin-top:12px;padding:12px 16px;border-radius:8px;background:${r.pass==='pass'?'var(--green-light)':'var(--red-light)'};border:1px solid ${r.pass==='pass'?'#84e1bc':'#f8b4b4'};">
       <b>ผลการประเมิน: ${r.pass==='pass'?'✅ ผ่านเกณฑ์ (MR Coverage)':'❌ ไม่ผ่านเกณฑ์'}</b>
     </div>
@@ -1372,7 +1465,44 @@ function openEdit(id) {
       <div><label>ME ประเภท</label><input type="text" id="e-metyp" value="${r.meTyp&&r.meTyp!=='-'?r.meTyp:''}"/></div>
       <div><label>ME ชนิด</label><input type="text" id="e-mekind" value="${r.meKind&&r.meKind!=='-'?r.meKind:''}"/></div>
     </div>
-    <div><label>ME รายละเอียด</label><textarea id="e-medetail" rows="2">${r.meDetail&&r.meDetail!=='-'?r.meDetail:''}</textarea></div>`;
+    <div><label>ME รายละเอียด</label><textarea id="e-medetail" rows="2">${r.meDetail&&r.meDetail!=='-'?r.meDetail:''}</textarea></div>
+    <hr style="margin:12px 0;border-color:var(--border);">
+    <div style="font-size:11px;font-weight:700;color:var(--indigo);margin-bottom:8px;text-transform:uppercase;">🔬 ข้อมูลวิจัยเพิ่มเติม (ไม่บังคับ)</div>
+    <div class="g3">
+      <div><label>ช่วงศึกษา</label>
+        <select id="e-studyperiod">
+          <option value="-" ${!(r.studyPeriod&&r.studyPeriod!=='-')?'selected':''}>-</option>
+          <option value="Baseline" ${r.studyPeriod==='Baseline'?'selected':''}>Baseline</option>
+          <option value="Post" ${r.studyPeriod==='Post'?'selected':''}>Post</option>
+        </select></div>
+      <div><label>วันที่ระบบเริ่มใช้จริง</label><input type="date" id="e-golive" value="${r.goLiveDate&&r.goLiveDate!=='-'?r.goLiveDate:''}"/></div>
+      <div><label>จำนวนรายการยาก่อนรับ</label><input type="number" id="e-drugcount" value="${r.drugCountPreAdmit&&r.drugCountPreAdmit!=='-'?r.drugCountPreAdmit:''}"/></div>
+    </div>
+    <div class="g3">
+      <div><label>จำนวนแหล่งข้อมูล BPMH</label><input type="number" id="e-bpmhsource" value="${r.bpmhSourceCount&&r.bpmhSourceCount!=='-'?r.bpmhSourceCount:''}"/></div>
+      <div><label>มีใบ Refer</label>
+        <select id="e-referdoc">
+          <option value="-" ${!(r.hasReferDoc&&r.hasReferDoc!=='-')?'selected':''}>-</option>
+          <option value="ใช่" ${r.hasReferDoc==='ใช่'?'selected':''}>ใช่</option>
+          <option value="ไม่ใช่" ${r.hasReferDoc==='ไม่ใช่'?'selected':''}>ไม่ใช่</option>
+        </select></div>
+      <div><label>Discrepancy ถึงผู้ป่วย</label>
+        <select id="e-discreach">
+          <option value="-" ${!(r.discrepancyReachedPatient&&r.discrepancyReachedPatient!=='-')?'selected':''}>-</option>
+          <option value="ไม่มี discrepancy" ${r.discrepancyReachedPatient==='ไม่มี discrepancy'?'selected':''}>ไม่มี discrepancy</option>
+          <option value="ใช่ (ถึงผู้ป่วยแล้ว)" ${r.discrepancyReachedPatient==='ใช่ (ถึงผู้ป่วยแล้ว)'?'selected':''}>ใช่ (ถึงผู้ป่วยแล้ว)</option>
+          <option value="ไม่ใช่ (แก้ไขก่อนถึงผู้ป่วย)" ${r.discrepancyReachedPatient==='ไม่ใช่ (แก้ไขก่อนถึงผู้ป่วย)'?'selected':''}>ไม่ใช่ (แก้ไขก่อนถึงผู้ป่วย)</option>
+        </select></div>
+    </div>
+    <div><label>ประเภท Discrepancy (คั่นด้วย /)</label><input type="text" id="e-disctype" value="${r.discrepancyType&&r.discrepancyType!=='-'?r.discrepancyType:''}" placeholder="เช่น Omission / Dose"/></div>
+    <div class="g3" style="margin-top:14px;">
+      <div><label>เวลาเริ่มทำ MR</label><input type="time" id="e-mrstart" value="${r.mrStartTime&&r.mrStartTime!=='-'?r.mrStartTime:''}"/></div>
+      <div><label>เวลาสิ้นสุดทำ MR</label><input type="time" id="e-mrend" value="${r.mrEndTime&&r.mrEndTime!=='-'?r.mrEndTime:''}"/></div>
+      <div><label>อายุผู้ป่วย</label><input type="number" id="e-age" value="${r.patientAge&&r.patientAge!=='-'?r.patientAge:''}"/></div>
+    </div>
+    <div class="g3">
+      <div><label>จำนวนโรคร่วม</label><input type="number" id="e-comorbid" value="${r.comorbidityCount&&r.comorbidityCount!=='-'?r.comorbidityCount:''}"/></div>
+    </div>`;
   document.getElementById('edit-modal').classList.add('open');
 }
 
@@ -1406,7 +1536,21 @@ async function saveEdit() {
     meTyp:document.getElementById('e-metyp').value||'-',
     meKind:document.getElementById('e-mekind').value||'-',
     meDetail:document.getElementById('e-medetail').value||'-',
-    pass, fy:getFY(date), quarter:getQ(date), month:getMon(date)
+    pass, fy:getFY(date), quarter:getQ(date), month:getMon(date),
+    // ===== ฟิลด์วิจัยเพิ่มเติม =====
+    studyPeriod:document.getElementById('e-studyperiod').value||'-',
+    goLiveDate:document.getElementById('e-golive').value||'-',
+    drugCountPreAdmit:document.getElementById('e-drugcount').value||'-',
+    bpmhSourceCount:document.getElementById('e-bpmhsource').value||'-',
+    hasReferDoc:document.getElementById('e-referdoc').value||'-',
+    mrCompleteFull: pass==='pass' ? 'ใช่' : 'ไม่ใช่',
+    discrepancyType:document.getElementById('e-disctype').value||'-',
+    discrepancyReachedPatient:document.getElementById('e-discreach').value||'-',
+    mrStartTime:document.getElementById('e-mrstart').value||'-',
+    mrEndTime:document.getElementById('e-mrend').value||'-',
+    wardType:document.getElementById('e-clt').value||'-',
+    patientAge:document.getElementById('e-age').value||'-',
+    comorbidityCount:document.getElementById('e-comorbid').value||'-'
   };
   try {
     const res=await gasCall({action:'update', record:JSON.stringify(upd)});
@@ -1442,14 +1586,20 @@ function recToRow(r) {
     rv(r,'q4','q4_mr_form_24h'), rv(r,'q5','q5_drug_order'), rv(r,'q6','q6_doctor_sign'),
     rv(r,'q7','q7_last_dose'), rv(r,'q8','q8_me_found'),
     r.meSev||'-', r.meTyp||'-', r.meKind||'-', r.meDetail||'-',
-    r.pass==='pass'?'ผ่าน':'ไม่ผ่าน', r.evaluator||'-', r.note||'-'
+    r.pass==='pass'?'ผ่าน':'ไม่ผ่าน', r.evaluator||'-', r.note||'-',
+    r.studyPeriod||'-', r.goLiveDate||'-', r.drugCountPreAdmit||'-', r.bpmhSourceCount||'-',
+    r.hasReferDoc||'-', r.mrCompleteFull||'-', r.discrepancyType||'-', r.discrepancyReachedPatient||'-',
+    r.mrStartTime||'-', r.mrEndTime||'-', r.patientAge||'-', r.comorbidityCount||'-'
   ];
 }
 
 const HDR = ['AN','วันที่','หอผู้ป่วย','CLT','ระบบ','ขั้นตอน','ไตรมาส','ปีงบ','เดือน',
   'ยาโรคเรื้อรัง','ยาใน/นอกรพ.','ใน/นอกจังหวัด','อำเภอ','แหล่งยาในจังหวัด','แหล่งยานอกจังหวัด',
   'ยาเหลือ','พบใบMR','คำสั่งยา','ลายเซนต์','Last dose','พบME',
-  'ME Severity','ME Type','ME ชนิด','ME Detail','ผล','ผู้ประเมิน','หมายเหตุ'];
+  'ME Severity','ME Type','ME ชนิด','ME Detail','ผล','ผู้ประเมิน','หมายเหตุ',
+  'ช่วงศึกษา','วันที่ระบบเริ่มใช้จริง','จำนวนรายการยาก่อนรับ','จำนวนแหล่งข้อมูลBPMH',
+  'มีใบRefer','MRสมบูรณ์ครบองค์ประกอบ','ประเภทDiscrepancy','Discrepancyถึงผู้ป่วย',
+  'เวลาเริ่มMR','เวลาสิ้นสุดMR','อายุผู้ป่วย','จำนวนโรคร่วม'];
 
 function doExportCSV() {
   const data=getFilt();
