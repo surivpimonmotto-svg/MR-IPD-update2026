@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบประเมิน MR — รพ.มหาสารคาม v6.4</title>
+<title>ระบบประเมิน MR — รพ.มหาสารคาม v6.5</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@400;600;700&display=swap');
 :root{
@@ -402,6 +402,16 @@ details[open] .mo-caret{transform:rotate(180deg);}
 
 .ind-sync{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;background:#f1f5f9;color:#475569;white-space:nowrap;}
 .ind-sync.ok{background:#ecfdf5;color:#065f46;}.ind-sync.err{background:#fff1f2;color:#991b1b;}.ind-sync.saving{background:#fffbeb;color:#92400e;}
+/* ===== v6.5: ANNUAL SUMMARY TAB ===== */
+.hist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;margin-bottom:1rem;}
+.hist-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;box-shadow:var(--shadow);}
+.hist-card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px;}
+.hist-card-t{font-size:12.5px;font-weight:800;color:#0f172a;line-height:1.35;}
+.hist-card-s{font-size:10.5px;color:var(--text-muted);font-weight:600;}
+.png-btn{background:none;border:1px solid var(--border);border-radius:6px;font-size:11px;padding:2px 7px;cursor:pointer;color:#475569;font-family:'Sarabun',sans-serif;white-space:nowrap;}
+.png-btn:hover{border-color:var(--blue);color:var(--blue);}
+.ind-table tr.ref-row td{background:#f8fafc;color:#64748b;font-size:11px;font-style:italic;}
+.hist-intro{font-size:12px;color:#475569;line-height:1.7;background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px;}
 </style>
 </head>
 <body>
@@ -411,7 +421,7 @@ details[open] .mo-caret{transform:rotate(180deg);}
   <div class="login-box">
     <div class="login-logo">💊</div>
     <div class="login-title">ระบบประเมิน MR</div>
-    <div class="login-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v6.4</div>
+    <div class="login-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v6.5</div>
     <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:11px;color:#1d4ed8;margin-bottom:20px;text-align:left;"><b>💊 เฉพาะเภสัชกร รพ.มหาสารคาม</b><br>ชื่อผู้ใช้: ชื่อของคุณ (ภาษาอังกฤษ)<br>รหัสผ่าน: <b>รหัสส่วนตัวของคุณ</b></div>
     <div class="login-field">
       <label>ชื่อผู้ใช้</label>
@@ -442,7 +452,7 @@ details[open] .mo-caret{transform:rotate(180deg);}
     <div class="topbar-icon">💊</div>
     <div>
       <div class="topbar-title">ระบบประเมิน Medication Reconciliation</div>
-      <div class="topbar-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v6.4</div>
+      <div class="topbar-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v6.5</div>
     </div>
   </div>
   <div class="sync-status" onclick="checkConn()" title="คลิกตรวจสอบการเชื่อมต่อ">
@@ -456,6 +466,7 @@ details[open] .mo-caret{transform:rotate(180deg);}
     <button class="tab active" onclick="showTab('form',this)">📝 กรอกข้อมูล</button>
     <button class="tab" onclick="showTab('records',this)">📋 ข้อมูลที่บันทึก</button>
     <button class="tab" onclick="showTab('dash',this)">📊 Dashboard</button>
+    <button class="tab" onclick="showTab('hist',this)">📈 สรุปรายปี</button>
   </div>
 
   <!-- ===== FORM ===== -->
@@ -641,6 +652,9 @@ details[open] .mo-caret{transform:rotate(180deg);}
       <div id="dash-wrap"><div class="empty">เลือกเงื่อนไขแล้วกด "แสดงผล"</div></div>
     </div>
   </div>
+
+  <!-- ===== ANNUAL SUMMARY ===== -->
+  <div id="sec-hist" class="sec"><div id="hist-wrap"></div></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -746,7 +760,9 @@ const ME_SEV = ["A","B","C","D","E","F","G","H","I"];
 const HIGH_SEV = ["E","F","G","H","I"];
 const MID_SEV = ["C","D"];
 const ME_TYPE = ["PE (Potential Error)","DE (Dispensing Error)","AE (Administration Error)"];
-const ME_KIND = ["Omission (ไม่ได้รับยา)","Wrong drug (ผิดชนิด)","Wrong dose (ผิดขนาด)","Wrong frequency (ความถี่ผิด)","Wrong route (ทางผิด)","Wrong time (เวลาผิด)","Commission (สั่งซ้ำ)","Other"];
+const ME_KIND = ["ไม่สั่งยาเดิม","ผิด dose","ผิดชนิด","หมดข้อบ่งใช้","ซ้ำซ้อน","ผิดความแรง","ไม่ชัดเจน","ผิดรูปแบบ","ผิด interval","สั่งยาที่มีข้อห้าม","อื่นๆ"];
+const KIND_MAP = {"Omission (ไม่ได้รับยา)":"ไม่สั่งยาเดิม","Wrong drug (ผิดชนิด)":"ผิดชนิด","Wrong dose (ผิดขนาด)":"ผิด dose","Wrong frequency (ความถี่ผิด)":"ผิด interval","Commission (สั่งซ้ำ)":"ซ้ำซ้อน","Wrong route (ทางผิด)":"อื่นๆ (ผิดทางให้ยา)","Wrong time (เวลาผิด)":"อื่นๆ (ผิดเวลา)","Other":"อื่นๆ"};
+function normKind(v) { if (!v || v === '-') return v; return String(v).split('/').map(x => x.trim()).filter(Boolean).map(x => KIND_MAP[x] || x).join(' / '); }
 const SYSN = {"1":"SCAN","2":"Hybrid","3":"Paperless","4":"ผสมผสาน"};
 const STEPN = {"1":"แรกรับ","2":"ย้ายตึก","3":"Post-op","4":"กลับบ้าน"};
 const MONTHS_TH = ["ต.ค.","พ.ย.","ธ.ค.","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย."];
@@ -1013,7 +1029,7 @@ function setRecs(arr) {
   lastLoadAt = Date.now();
   allRecs = (arr || []).map(r => {
     const w = WARDS.find(x => x.n === r.ward);
-    return {...r, evaluator: normEval(r.evaluator), clt: r.clt || (w ? w.c : '')};
+    return {...r, evaluator: normEval(r.evaluator), clt: r.clt || (w ? w.c : ''), meKind: normKind(r.meKind)};
   });
 }
 
@@ -2304,14 +2320,15 @@ async function loadInd() {
   document.querySelectorAll('.man-in').forEach(i => { if (document.activeElement !== i) i.value = manRaw(i.dataset.f, i.dataset.k); });
   updIndStatus();
   if (window._ind) recalcInd();
+  const hs = document.getElementById('sec-hist'); if (hs && hs.classList.contains('active')) renderHist();
 }
 // ค่าที่เคยกรอกไว้ในเครื่องนี้ (ก่อนเชื่อม Sheets) และยังไม่มีบน Sheets → อัปโหลดให้อัตโนมัติ
 async function pushLocalInd() {
   let keys = [];
   try { for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i)); } catch (e) { return; }
-  const todo = keys.map(key => ({key, pk: parseManKey(key), v: lsGet(key)})).filter(x => x.pk && x.v && !Object.prototype.hasOwnProperty.call(indStore, x.key));
+  const todo = keys.map(key => ({key, pk: parseManKey(key), v: lsGet(key)})).filter(x => (x.pk || /^hist_/.test(x.key)) && x.v && !Object.prototype.hasOwnProperty.call(indStore, x.key));
   for (const x of todo) {
-    try { const r = await sendInd(x.pk.f, x.pk.k, x.v); if (r.ok) indStore[x.key] = x.v; } catch (e) {}
+    try { const r = x.pk ? await sendInd(x.pk.f, x.pk.k, x.v) : await gasCall({action: 'setInd', key: x.key, value: x.v, period: 'ข้อมูลย้อนหลัง', label: x.key}); if (r.ok) indStore[x.key] = x.v; } catch (e) {}
   }
   if (todo.length) toast(`อัปโหลดค่าตัวชี้วัดที่เคยกรอกในเครื่องนี้ขึ้น Sheets แล้ว ${todo.length} ช่อง`, 'ok');
 }
@@ -2503,6 +2520,197 @@ function tableCSV(id, name) {
   a.href = URL.createObjectURL(new Blob(['﻿' + rows.join('\n')], {type: 'text/csv;charset=utf-8;'}));
   a.download = name + '_' + new Date().toISOString().substring(0, 10) + '.csv';
   a.click();
+}
+
+
+// ===== ANNUAL SUMMARY (v6.5) — ข้อมูลรายปี กรอก/แก้ไขได้ เก็บในชีต MR_Indicators =====
+const HIST_KPI = [
+  {id: 'comp', l: 'ร้อยละการปฏิบัติตามแนวทาง MR', u: '%', t: {op: '>=', val: 80, txt: '> 80%'}},
+  {id: 'e', l: 'อุบัติการณ์ PE (MR) ระดับ E ขึ้นไป', u: 'ครั้ง', t: {op: '<=', val: 0, txt: '0'}},
+  {id: 'rpe', l: 'อัตรา PE ที่เกิดจาก MR', u: 'ครั้ง/1,000 วันนอน', t: {op: '<=', val: 0.5, txt: '≤ 0.5'}},
+  {id: 'share', l: 'ร้อยละ PE ที่เกิดจาก MR', u: '%', t: {op: '<=', val: 20, txt: '≤ 20%'}},
+  {id: 'rc', l: 'อัตรา PE ระดับ C ขึ้นไปที่เกิดจาก MR', u: 'ครั้ง/1,000 วันนอน', t: {op: '<=', val: 0.05, txt: '≤ 0.05'}},
+  {id: 'cpct', l: 'ร้อยละ PE ระดับ C ขึ้นไปที่เกิดจาก MR', u: '%', t: {op: '<=', val: 5, txt: '≤ 5%'}},
+];
+const HIST_KINDS = ["ไม่สั่งยาเดิม","ผิด dose","ผิดชนิด","หมดข้อบ่งใช้","ซ้ำซ้อน","ผิดความแรง","ไม่ชัดเจน","ผิดรูปแบบ","ผิด interval","สั่งยาที่มีข้อห้าม"];
+const HIST_CLTS = ["อายุรกรรม","ศัลยกรรม","กระดูกและข้อ","ตา","เด็ก","สูติกรรม","ENT","ลีลาวดี"];
+const HIST_COLORS = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100'];   // validated categorical order (fixed)
+// ค่าเริ่มต้นจากสไลด์สรุปผล MR แผนกเภสัชกรรมผู้ป่วยใน (แก้ไขได้ในตาราง)
+const HIST_DEFAULT = (() => {
+  const d = {};
+  const put = (m, arr, y0) => arr.forEach((v, i) => { if (v !== null) d[`hist_${m}_${y0 + i}`] = String(v); });
+  put('comp',  [83.85, 75.87, 77.22, 77.75, 80.30], 2564);
+  put('e',     [0, 0, 2, 0, 3], 2564);
+  put('rpe',   [0.96, 0.54, 0.68, 0.51, 0.91, 0.78], 2564);
+  put('share', [31.79, 26.12, 19.80, 17.86, 11.33], 2564);
+  put('rc',    [0.04, 0.02, 0.02, 0.04, 0.05], 2564);
+  put('cpct',  [4.6, 4.5, 3.64, 8.0, 5.92, 2.0], 2564);
+  const kinds = {"ไม่สั่งยาเดิม": [48, 90, 90], "ผิด dose": [37, 31, 29], "ผิดชนิด": [3, 7, 3], "หมดข้อบ่งใช้": [6, 4, 5], "ซ้ำซ้อน": [2, 6, 8],
+    "ผิดความแรง": [1, 4, 0], "ไม่ชัดเจน": [1, 3, 3], "ผิดรูปแบบ": [0, 2, 0], "ผิด interval": [4, 1, 4], "สั่งยาที่มีข้อห้าม": [0, 2, 2]};
+  Object.entries(kinds).forEach(([k, a]) => put('kind_' + HIST_KINDS.indexOf(k), a, 2567));
+  const clts = {"อายุรกรรม": [73, 109, 74], "ศัลยกรรม": [14, 29, 43], "กระดูกและข้อ": [9, 5, 23], "ตา": [2, 2, 4], "เด็ก": [2, 1, 2], "สูติกรรม": [2, 0, 0], "ENT": [2, 4, 2], "ลีลาวดี": [0, 0, 1]};
+  Object.entries(clts).forEach(([k, a]) => put('clt_' + HIST_CLTS.indexOf(k), a, 2567));
+  return d;
+})();
+const histTimers = {};
+
+function histYears() {
+  const now = new Date(), fy = now.getFullYear() + 543 + (now.getMonth() >= 9 ? 1 : 0);
+  const ys = []; for (let y = 2564; y <= Math.max(2570, fy); y++) ys.push(y); return ys;
+}
+function histRaw(key) {
+  let v;
+  if (indStore && Object.prototype.hasOwnProperty.call(indStore, key)) v = indStore[key];
+  else { const l = lsGet(key); v = (l !== null && l !== undefined) ? l : (HIST_DEFAULT[key] || ''); }
+  return v === 'NaN' ? '' : v;
+}
+function histVal(key) { const v = parseFloat(histRaw(key)); return isNaN(v) ? null : v; }
+function setHist(i) {
+  const key = i.dataset.key, val = i.value.trim();
+  const store = val === '' ? (HIST_DEFAULT[key] !== undefined ? 'NaN' : '') : val;   // 'NaN' = ล้างค่าเริ่มต้นออก
+  lsSet(key, store);
+  if (indStore) {
+    if (store === '') delete indStore[key]; else indStore[key] = store;
+    indSync = 'saving'; updHistSync();
+    clearTimeout(histTimers[key]);
+    histTimers[key] = setTimeout(async () => {
+      try { const r = await gasCall({action: 'setInd', key, value: store, period: 'ปีงบ ' + key.split('_').pop(), label: i.dataset.label || key, by: (document.getElementById('f-eval') || {}).value || ''}); indSync = r.ok ? 'ok' : 'err'; }
+      catch (e) { indSync = 'err'; }
+      updHistSync();
+    }, 900);
+  }
+  renderHistCharts();
+}
+function updHistSync() {
+  const el = document.getElementById('hist-sync'); if (!el) return;
+  const txt = {local: '💾 เก็บในเครื่องนี้ (ยังไม่เชื่อม Sheets)', ready: '☁️ ใช้ร่วมกันทุกเครื่องผ่าน Google Sheets', saving: '⏳ กำลังบันทึกลง Sheets...', ok: '☁️ บันทึกลง Google Sheets แล้ว', err: '⚠️ บันทึกขึ้น Sheets ไม่สำเร็จ'}[indSync];
+  el.textContent = txt; el.className = 'ind-sync ' + ({ok: 'ok', ready: 'ok', err: 'err', saving: 'saving'}[indSync] || '');
+}
+
+function renderHist() {
+  const wrap = document.getElementById('hist-wrap'); if (!wrap) return;
+  const ys = histYears();
+  const head = (first) => `<tr><th>${first}</th><th>เป้าหมาย</th>${ys.map(y => `<th>ปี ${y}</th>`).join('')}</tr>`;
+  const headN = (first) => `<tr><th>${first}</th>${ys.map(y => `<th>ปี ${y}</th>`).join('')}</tr>`;
+  const inp = (key, label) => `<td><input class="man-in" type="number" min="0" step="any" placeholder="–" data-key="${key}" data-label="${label}" value="${histRaw(key)}" oninput="setHist(this)"/></td>`;
+  // อ้างอิงจากระบบประเมิน: ร้อยละผ่านเกณฑ์รายปีงบ
+  const sysComp = {}; allRecs.forEach(r => { const fy = String(r.fy || getFY(r.date) || ''); if (!fy) return; sysComp[fy] = sysComp[fy] || {n: 0, p: 0}; sysComp[fy].n++; if (r.pass === 'pass') sysComp[fy].p++; });
+  const kpiRows = HIST_KPI.map(m => `<tr class="man-row"><td class="ind-l">${m.l} <small>(${m.u})</small></td><td class="tgt">${m.t.txt}</td>${ys.map(y => inp(`hist_${m.id}_${y}`, m.l)).join('')}</tr>`
+    + (m.id === 'comp' ? `<tr class="ref-row"><td class="ind-l" style="font-weight:500;">↳ อ้างอิง: คำนวณจากระบบประเมินนี้</td><td class="tgt">–</td>${ys.map(y => { const c = sysComp[String(y)]; return `<td>${c ? (c.p / c.n * 100).toFixed(2) + '% <small>(' + c.p + '/' + c.n + ')</small>' : '–'}</td>`; }).join('')}</tr>` : '')).join('');
+  const countRows = (list, pre) => list.map((k, i) => `<tr class="man-row"><td class="ind-l">${k}</td>${ys.map(y => inp(`hist_${pre}_${i}_${y}`, k)).join('')}</tr>`).join('')
+    + `<tr><td class="ind-l" style="font-weight:800;background:#eef2ff;">รวม</td>${ys.map(y => `<td class="hist-sum" data-pre="${pre}" data-y="${y}" style="background:#eef2ff;font-weight:800;">–</td>`).join('')}</tr>`;
+  const tools = (id, name) => `<div class="tbl-tools"><button class="mini-btn" onclick="copyTable('${id}')">📋 คัดลอกตาราง</button><button class="mini-btn" onclick="tableCSV('${id}','${name}')">📥 CSV</button></div>`;
+
+  wrap.innerHTML = `
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between;flex-wrap:wrap;"><span>สรุปผลการดำเนินงาน Medication Reconciliation รายปี</span><span id="hist-sync" class="ind-sync"></span></div>
+    <div class="hist-intro">✏️ ช่องสีเหลืองกรอกและแก้ไขได้ทุกช่อง · ใส่ค่าเริ่มต้นจากสไลด์สรุปผลปี 2564–2569 ไว้ให้แล้ว · ค่าที่แก้บันทึกลงชีต MR_Indicators ใช้ร่วมกันทุกเครื่อง · กราฟอัปเดตทันที กด 🖼 PNG เพื่อดาวน์โหลดรูปไปใส่สไลด์</div>
+
+    <div class="sec-title" style="margin-top:.5rem;">🎯 แนวโน้มตัวชี้วัดรายปี</div>
+    <div class="hist-grid" id="hist-kpi-charts"></div>
+    <div class="ind-sub"><span>ตารางตัวชี้วัด MR รายปี</span>${tools('hist-kpi', 'MR_KPI_Annual')}</div>
+    <div class="tbl-wrap"><table class="ind-table" id="hist-kpi"><thead>${head('ตัวชี้วัด')}</thead><tbody>${kpiRows}</tbody></table></div>
+
+    <div class="sec-title">💊 ความคลาดเคลื่อนทางยาจาก MR แยกตามชนิด</div>
+    <div class="hist-card" id="hist-kind-chart" style="margin-bottom:10px;"></div>
+    <div class="ind-sub"><span>จำนวน ME จาก MR แยกตามชนิด (ครั้ง)</span>${tools('hist-kind', 'MR_ME_Kind_Annual')}</div>
+    <div class="tbl-wrap"><table class="ind-table" id="hist-kind"><thead>${headN('ชนิดความคลาดเคลื่อน')}</thead><tbody>${countRows(HIST_KINDS, 'kind')}</tbody></table></div>
+
+    <div class="sec-title">🏥 ความคลาดเคลื่อนทางยาจาก MR แยกตาม CLT</div>
+    <div class="hist-card" id="hist-clt-chart" style="margin-bottom:10px;"></div>
+    <div class="ind-sub"><span>จำนวน ME จาก MR แยกตาม CLT (ครั้ง)</span>${tools('hist-clt', 'MR_ME_CLT_Annual')}</div>
+    <div class="tbl-wrap"><table class="ind-table" id="hist-clt"><thead>${headN('CLT')}</thead><tbody>${countRows(HIST_CLTS, 'clt')}</tbody></table></div>
+
+    <div class="ind-note">ค่าว่าง = ยังไม่มีข้อมูล (กราฟจะข้ามปีนั้น) · ลบค่าในช่องได้ ระบบจะจำว่าลบแล้ว · ปีที่แสดงในกราฟชนิด/CLT = 3 ปีล่าสุดที่มีข้อมูล</div>
+  </div>`;
+  updHistSync();
+  renderHistCharts();
+}
+
+function lineChartSVG(id, pts, m) {
+  // pts: [{y, v}] in year order (v may be null)
+  const vals = pts.filter(p => p.v !== null);
+  const W = 360, H = 190, L = 40, R = 16, T = 18, B = 30, pw = W - L - R, ph = H - T - B, base = T + ph;
+  const rawTop = Math.max(m.t.val, ...vals.map(p => p.v)) * 1.12 || 1;
+  const top = m.u === 'ครั้ง' ? Math.max(4, Math.ceil(rawTop / 4) * 4) : niceMax(rawTop);
+  const X = i => L + (pts.length > 1 ? i * pw / (pts.length - 1) : pw / 2), Y = v => base - v / top * ph;
+  const ticks = [0, .25, .5, .75, 1].map(f => f * top);
+  const fmt = v => (top <= 1 ? v.toFixed(2) : Number.isInteger(v) ? String(v) : v.toFixed(1));
+  let path = '', prev = -2;
+  pts.forEach((p, i) => { if (p.v === null) return; path += (i === prev + 1 ? 'L' : 'M') + X(i).toFixed(1) + ',' + Y(p.v).toFixed(1); prev = i; });
+  const last = vals[vals.length - 1];
+  const meet = v => m.t.op === '>=' ? v >= m.t.val : v <= m.t.val;
+  return `<svg id="${id}" class="ic-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="Sarabun, Tahoma, sans-serif">
+    <rect width="${W}" height="${H}" fill="#ffffff"/>
+    ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#eef2f7"/><text x="${L - 6}" y="${Y(v) + 3.5}" text-anchor="end" font-size="10" fill="#94a3b8">${fmt(v)}</text>`).join('')}
+    <line x1="${L}" x2="${W - R}" y1="${Y(m.t.val)}" y2="${Y(m.t.val)}" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5 4" opacity=".8"/>
+    <text x="${W - R}" y="${Y(m.t.val) - 5}" text-anchor="end" font-size="10.5" font-weight="700" fill="#b91c1c">เป้า ${m.t.txt}</text>
+    ${path ? `<path d="${path}" fill="none" stroke="#2a78d6" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
+    ${pts.map((p, i) => p.v === null ? '' : `<circle cx="${X(i)}" cy="${Y(p.v)}" r="${p === last ? 5 : 3.5}" fill="${p === last ? (meet(p.v) ? '#059669' : '#dc2626') : '#ffffff'}" stroke="${p === last ? '#ffffff' : '#2a78d6'}" stroke-width="2"><title>ปี ${p.y}: ${p.v} ${m.u} — ${meet(p.v) ? 'ผ่านเป้า' : 'ไม่ผ่านเป้า'}</title></circle>`).join('')}
+    ${last ? `<text x="${X(pts.indexOf(last))}" y="${Y(last.v) - 9}" text-anchor="middle" font-size="11.5" font-weight="800" fill="#0f172a">${last.v}</text>` : ''}
+    ${pts.map((p, i) => `<text x="${X(i)}" y="${H - 10}" text-anchor="middle" font-size="10.5" fill="#475569" font-weight="600">${p.y}</text>`).join('')}
+  </svg>`;
+}
+
+function groupedBarSVG(id, cats, series) {
+  // series: [{name, color, vals:[]}]
+  const n = cats.length, k = series.length;
+  const W = Math.max(640, n * 92 + 60), H = 300, L = 40, R = 12, T = 22, B = 46, pw = W - L - R, ph = H - T - B, base = T + ph;
+  const mx = niceMax(Math.max(1, ...series.flatMap(s => s.vals)));
+  const Y = v => base - v / mx * ph, slot = pw / n, gap = 2;
+  const bw = Math.min(26, (slot * 0.8 - gap * (k - 1)) / k), gw = bw * k + gap * (k - 1);
+  const ticks = [0, .25, .5, .75, 1].map(f => f * mx);
+  const bars = cats.map((c, ci) => series.map((s, si) => {
+    const v = s.vals[ci]; if (!v) return '';
+    const x = L + slot * ci + (slot - gw) / 2 + si * (bw + gap), y = Y(v);
+    return `<path d="${barTop(x, y, bw, base, 4)}" fill="${s.color}"><title>${c} · ${s.name}: ${v}</title></path><text x="${x + bw / 2}" y="${y - 4}" text-anchor="middle" font-size="10" font-weight="700" fill="#0f172a">${v}</text>`;
+  }).join('')).join('');
+  const labels = cats.map((c, ci) => `<text x="${L + slot * ci + slot / 2}" y="${base + 18}" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">${c}</text>`).join('');
+  const legend = series.map((s, si) => `<g transform="translate(${L + si * 90},${H - 12})"><rect width="11" height="11" rx="3" fill="${s.color}" y="-9"/><text x="16" font-size="11.5" fill="#334155" font-weight="700">${s.name}</text></g>`).join('');
+  return `<svg id="${id}" class="ic-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="Sarabun, Tahoma, sans-serif">
+    <rect width="${W}" height="${H}" fill="#ffffff"/>
+    ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#eef2f7"/><text x="${L - 6}" y="${Y(v) + 3.5}" text-anchor="end" font-size="10" fill="#94a3b8">${Number.isInteger(v) ? v : v.toFixed(1)}</text>`).join('')}
+    ${bars}<line x1="${L}" x2="${W - R}" y1="${base}" y2="${base}" stroke="#cbd5e1"/>${labels}${legend}
+  </svg>`;
+}
+
+function renderHistCharts() {
+  const ys = histYears();
+  const kc = document.getElementById('hist-kpi-charts');
+  if (kc) kc.innerHTML = HIST_KPI.map(m => {
+    const pts = ys.map(y => ({y, v: histVal(`hist_${m.id}_${y}`)}));
+    const has = pts.some(p => p.v !== null);
+    return `<div class="hist-card"><div class="hist-card-h"><div><div class="hist-card-t">${m.l}</div><div class="hist-card-s">${m.u} · เป้า ${m.t.txt}</div></div>${has ? `<button class="png-btn" onclick="downloadSVG('hk_${m.id}','${m.l}')">🖼 PNG</button>` : ''}</div>
+      ${has ? lineChartSVG('hk_' + m.id, pts, m) : '<div class="sc-empty" style="padding:30px 0;text-align:center;">ยังไม่มีข้อมูล — กรอกในตารางด้านล่าง</div>'}</div>`;
+  }).join('');
+  const bar = (boxId, svgId, title, list, pre) => {
+    const box = document.getElementById(boxId); if (!box) return;
+    const yrs = ys.filter(y => list.some((_, i) => (histVal(`hist_${pre}_${i}_${y}`) || 0) > 0)).slice(-3);
+    if (!yrs.length) { box.innerHTML = '<div class="sc-empty" style="padding:30px 0;text-align:center;">ยังไม่มีข้อมูล</div>'; return; }
+    const series = yrs.map((y, si) => ({name: String(y), color: HIST_COLORS[si], vals: list.map((_, i) => histVal(`hist_${pre}_${i}_${y}`) || 0)}));
+    box.innerHTML = `<div class="hist-card-h"><div class="hist-card-t">${title}</div><button class="png-btn" onclick="downloadSVG('${svgId}','${title}')">🖼 PNG</button></div>` + groupedBarSVG(svgId, list, series);
+  };
+  bar('hist-kind-chart', 'hb_kind', 'Medication error จากระบบ MR แยกตามชนิด', HIST_KINDS, 'kind');
+  bar('hist-clt-chart', 'hb_clt', 'Medication error จากระบบ MR แยกตาม CLT', HIST_CLTS, 'clt');
+  document.querySelectorAll('.hist-sum').forEach(td => {
+    const list = td.dataset.pre === 'kind' ? HIST_KINDS : HIST_CLTS;
+    let sum = 0, any = false;
+    list.forEach((_, i) => { const v = histVal(`hist_${td.dataset.pre}_${i}_${td.dataset.y}`); if (v !== null) { sum += v; any = true; } });
+    td.textContent = any ? sum : '–';
+  });
+}
+
+function downloadSVG(id, name) {
+  const svg = document.getElementById(id); if (!svg) return;
+  const vb = svg.viewBox.baseVal, scale = 3;
+  const xml = new XMLSerializer().serializeToString(svg);
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement('canvas'); c.width = vb.width * scale; c.height = vb.height * scale;
+    const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
+    const a = document.createElement('a'); a.href = c.toDataURL('image/png'); a.download = (name || id).replace(/[\\/:*?"<>|]/g, '') + '.png'; a.click();
+  };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
 }
 
 // ===== DASHBOARD =====
@@ -3162,6 +3370,7 @@ function showTab(t, btn) {
   // auto-load when switching to records or dashboard
   if (t==='records' && !allRecs.length) loadAndFilter();
   if (t==='dash' && !allRecs.length) loadAndDash();
+  if (t==='hist') renderHist();
 }
 
 // ===== INIT =====
