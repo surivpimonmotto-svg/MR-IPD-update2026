@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบประเมิน MR — รพ.มหาสารคาม v6</title>
+<title>ระบบประเมิน MR — รพ.มหาสารคาม v6.4</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@400;600;700&display=swap');
 :root{
@@ -314,6 +314,94 @@ tr:hover td{background:#eff6ff;}
   .wrow>.ctr{text-align:left;justify-content:flex-start;}
 }
 
+/* ===== v6.1: SUMMARY INDICATOR TABLES ===== */
+.ind-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.tbl-tools{display:flex;gap:6px;flex-wrap:wrap;}
+.seg{display:inline-flex;background:#eef2f7;border-radius:10px;padding:3px;gap:2px;}
+.seg button{border:none;background:transparent;padding:6px 14px;border-radius:8px;font-family:'Sarabun',sans-serif;font-size:12px;font-weight:700;color:#475569;cursor:pointer;}
+.seg button.on{background:white;color:var(--blue);box-shadow:var(--shadow);}
+.seg-sm button{padding:3px 10px;font-size:11px;}
+.mini-btn{background:white;border:1.5px solid var(--border-md);border-radius:8px;padding:6px 12px;font-family:'Sarabun',sans-serif;font-size:12px;font-weight:700;color:#334155;cursor:pointer;transition:all .15s;}
+.mini-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light);}
+.ind-table th{background:#4472c4!important;color:white!important;text-align:center;border-bottom:none;}
+.ind-table th:first-child{text-align:left;}
+.ind-table td{text-align:center;white-space:nowrap;font-size:12px;}
+.ind-table td.ind-l{text-align:left;white-space:normal;min-width:250px;font-weight:600;}
+.ind-table tr.ind-g td{background:#dbe5f5!important;color:#1e3a8a!important;font-weight:800;text-align:left;}
+.ind-table td small{color:#64748b;font-size:10.5px;font-weight:500;}
+.ind-table td.tgt{font-weight:700;color:#334155;background:#f8fafc;}
+.ind-table td.tot{border-left:2px solid #94a3b8;}
+.ind-table tr:hover td{filter:brightness(.97);}
+.ind-note{font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.75;}
+.ind-sub{font-size:12px;font-weight:800;color:#1e3a8a;margin:16px 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+
+/* ===== v6.2: WARD PROGRESS ON FORM ===== */
+.wp{margin:0 0 14px;border:1.5px solid color-mix(in srgb,var(--wc) 35%,white);background:linear-gradient(135deg,color-mix(in srgb,var(--wc) 7%,white),white);border-radius:14px;padding:12px 16px;animation:fadeIn .25s ease;}
+.wp-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.wp-top>div:first-child{flex:1;min-width:180px;}
+.wp-title{font-size:14px;font-weight:800;color:#0f172a;}
+.wp-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.wp-big{white-space:nowrap;}
+.wp-big b{font-size:30px;font-weight:800;color:var(--wc);line-height:1;}
+.wp-big span{font-size:15px;font-weight:700;color:var(--text-muted);}
+.wp-need{font-size:13px;font-weight:700;color:var(--wc);background:white;border:1.5px solid color-mix(in srgb,var(--wc) 40%,white);padding:6px 14px;border-radius:20px;white-space:nowrap;}
+.wp-need b{font-size:17px;}
+.wp-bar{height:10px;background:#e8edf4;border-radius:6px;margin:10px 0 8px;overflow:hidden;}
+.wp-bar div{height:100%;background:var(--wc);border-radius:6px;transition:width .5s;}
+.wp-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-size:12px;margin-top:5px;}
+.wp-lbl{font-weight:700;color:#475569;min-width:88px;}
+.wp-chip{background:white;border:1px solid var(--border-md);border-radius:12px;padding:2px 9px;font-weight:600;color:#334155;}
+.wp-chip b{color:var(--blue);margin-left:3px;}
+.wp-an{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:1px 7px;font-size:11px;color:#334155;}
+.wp-time{font-size:10px;color:var(--text-light);margin-top:6px;text-align:right;}
+.an-warn{font-size:11.5px;color:#92400e;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:6px 10px;margin-top:6px;line-height:1.6;}
+details.mo-card>summary{list-style:none;cursor:pointer;margin-bottom:0;flex-wrap:wrap;}
+details.mo-card>summary::-webkit-details-marker{display:none;}
+details.mo-card[open]>summary{margin-bottom:12px;}
+.mo-badge{font-size:11px;font-weight:700;text-transform:none;letter-spacing:0;color:#475569;background:#f1f5f9;padding:3px 10px;border-radius:12px;}
+.mo-caret{margin-left:auto;color:var(--text-muted);transition:transform .2s;}
+details[open] .mo-caret{transform:rotate(180deg);}
+.mo-grp{margin-bottom:10px;}
+.mo-clt{font-size:11.5px;font-weight:800;margin-bottom:5px;}
+.mo-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.mo-chip{display:inline-flex;align-items:center;gap:8px;border:1.5px solid;border-radius:10px;padding:5px 10px;font-family:'Sarabun',sans-serif;font-size:12px;cursor:pointer;background:white;transition:all .15s;}
+.mo-chip b{font-size:12px;}
+.mo-chip.bad{border-color:#fca5a5;background:#fff1f2;color:#991b1b;}
+.mo-chip.warn{border-color:#fcd34d;background:#fffbeb;color:#92400e;}
+.mo-chip.ok{border-color:#6ee7b7;background:#ecfdf5;color:#065f46;}
+.mo-chip.cur{box-shadow:0 0 0 3px rgba(37,99,235,.4);}
+.mo-chip:hover{transform:translateY(-1px);}
+.mo-legend{font-size:11px;color:var(--text-muted);margin-top:4px;}
+
+/* ===== v6.3: SCORECARD + MANUAL INPUT ===== */
+.sc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:12px;}
+.sc{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px 10px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:all .2s;}
+.sc:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);}
+.sc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--sc);}
+.sc-t{font-size:13px;font-weight:800;color:#0f172a;line-height:1.35;}
+.sc-s{font-size:10.5px;color:var(--text-muted);margin-top:1px;}
+.sc-v{display:flex;align-items:baseline;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.sc-v b{font-size:30px;font-weight:800;color:#0f172a;letter-spacing:-.5px;line-height:1;}
+.sc-v span{font-size:11px;color:var(--text-muted);font-weight:700;background:#f1f5f9;padding:1px 8px;border-radius:10px;}
+.sc-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:2px 9px;border-radius:12px;}
+.sc-pill.ok{background:#d1fae5;color:#065f46}.sc-pill.bad{background:#fee2e2;color:#991b1b}
+.sc-row{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:7px;font-size:11px;color:var(--text-muted);font-weight:600;flex-wrap:wrap;}
+.sc-d{font-weight:700;}
+.sc-d.good{color:#059669}.sc-d.bad{color:#dc2626}
+.sc-spark{margin-top:6px;width:100%;height:46px;display:block;}
+.sc-empty{font-size:12px;color:var(--text-muted);margin:12px 0 4px;line-height:1.5;}
+.ic-svg{width:100%;height:auto;display:block;}
+.ic-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:#475569;font-weight:600;margin-top:6px;}
+.ic-legend span{display:inline-flex;align-items:center;gap:5px;}
+.ic-legend i{width:12px;height:12px;border-radius:3px;display:inline-block;}
+.ic-legend i.dash{height:0;border-top:2px dashed #475569;border-radius:0;width:16px;}
+.ind-table tr.ind-sg td{background:#f5f7ff!important;color:#3730a3!important;font-weight:700;text-align:left;padding-left:18px;font-size:11.5px;}
+.ind-table tr.man-row td{background:#fffdf3;}
+.man-in{width:96px!important;padding:4px 6px!important;font-size:12px!important;text-align:center;border-color:#fcd34d!important;background:#fffbeb!important;}
+.man-in:focus{border-color:var(--blue)!important;background:white!important;}
+
+.ind-sync{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;background:#f1f5f9;color:#475569;white-space:nowrap;}
+.ind-sync.ok{background:#ecfdf5;color:#065f46;}.ind-sync.err{background:#fff1f2;color:#991b1b;}.ind-sync.saving{background:#fffbeb;color:#92400e;}
 </style>
 </head>
 <body>
@@ -323,7 +411,7 @@ tr:hover td{background:#eff6ff;}
   <div class="login-box">
     <div class="login-logo">💊</div>
     <div class="login-title">ระบบประเมิน MR</div>
-    <div class="login-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v6</div>
+    <div class="login-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v6.4</div>
     <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:11px;color:#1d4ed8;margin-bottom:20px;text-align:left;"><b>💊 เฉพาะเภสัชกร รพ.มหาสารคาม</b><br>ชื่อผู้ใช้: ชื่อของคุณ (ภาษาอังกฤษ)<br>รหัสผ่าน: <b>รหัสส่วนตัวของคุณ</b></div>
     <div class="login-field">
       <label>ชื่อผู้ใช้</label>
@@ -354,7 +442,7 @@ tr:hover td{background:#eff6ff;}
     <div class="topbar-icon">💊</div>
     <div>
       <div class="topbar-title">ระบบประเมิน Medication Reconciliation</div>
-      <div class="topbar-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v6</div>
+      <div class="topbar-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v6.4</div>
     </div>
   </div>
   <div class="sync-status" onclick="checkConn()" title="คลิกตรวจสอบการเชื่อมต่อ">
@@ -375,7 +463,7 @@ tr:hover td{background:#eff6ff;}
     <div class="card">
       <div class="card-title">ข้อมูลทั่วไป</div>
       <div class="g2">
-        <div><label>AN (เลข Admission) *</label><input type="text" id="f-an" placeholder="เช่น 6800001"/></div>
+        <div><label>AN (เลข Admission) *</label><input type="text" id="f-an" placeholder="เช่น 6800001"/><div id="an-warn" class="an-warn" style="display:none;"></div></div>
         <div><label>วันที่ประเมิน *</label><input type="date" id="f-date"/></div>
       </div>
       <div style="margin-bottom:14px;">
@@ -402,6 +490,7 @@ tr:hover td{background:#eff6ff;}
         </div>
         <div><label>กลุ่มงาน CLT</label><input type="text" id="f-clt" readonly/></div>
       </div>
+      <div id="ward-progress" style="display:none;"></div>
       <div class="g2">
         <div>
           <label>ขั้นตอน MR *</label>
@@ -417,6 +506,11 @@ tr:hover td{background:#eff6ff;}
       </div>
     </div>
 
+    <details class="card mo-card" id="mo-card">
+      <summary class="card-title">ความคืบหน้าการสุ่มเดือนนี้ — ทุกหอ <span id="mo-summary" class="mo-badge">กำลังโหลด...</span><span class="mo-caret">▾</span></summary>
+      <div id="mo-body"></div>
+    </details>
+
     <div class="card">
       <div class="card-title">หัวข้อประเมิน 8 ข้อ</div>
       <div id="q-wrap"></div>
@@ -430,7 +524,7 @@ tr:hover td{background:#eff6ff;}
       </div>
       <div class="btn-row">
         <button class="btn-p" id="btn-save" onclick="saveRec()">💾 บันทึกข้อมูล</button>
-        <button class="btn-s" onclick="clearAll()">🔄 ล้างฟอร์ม</button>
+        <button class="btn-s" onclick="clearAll(false)">🔄 ล้างฟอร์ม</button>
       </div>
     </div>
   </div>
@@ -602,18 +696,18 @@ const WARDS = [
   // CLT ENT
   {n:"ตา",s:"2",c:"ENT"},
   {n:"หู คอ จมูก",s:"2",c:"ENT"},
-  {n:"60/4",s:"3",c:"ENT"},
-  // CLT ศัลยกรรม
+  {n:"60/4",s:"3",c:"ENT"},   // ห้องพิเศษ รับหลาย CLT — CLT หลัก ENT
+  // CLT ศัลยกรรม (เรียง: ศัลยกรรมชาย-หญิง-60/3 → ทั่วไป → trauma 7-8-10-11 → ICU)
   {n:"ศัลยกรรมชาย",s:"3",c:"ศัลยกรรม"},
+  {n:"ศัลยกรรมหญิง",s:"3",c:"ศัลยกรรม"},
   {n:"60/3",s:"3",c:"ศัลยกรรม"},
   {n:"ศัลยกรรมทั่วไป",s:"3",c:"ศัลยกรรม"},
   {n:"ICUtrauma 7",s:"3",c:"ศัลยกรรม"},
   {n:"ศัลยกรรมอุบัติเหตุชั้น 8",s:"3",c:"ศัลยกรรม"},
-  {n:"ICU ศัลยกรรม",s:"3",c:"ศัลยกรรม"},
-  {n:"ICU เด็กและทั่วไป PICU",s:"3",c:"ศัลยกรรม"},
   {n:"พิเศษอุบัติเหตุ ชั้น 10",s:"3",c:"ศัลยกรรม"},
   {n:"พิเศษอุบัติเหตุ ชั้น 11",s:"3",c:"ศัลยกรรม"},
-  {n:"ศัลยกรรมหญิง",s:"3",c:"ศัลยกรรม"},
+  {n:"ICU ศัลยกรรม",s:"3",c:"ศัลยกรรม"},
+  {n:"ICU เด็กและทั่วไป PICU",s:"3",c:"ศัลยกรรม"},
   // CLT ศัลยกรรมกระดูก
   {n:"60/5",s:"3",c:"ศัลยกรรมกระดูก"},
   {n:"ศัลยกรรมกระดูกชาย",s:"3",c:"ศัลยกรรมกระดูก"},
@@ -729,6 +823,8 @@ async function checkConn() {
     if (r.ok) {
       setRecs(r.data);
       setSyncUI('ok', `เชื่อมต่อแล้ว · ${allRecs.length} รายการ`);
+      renderWardProgress(); checkAN();
+      loadInd();
     } else setSyncUI('err', 'เชื่อมต่อไม่ได้');
   } catch(e) { setSyncUI('err', 'ออฟไลน์'); }
 }
@@ -817,7 +913,15 @@ document.addEventListener('click', () => {
 function initUI() {
   // Form ward select
   const fw = document.getElementById('f-ward');
-  WARDS.forEach(w => fw.innerHTML += `<option value="${w.n}" data-s="${w.s}" data-c="${w.c}">${w.n}</option>`);
+  CLT_ORDER.forEach(c => {
+    const g = document.createElement('optgroup'); g.label = 'CLT ' + c;
+    WARDS.filter(w => w.c === c).forEach(w => {
+      const o = document.createElement('option');
+      o.value = w.n; o.textContent = w.n; o.dataset.s = w.s; o.dataset.c = w.c;
+      g.appendChild(o);
+    });
+    fw.appendChild(g);
+  });
 
   const allWards = WARDS.map(w=>w.n);
   const allCLTs = [...new Set(WARDS.map(w=>w.c))].sort();
@@ -852,6 +956,8 @@ function onWardChange() {
     document.getElementById('f-sys').value = opt.dataset.s;
     document.getElementById('f-clt').value = opt.dataset.c || '';
   }
+  renderWardProgress();
+  refreshProgress(false);
 }
 
 // ===== EVALUATOR (v6) =====
@@ -904,7 +1010,98 @@ function loadSavedEvals() {
 }
 
 function setRecs(arr) {
-  allRecs = (arr || []).map(r => ({...r, evaluator: normEval(r.evaluator)}));
+  lastLoadAt = Date.now();
+  allRecs = (arr || []).map(r => {
+    const w = WARDS.find(x => x.n === r.ward);
+    return {...r, evaluator: normEval(r.evaluator), clt: r.clt || (w ? w.c : '')};
+  });
+}
+
+// ===== SAMPLING PROGRESS ON FORM (v6.2) =====
+const SAMPLE_TARGET = 10;   // AN/เดือน/หอ
+let lastLoadAt = 0, progLoading = false;
+const TH_MON = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function parseD(d) {
+  if (!d) return null;
+  let dt = new Date(d);
+  if (isNaN(dt)) dt = new Date(String(d).replace(/\s*\(.*\)\s*$/, ''));
+  return isNaN(dt) ? null : dt;
+}
+function ymKey(d) { const dt = parseD(d); return dt ? dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') : ''; }
+function ymLabel(k) { if (!k) return '?'; const [y, m] = k.split('-'); return TH_MON[+m - 1] + ' ' + String(+y + 543).slice(-2); }
+function formYM() { return ymKey(document.getElementById('f-date').value) || ymKey(new Date()); }
+
+async function refreshProgress(force) {
+  if (progLoading) return;
+  if (!force && Date.now() - lastLoadAt < 60000) return;
+  progLoading = true;
+  try {
+    const r = await gasCall({action: 'getAll'});
+    if (r.ok) { setRecs(r.data); setSyncUI('ok', `เชื่อมต่อแล้ว · ${allRecs.length} รายการ`); if (force) toast('อัปเดตข้อมูลล่าสุดแล้ว', 'ok'); }
+  } catch (e) { if (force) toast('เชื่อมต่อไม่ได้', 'err'); }
+  progLoading = false;
+  renderWardProgress(); checkAN();
+}
+
+function renderWardProgress() {
+  renderMonthOverview();
+  const box = document.getElementById('ward-progress'); if (!box) return;
+  const ward = document.getElementById('f-ward').value;
+  if (!ward) { box.style.display = 'none'; return; }
+  const ym = formYM();
+  const recs = allRecs.filter(r => r.ward === ward && ymKey(r.date) === ym);
+  const n = recs.length, need = Math.max(0, SAMPLE_TARGET - n), p = Math.min(100, n / SAMPLE_TARGET * 100);
+  const col = n >= SAMPLE_TARGET ? '#059669' : n >= 5 ? '#d97706' : '#dc2626';
+  const cnt = (fn) => { const m = {}; recs.forEach(r => { const k = fn(r); m[k] = (m[k] || 0) + 1; }); return Object.entries(m).sort((a, b) => b[1] - a[1]); };
+  const evalChips = cnt(r => r.evaluator || 'ไม่ระบุ').map(([k, v]) => `<span class="wp-chip">👤 ${k}<b>${v}</b></span>`).join('');
+  const stepChips = cnt(r => STEPN[r.step] || r.step || '-').map(([k, v]) => `<span class="wp-chip">${k}<b>${v}</b></span>`).join('');
+  const anList = recs.slice().sort((a, b) => (parseD(a.date) || 0) - (parseD(b.date) || 0))
+    .map(r => `<span class="wp-an" title="${isoToThai(r.date)} · ${STEPN[r.step] || r.step || '-'} · ${r.evaluator || '-'}">${r.an}</span>`).join('');
+  const t = lastLoadAt ? new Date(lastLoadAt).toLocaleTimeString('th-TH', {hour: '2-digit', minute: '2-digit'}) : '';
+  box.style.display = '';
+  box.innerHTML = `<div class="wp" style="--wc:${col}">
+    <div class="wp-top">
+      <div><div class="wp-title">📍 ${ward} · เดือน ${ymLabel(ym)}</div><div class="wp-sub">เป้าหมาย ${SAMPLE_TARGET} AN/เดือน/หอ (นับทุกขั้นตอน ทุกผู้ประเมิน)</div></div>
+      <div class="wp-big"><b>${n}</b><span> / ${SAMPLE_TARGET}</span></div>
+      <div class="wp-need">${need ? `ต้องทำอีก <b>${need}</b> AN` : '✅ ครบเป้าแล้ว'}</div>
+      <button type="button" class="mini-btn" onclick="refreshProgress(true)" title="ดึงข้อมูลล่าสุดจาก Google Sheets">🔄 อัปเดต</button>
+    </div>
+    <div class="wp-bar"><div style="width:${p.toFixed(0)}%"></div></div>
+    ${n ? `<div class="wp-row"><span class="wp-lbl">ผู้ประเมิน:</span>${evalChips}</div>
+    <div class="wp-row"><span class="wp-lbl">ขั้นตอน:</span>${stepChips}</div>
+    <div class="wp-row"><span class="wp-lbl">AN ที่ทำแล้ว:</span>${anList}</div>`
+    : `<div class="wp-row" style="color:var(--text-muted);">ยังไม่มีการประเมินหอนี้ในเดือนนี้</div>`}
+    ${lastLoadAt ? `<div class="wp-time">ข้อมูล ณ ${t} น. · กด 🔄 เพื่อดูงานที่คนอื่นเพิ่งบันทึก</div>` : `<div class="wp-row" style="color:#dc2626;font-weight:700;">⚠️ ยังโหลดข้อมูลจาก Google Sheets ไม่ได้ — ตัวเลขอาจไม่ครบ</div>`}
+  </div>`;
+}
+
+function renderMonthOverview() {
+  const body = document.getElementById('mo-body'), sum = document.getElementById('mo-summary');
+  if (!body || !sum) return;
+  const ym = formYM(), cnt = {};
+  allRecs.forEach(r => { if (ymKey(r.date) === ym) cnt[r.ward] = (cnt[r.ward] || 0) + 1; });
+  const done = WARDS.filter(w => (cnt[w.n] || 0) >= SAMPLE_TARGET).length;
+  const totalNeed = WARDS.reduce((a, w) => a + Math.max(0, SAMPLE_TARGET - (cnt[w.n] || 0)), 0);
+  sum.textContent = lastLoadAt ? `${ymLabel(ym)} · ครบแล้ว ${done}/${WARDS.length} หอ · ขาดรวม ${totalNeed} AN` : 'ยังไม่ได้โหลดข้อมูล';
+  const sel = document.getElementById('f-ward').value;
+  body.innerHTML = CLT_ORDER.map(c => `<div class="mo-grp"><div class="mo-clt" style="color:${cltColor(c)};">● CLT ${c}</div><div class="mo-chips">${
+    WARDS.filter(w => w.c === c).map(w => { const n = cnt[w.n] || 0; const cls = n >= SAMPLE_TARGET ? 'ok' : n >= 5 ? 'warn' : 'bad';
+      return `<button type="button" class="mo-chip ${cls}${sel === w.n ? ' cur' : ''}" onclick="selectWard('${w.n}')" title="${n >= SAMPLE_TARGET ? 'ครบแล้ว' : 'ต้องทำอีก ' + (SAMPLE_TARGET - n) + ' AN'}"><span>${w.n}</span><b>${n}/${SAMPLE_TARGET}</b></button>`; }).join('')
+  }</div></div>`).join('') + `<div class="mo-legend">🟥 น้อยกว่า 5 · 🟨 5–9 · 🟩 ครบ ${SAMPLE_TARGET} AN · คลิกชื่อหอเพื่อเลือกในฟอร์ม</div>`;
+}
+
+function selectWard(n) {
+  const s = document.getElementById('f-ward'); s.value = n; onWardChange();
+  s.scrollIntoView({behavior: 'smooth', block: 'center'});
+}
+
+function checkAN() {
+  const box = document.getElementById('an-warn'); if (!box) return;
+  const an = document.getElementById('f-an').value.trim();
+  const hits = an ? allRecs.filter(r => String(r.an || '').trim() === an) : [];
+  if (!hits.length) { box.style.display = 'none'; return; }
+  box.style.display = '';
+  box.innerHTML = `⚠️ AN นี้ประเมินแล้ว ${hits.length} ครั้ง:<br>` + hits.map(r => `• ${isoToThai(r.date)} · ${r.ward || '-'} · ${STEPN[r.step] || r.step || '-'} · ${r.evaluator || '-'}`).join('<br>');
 }
 
 // ===== BUILD QUESTIONS =====
@@ -1162,21 +1359,29 @@ async function saveRec() {
 
   try {
     const r = await gasCall({action:'save', record:JSON.stringify(rec)});
-    if (r.ok) { toast('บันทึกสำเร็จ · AN: '+an,'ok'); clearAll(); }
+    if (r.ok) {
+      allRecs.push({...rec, evaluator: normEval(rec.evaluator)});
+      const left = Math.max(0, SAMPLE_TARGET - allRecs.filter(x => x.ward === ward && ymKey(x.date) === ymKey(date)).length);
+      toast('บันทึกสำเร็จ · AN: ' + an + ' · ' + (left ? ward + ' ต้องทำอีก ' + left + ' AN' : ward + ' ครบเป้าเดือนนี้แล้ว ✅'), 'ok');
+      clearAll(true);
+    }
     else toast('บันทึกไม่สำเร็จ: '+r.msg,'err');
   } catch(e) { toast('เชื่อมต่อไม่ได้','err'); }
   btn.disabled=false; btn.textContent='💾 บันทึกข้อมูล';
 }
 
-function clearAll() {
+function clearAll(keepWard) {
   ['f-an','f-note'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-date').value=new Date().toISOString().substring(0,10);
-  ['f-ward','f-sys','f-step'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-clt').value='';
+  if (keepWard !== true) {
+    document.getElementById('f-date').value=new Date().toISOString().substring(0,10);
+    ['f-ward','f-sys','f-step'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-clt').value='';
+  }
   ans={}; meSevArr=[]; meTypArr=[]; meKindArr=[]; hospArr=[];
   buildQ();  // full rebuild so button states reset cleanly
   document.getElementById('res-pass').style.display='none';
   document.getElementById('res-fail').style.display='none';
+  checkAN(); renderWardProgress();
 }
 
 // ===== RECORDS LOAD =====
@@ -1372,7 +1577,7 @@ function openEdit(id) {
     <div class="g3">
       <div><label>หอผู้ป่วย</label>
         <select id="e-ward">
-          ${WARDS.map(w=>`<option value="${w.n}" ${r.ward===w.n?'selected':''}>${w.n}</option>`).join('')}
+          ${CLT_ORDER.map(c=>`<optgroup label="CLT ${c}">${WARDS.filter(w=>w.c===c).map(w=>`<option value="${w.n}" ${r.ward===w.n?'selected':''}>${w.n}</option>`).join('')}</optgroup>`).join('')}${r.ward&&!WARDS.some(w=>w.n===r.ward)?`<option value="${r.ward}" selected>${r.ward}</option>`:''}
         </select>
       </div>
       <div><label>ระบบ</label>
@@ -1481,7 +1686,7 @@ async function saveEdit() {
     an:document.getElementById('e-an').value,
     date, ward:document.getElementById('e-ward').value,
     sys:document.getElementById('e-sys').value,
-    clt:document.getElementById('e-clt').value,
+    clt:document.getElementById('e-clt').value||(WARDS.find(w=>w.n===document.getElementById('e-ward').value)||{}).c||'',
     step:document.getElementById('e-step').value,
     evaluator:normEval(document.getElementById('e-eval').value),
     note:document.getElementById('e-note').value,
@@ -1696,7 +1901,7 @@ function doExportPPT() {
           <tbody>
             <tr><td>% MR Coverage</td><td><b>${pct}%</b></td><td>≥ 80%</td><td><span class="badge ${parseFloat(pct)>=80?'b-green':'b-red'}">${parseFloat(pct)>=80?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
             <tr><td>ME ระดับ E+</td><td><b>${meHigh} ครั้ง</b></td><td>= 0</td><td><span class="badge ${meHigh===0?'b-green':'b-red'}">${meHigh===0?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
-            <tr><td>ME ระดับ C+ (%)</td><td><b>${total?(meCplus/total*100).toFixed(2):0}%</b></td><td>&lt; 1.5%</td><td><span class="badge ${total&&(meCplus/total*100)<1.5?'b-green':'b-red'}">${total&&(meCplus/total*100)<1.5?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
+            <tr><td>PE ระดับ C+ (% ของ PE)</td><td><b>${meAll?(meCplus/meAll*100).toFixed(2):0}%</b></td><td>&lt; 5%</td><td><span class="badge ${(!meAll||(meCplus/meAll*100)<5)?'b-green':'b-red'}">${(!meAll||(meCplus/meAll*100)<5)?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
             <tr><td>อัตราการพบ ME</td><td><b>${mePct}%</b></td><td>ต่ำสุด</td><td><span class="badge b-gray">ข้อมูล</span></td></tr>
           </tbody>
         </table>
@@ -1864,7 +2069,7 @@ function doExportPPT() {
           <tbody>
             <tr><td>% MR Coverage</td><td>${pct}%</td><td><span class="badge ${parseFloat(pct)>=80?'b-green':'b-red'}">${parseFloat(pct)>=80?'✅':'❌'}</span></td></tr>
             <tr><td>ME ระดับ E+</td><td>${meHigh} ครั้ง</td><td><span class="badge ${meHigh===0?'b-green':'b-red'}">${meHigh===0?'✅':'❌'}</span></td></tr>
-            <tr><td>ME ระดับ C+ (%)</td><td>${total?(meCplus/total*100).toFixed(2):0}%</td><td><span class="badge ${total&&(meCplus/total*100)<1.5?'b-green':'b-red'}">${total&&(meCplus/total*100)<1.5?'✅':'❌'}</span></td></tr>
+            <tr><td>PE ระดับ C+ (% ของ PE)</td><td>${meAll?(meCplus/meAll*100).toFixed(2):0}%</td><td><span class="badge ${(!meAll||(meCplus/meAll*100)<5)?'b-green':'b-red'}">${(!meAll||(meCplus/meAll*100)<5)?'✅':'❌'}</span></td></tr>
             <tr><td>ข้อ 4 พบใบ MR</td><td>${((q4y/total)*100).toFixed(0)}%</td><td><span class="badge ${q4n===0?'b-green':'b-yellow'}">${q4n===0?'✅':'⚠️'}</span></td></tr>
             <tr><td>ข้อ 7 Last dose</td><td>${(q7y+q7n>0?(q7y/(q7y+q7n)*100).toFixed(0):0)}%</td><td><span class="badge ${q7n===0?'b-green':'b-yellow'}">${q7n===0?'✅':'⚠️'}</span></td></tr>
           </tbody>
@@ -1891,12 +2096,421 @@ function doExportPPT() {
   else toast('เปิดหน้าสรุป — กด Ctrl+P เพื่อบันทึก PDF/พิมพ์','ok');
 }
 
+
+// ===== SUMMARY INDICATORS (v6.1) =====
+function periodKey(r, mode) {
+  const fy = String(r.fy || getFY(r.date) || '');
+  if (!fy) return null;
+  if (mode === 'fy') return {k: fy, l: 'ปีงบ ' + fy, o: +fy * 100};
+  if (mode === 'm') {
+    const m = r.month || getMon(r.date); const i = MONTHS_TH.indexOf(m);
+    if (i < 0) return null;
+    return {k: fy + '-' + i, l: m + ' ' + fy.slice(-2), o: +fy * 100 + i};
+  }
+  const q = normQ(r.quarter || r.q || getQ(r.date));
+  if (!/^Q[1-4]$/.test(q)) return null;
+  return {k: fy + ' ' + q, l: fy + ' ' + q, o: +fy * 100 + +q.slice(1)};
+}
+
+function buildIndicators(data) {
+  const mode = window._indPer || 'q';
+  const pmap = {};
+  data.forEach(r => { const p = periodKey(r, mode); if (!p) return; if (!pmap[p.k]) pmap[p.k] = {...p, recs: []}; pmap[p.k].recs.push(r); });
+  const periods = Object.values(pmap).sort((a, b) => a.o - b.o);
+  const cols = [...periods, {k: 'all', l: 'รวม', recs: data, total: true}];
+
+  const isPass = r => r.pass === 'pass';
+  const isME = r => rv(r, 'q8', 'q8_me_found') === 'พบ';
+  const sevList = r => String(r.meSev || '').split(',').map(x => x.trim()).filter(x => x && x !== '-');
+  const isE = r => isME(r) && sevList(r).some(x => HIGH_SEV.includes(x));
+  const isC = r => isME(r) && sevList(r).some(x => MID_SEV.includes(x) || HIGH_SEV.includes(x));
+  const step = n => r => String(r.step) === n;
+  const val = (a, b, v) => r => rv(r, a, b) === v;
+  const answered = (a, b, vals) => r => vals.includes(rv(r, a, b));
+  const all = () => true;
+  const P = (den, num) => R => { const d = R.filter(den), n = d.filter(num); return {v: d.length ? n.length / d.length * 100 : null, n: n.length, d: d.length, pct: true}; };
+  const C = f => R => ({v: R.filter(f).length});
+
+  const GE80 = {op: '>=', val: 80, txt: '≥ 80%'}, EQ0 = {op: '<=', val: 0, txt: '0'}, LE5 = {op: '<=', val: 5, txt: '≤ 5%'};
+  const LE05 = {op: '<=', val: 0.5, txt: '≤ 0.5'}, LE005 = {op: '<=', val: 0.05, txt: '≤ 0.05'}, LE20 = {op: '<=', val: 20, txt: '≤ 20%'};
+  const meet = (t, v) => t.op === '>=' ? v >= t.val : v <= t.val;
+
+  const rows = [
+    {g: '1. การปฏิบัติตามแนวทาง MR (ผ่านครบ 3 เกณฑ์: ใบ MR ใน 24 ชม. + คำสั่งยา + ลายเซ็นแพทย์)'},
+    {l: 'จำนวนแฟ้มที่ประเมิน (ราย)', f: C(all)},
+    {l: 'ร้อยละการปฏิบัติตามแนวทาง MR (ภาพรวม)', t: GE80, f: P(all, isPass)},
+    {l: '• แรกรับ', t: GE80, f: P(step('1'), isPass)},
+    {l: '• ย้ายตึก', t: GE80, f: P(step('2'), isPass)},
+    {l: '• หลังผ่าตัด (Post-op)', t: GE80, f: P(step('3'), isPass)},
+    {l: '• กลับบ้าน / Refer', t: GE80, f: P(step('4'), isPass)},
+    {g: '2. องค์ประกอบของเกณฑ์ MR'},
+    {l: 'ร้อยละพบใบ MR ภายใน 24 ชม. (ข้อ 4)', t: GE80, f: P(all, val('q4', 'q4_mr_form_24h', 'พบ'))},
+    {l: 'ร้อยละมีรายละเอียดคำสั่งการใช้ยา (ข้อ 5)', t: GE80, f: P(all, val('q5', 'q5_drug_order', 'มี'))},
+    {l: 'ร้อยละมีลายเซ็นแพทย์กำกับ (ข้อ 6)', t: GE80, f: P(all, val('q6', 'q6_doctor_sign', 'มี'))},
+    {l: 'ร้อยละลงเวลารับประทานยาครั้งสุดท้าย Last dose (ข้อ 7)', f: P(answered('q7', 'q7_last_dose', ['พบ', 'ไม่พบ']), val('q7', 'q7_last_dose', 'พบ'))},
+    {l: 'ร้อยละลงจำนวนยาเหลือ กรณียานอก รพ. (ข้อ 3)', f: P(answered('q3', null, ['มี', 'ไม่มี']), val('q3', null, 'มี'))},
+    {g: '3. ความคลาดเคลื่อนทางยา (PE) ที่เกิดจาก MR'},
+    {sg: '3.1 พบจากการประเมินในระบบนี้ (คำนวณอัตโนมัติ)'},
+    {l: 'จำนวนแฟ้มที่พบ PE (ราย)', f: C(isME)},
+    {l: 'ร้อยละแฟ้มที่พบ PE (ต่อแฟ้มที่ประเมิน)', f: P(all, isME)},
+    {l: 'PE ระดับ C ขึ้นไป (ครั้ง)', f: C(isC)},
+    {l: 'PE ระดับ E ขึ้นไป (ครั้ง)', f: C(isE)},
+    {sg: '3.2 ✏️ จากแหล่งอื่น เช่น ระบบรายงาน ME / PE (กรอกเอง · เฉพาะรายการที่ไม่ซ้ำกับ 3.1)'},
+    {man: 'pe_ext', l: 'จำนวน PE ที่เกิดจาก MR (ครั้ง)'},
+    {man: 'c_ext', l: 'PE ระดับ C ขึ้นไป (ครั้ง)'},
+    {man: 'e_ext', l: 'PE ระดับ E ขึ้นไป (ครั้ง)'},
+    {sg: '3.3 รวมทุกแหล่ง (3.1 + 3.2)'},
+    {calc: 'pe_tot', l: 'PE ที่เกิดจาก MR รวม (ครั้ง)'},
+    {calc: 'c_tot', l: 'PE ระดับ C ขึ้นไป รวม (ครั้ง)'},
+    {calc: 'e_tot', l: 'อุบัติการณ์ PE (MR) ระดับ E ขึ้นไป (ครั้ง)', t: EQ0},
+    {calc: 'c_pct', l: 'ร้อยละ PE ระดับ C ขึ้นไปที่เกิดจาก MR (ต่อ PE จาก MR)', t: LE5},
+    {man: 'pe_hosp', l: '✏️ PE ทั้งหมดของ รพ. ทุกกระบวนการ (ครั้ง)'},
+    {calc: 'share', l: 'ร้อยละ PE ที่เกิดจาก MR (ต่อ PE ทั้งหมดของ รพ.)', t: LE20},
+    {g: '4. อัตราต่อ 1,000 วันนอน (ใช้ PE รวมทุกแหล่ง)'},
+    {man: 'pd', l: '✏️ วันนอนรวม (วัน)'},
+    {calc: 'r_pe', l: 'อัตรา PE ที่เกิดจาก MR (ครั้ง/1,000 วันนอน)', t: LE05},
+    {calc: 'r_c', l: 'อัตรา PE ระดับ C ขึ้นไป (ครั้ง/1,000 วันนอน)', t: LE005},
+  ];
+
+  window._ind = {mode, cols: cols.map(c => ({k: c.k, l: c.l, total: !!c.total})), auto: {}};
+  cols.forEach(c => {
+    const R = c.recs, adm = R.filter(step('1'));
+    window._ind.auto[c.k] = {n: R.length, pass: R.filter(isPass).length, adm_n: adm.length, adm_p: adm.filter(isPass).length,
+      pe: R.filter(isME).length, c: R.filter(isC).length, e: R.filter(isE).length};
+  });
+
+  const nCol = cols.length + 2;
+  const totCls = c => c.total ? ' tot' : '';
+  const cell = (res, t, c) => {
+    if (res.v === null) return `<td class="${totCls(c)}" style="color:#94a3b8;">–</td>`;
+    const txt = res.pct ? `<b>${res.v.toFixed(1)}%</b> <small>(${res.n}/${res.d})</small>` : `<b>${res.v}</b>`;
+    let st = '';
+    if (t) st = meet(t, res.v) ? 'background:#ecfdf5;color:#065f46;' : 'background:#fff1f2;color:#991b1b;';
+    return `<td class="${totCls(c)}" style="${st}">${txt}</td>`;
+  };
+  const body = rows.map(row => {
+    if (row.g) return `<tr class="ind-g"><td colspan="${nCol}" style="background:#dbe5f5;color:#1e3a8a;font-weight:800;">${row.g}</td></tr>`;
+    if (row.sg) return `<tr class="ind-sg"><td colspan="${nCol}" style="background:#f5f7ff;color:#3730a3;font-weight:700;">${row.sg}</td></tr>`;
+    if (row.man) return `<tr class="man-row"><td class="ind-l">${row.l}</td><td class="tgt">–</td>${cols.map(c => c.total
+      ? `<td class="calc tot" data-calc="sum" data-f="${row.man}" data-k="all">–</td>`
+      : `<td><input class="man-in" type="number" min="0" step="any" placeholder="กรอก" data-f="${row.man}" data-k="${c.k}" value="${manRaw(row.man, c.k)}" oninput="setMan(this)"/></td>`).join('')}</tr>`;
+    if (row.calc) return `<tr><td class="ind-l">${row.l}</td><td class="tgt">${row.t ? row.t.txt : '–'}</td>${cols.map(c => `<td class="calc${totCls(c)}" data-calc="${row.calc}" data-k="${c.k}"${row.t ? ` data-op="${row.t.op}" data-tv="${row.t.val}"` : ''}>–</td>`).join('')}</tr>`;
+    return `<tr><td class="ind-l">${row.l}</td><td class="tgt">${row.t ? row.t.txt : '–'}</td>${cols.map(c => cell(row.f(c.recs), row.t, c)).join('')}</tr>`;
+  }).join('');
+  const head = `<tr><th>ตัวชี้วัด</th><th>เป้าหมาย</th>${cols.map(c => `<th${c.total ? ' style="border-left:2px solid #fff;"' : ''}>${c.l}</th>`).join('')}</tr>`;
+  const seg = `<div class="seg">${[['q', 'รายไตรมาส'], ['fy', 'รายปีงบ'], ['m', 'รายเดือน']].map(([k, l]) => `<button class="${mode === k ? 'on' : ''}" onclick="window._indPer='${k}';renderDash()">${l}</button>`).join('')}</div>`;
+  const tools = (id, name) => `<div class="tbl-tools"><button class="mini-btn" onclick="copyTable('${id}')">📋 คัดลอกตาราง</button><button class="mini-btn" onclick="tableCSV('${id}','${name}')">📥 CSV</button></div>`;
+
+  const main = `
+  <div class="sec-title" style="justify-content:space-between;flex-wrap:wrap;"><span>🎯 ภาพรวมตัวชี้วัด MR <span style="font-weight:600;text-transform:none;letter-spacing:0;color:var(--text-muted);font-size:11px;">· ค่าล่าสุด เทียบช่วงก่อนหน้า และแนวโน้ม</span></span>${seg}</div>
+  <div class="sc-grid" id="ind-score"></div>
+  <div class="chart-grid" id="ind-charts"></div>
+
+  <div class="sec-title">📑 ตารางสรุปตัวชี้วัด MR</div>
+  <div class="mini-chart" style="margin-bottom:1.25rem;">
+    <div class="ind-tools">${seg}<span id="ind-sync" class="ind-sync"></span>${tools('ind-main', 'MR_Indicators')}</div>
+    <div class="tbl-wrap"><table class="ind-table" id="ind-main"><thead>${head}</thead><tbody>${body}</tbody></table></div>
+    <div class="ind-note">
+      🟩 ผ่านเป้า &nbsp; 🟥 ไม่ผ่านเป้า &nbsp;·&nbsp; ตัวเลขในวงเล็บ = (ผ่าน/ทั้งหมด) · คำนวณตามเงื่อนไขกรองด้านบน<br>
+      PE ข้อ 3.1 = ME ที่พบจากการตรวจใบ MR (ข้อ 8) นับเป็นรายแฟ้ม · ระดับ C ขึ้นไป = C–I · ระดับ E ขึ้นไป = E–I<br>
+      ✏️ ช่องสีเหลือง = กรอกเอง (PE จากแหล่งอื่น, PE ทั้งหมดของ รพ., วันนอน) · ระบบคำนวณรวมและอัปเดตการ์ด/กราฟทันที · ค่าที่กรอกบันทึกลงชีต MR_Indicators ใช้ร่วมกันทุกเครื่อง · คอลัมน์ "รวม" ของวันนอนและ PE ทั้ง รพ. จะคำนวณเมื่อกรอกครบทุกช่วง<br>
+      📋 "คัดลอกตาราง" แล้ววางใน PowerPoint / Word / Excel ได้ทันที (คงสีและเส้นตาราง)
+    </div>
+  </div>`;
+
+  // ---- ward x period coverage matrix ----
+  const covCell = (R, c) => {
+    if (!R.length) return `<td class="${totCls(c)}" style="color:#94a3b8;">–</td>`;
+    const p = R.filter(isPass).length, v = p / R.length * 100, ok = v >= 80;
+    return `<td class="${totCls(c)}" style="background:${ok ? '#ecfdf5' : '#fff1f2'};color:${ok ? '#065f46' : '#991b1b'};"><b>${v.toFixed(1)}%</b> <small>(${p}/${R.length})</small></td>`;
+  };
+  const cltList = [...new Set(data.map(r => r.clt || 'ไม่ระบุ'))].sort((a, b) => cltIdx(a) - cltIdx(b));
+  const matrixBody = cltList.map(cl => {
+    const wards = [...new Set(data.filter(r => (r.clt || 'ไม่ระบุ') === cl).map(r => r.ward || 'ไม่ระบุ'))].sort((a, b) => wardIdx(a) - wardIdx(b));
+    return `<tr class="ind-g"><td style="background:#dbe5f5;color:#1e3a8a;font-weight:800;"><span style="color:${cltColor(cl)};">●</span> CLT ${cl}</td>${cols.map(c => covCell(c.recs.filter(r => (r.clt || 'ไม่ระบุ') === cl), c)).join('')}</tr>`
+      + wards.map(w => `<tr><td class="ind-l" style="padding-left:22px;font-weight:500;">${w}</td>${cols.map(c => covCell(c.recs.filter(r => (r.clt || 'ไม่ระบุ') === cl && (r.ward || 'ไม่ระบุ') === w), c)).join('')}</tr>`).join('');
+  }).join('') + `<tr><td class="ind-l" style="font-weight:800;background:#eef2ff;">รวมทั้งหมด</td>${cols.map(c => covCell(c.recs, c)).join('')}</tr>`;
+  const head2 = `<tr><th>CLT / หอผู้ป่วย</th>${cols.map(c => `<th${c.total ? ' style="border-left:2px solid #fff;"' : ''}>${c.l}</th>`).join('')}</tr>`;
+
+  // ---- PE kind / PE by CLT ----
+  const countTable = (id, title, keyFn, order) => {
+    const m = {};
+    cols.forEach(c => c.recs.filter(isME).forEach(r => keyFn(r).forEach(k => { m[k] = m[k] || {}; m[k][c.k] = (m[k][c.k] || 0) + 1; })));
+    const keys = Object.keys(m).sort((a, b) => order(a, b) || (m[b].all || 0) - (m[a].all || 0));
+    if (!keys.length) return `<div class="ind-sub">${title}</div><div style="font-size:12px;color:var(--gray);">ไม่พบ PE ในช่วงที่เลือก</div>`;
+    const tr = keys.map(k => `<tr><td class="ind-l" style="font-weight:500;min-width:180px;">${k}</td>${cols.map(c => `<td class="${totCls(c)}">${m[k][c.k] ? `<b>${m[k][c.k]}</b>` : '<span style="color:#94a3b8;">0</span>'}</td>`).join('')}</tr>`).join('');
+    const sum = `<tr><td class="ind-l" style="font-weight:800;background:#eef2ff;">จำนวนแฟ้มที่พบ PE</td>${cols.map(c => `<td class="${totCls(c)}" style="background:#eef2ff;"><b>${c.recs.filter(isME).length}</b></td>`).join('')}</tr>`;
+    return `<div class="ind-sub"><span>${title}</span>${tools(id, id)}</div>
+      <div class="tbl-wrap"><table class="ind-table" id="${id}"><thead><tr><th>${title}</th>${cols.map(c => `<th${c.total ? ' style="border-left:2px solid #fff;"' : ''}>${c.l}</th>`).join('')}</tr></thead><tbody>${tr}${sum}</tbody></table></div>`;
+  };
+  const kindOrder = (a, b) => { const ia = ME_KIND.indexOf(a), ib = ME_KIND.indexOf(b); return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib); };
+  const kindTbl = countTable('ind-mekind', 'ชนิดความคลาดเคลื่อน', r => String(r.meKind || '').split('/').map(x => x.trim()).filter(x => x && x !== '-').concat(String(r.meKind || '').trim() && r.meKind !== '-' ? [] : ['ไม่ระบุชนิด']), kindOrder);
+  const cltTbl = countTable('ind-meclt', 'PE แยกตาม CLT', r => [r.clt || 'ไม่ระบุ'], (a, b) => cltIdx(a) - cltIdx(b));
+
+  const matrix = `
+  <div class="sec-title">📊 ตารางสรุปรายหอผู้ป่วย และความคลาดเคลื่อนทางยา</div>
+  <div class="mini-chart" style="margin-bottom:1.25rem;">
+    <div class="ind-sub"><span>ร้อยละการปฏิบัติตามแนวทาง MR ราย CLT / หอผู้ป่วย (${mode === 'fy' ? 'รายปีงบ' : mode === 'm' ? 'รายเดือน' : 'รายไตรมาส'})</span>${tools('ind-ward', 'MR_Coverage_Ward')}</div>
+    <div class="tbl-wrap"><table class="ind-table" id="ind-ward"><thead>${head2}</thead><tbody>${matrixBody}</tbody></table></div>
+    ${kindTbl}
+    ${cltTbl}
+  </div>`;
+  return {main, matrix};
+}
+
+function manKey(f, k) { return f === 'pd' ? 'mr_pd_' + k : 'mr_man_' + f + '_' + k; }
+function manRaw(f, k) { const key = manKey(f, k); if (indStore && Object.prototype.hasOwnProperty.call(indStore, key)) return indStore[key]; return lsGet(key) || ''; }
+function manVal(f, k) { const v = parseFloat(manRaw(f, k)); return isNaN(v) ? null : v; }
+
+// ===== shared storage of manual indicator values (Google Sheets: MR_Indicators) =====
+let indStore = null;           // null = Apps Script ยังไม่รองรับ / ยังไม่โหลด → ใช้ค่าในเครื่อง
+let indSync = 'local';         // local | ready | saving | ok | err
+const indTimers = {};
+const MAN_LABEL = {pe_ext: 'PE จาก MR (แหล่งอื่น)', c_ext: 'PE ระดับ C+ (แหล่งอื่น)', e_ext: 'PE ระดับ E+ (แหล่งอื่น)', pe_hosp: 'PE ทั้งหมดของ รพ.', pd: 'วันนอนรวม'};
+function periodLabel(k) { const m = /^(\d{4})-(\d{1,2})$/.exec(k); return m ? MONTHS_TH[+m[2]] + ' ปีงบ ' + m[1] : (/^\d{4}$/.test(k) ? 'ปีงบ ' + k : k); }
+function parseManKey(key) {
+  let m = /^mr_pd_(.+)$/.exec(key); if (m) return {f: 'pd', k: m[1]};
+  m = /^mr_man_(pe_ext|c_ext|e_ext|pe_hosp)_(.+)$/.exec(key); return m ? {f: m[1], k: m[2]} : null;
+}
+function updIndStatus() {
+  const el = document.getElementById('ind-sync'); if (!el) return;
+  const txt = {local: '💾 เก็บในเครื่องนี้ (ยังไม่เชื่อม Sheets)', ready: '☁️ ใช้ร่วมกันทุกเครื่องผ่าน Google Sheets', saving: '⏳ กำลังบันทึกลง Sheets...', ok: '☁️ บันทึกลง Google Sheets แล้ว', err: '⚠️ บันทึกขึ้น Sheets ไม่สำเร็จ — เก็บในเครื่องไว้ก่อน'}[indSync];
+  el.textContent = txt; el.className = 'ind-sync ' + ({ok: 'ok', ready: 'ok', err: 'err', saving: 'saving'}[indSync] || '');
+}
+async function sendInd(f, k, val) {
+  return gasCall({action: 'setInd', key: manKey(f, k), value: val, period: periodLabel(k), label: MAN_LABEL[f] || f,
+    by: (document.getElementById('f-eval') || {}).value || ''});
+}
+function setMan(i) {
+  const f = i.dataset.f, k = i.dataset.k, key = manKey(f, k), val = i.value.trim();
+  lsSet(key, val);
+  if (indStore) {
+    if (val === '') delete indStore[key]; else indStore[key] = val;
+    indSync = 'saving'; updIndStatus();
+    clearTimeout(indTimers[key]);
+    indTimers[key] = setTimeout(async () => {
+      try { const r = await sendInd(f, k, val); indSync = r.ok ? 'ok' : 'err'; } catch (e) { indSync = 'err'; }
+      updIndStatus();
+    }, 900);
+  }
+  recalcInd();
+}
+async function loadInd() {
+  try {
+    const r = await gasCall({action: 'getInd'});
+    if (r.ok && r.ind && typeof r.ind === 'object') { indStore = r.ind; indSync = 'ready'; await pushLocalInd(); }
+    else { indStore = null; indSync = 'local'; }
+  } catch (e) { indStore = null; indSync = 'local'; }
+  document.querySelectorAll('.man-in').forEach(i => { if (document.activeElement !== i) i.value = manRaw(i.dataset.f, i.dataset.k); });
+  updIndStatus();
+  if (window._ind) recalcInd();
+}
+// ค่าที่เคยกรอกไว้ในเครื่องนี้ (ก่อนเชื่อม Sheets) และยังไม่มีบน Sheets → อัปโหลดให้อัตโนมัติ
+async function pushLocalInd() {
+  let keys = [];
+  try { for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i)); } catch (e) { return; }
+  const todo = keys.map(key => ({key, pk: parseManKey(key), v: lsGet(key)})).filter(x => x.pk && x.v && !Object.prototype.hasOwnProperty.call(indStore, x.key));
+  for (const x of todo) {
+    try { const r = await sendInd(x.pk.f, x.pk.k, x.v); if (r.ok) indStore[x.key] = x.v; } catch (e) {}
+  }
+  if (todo.length) toast(`อัปโหลดค่าตัวชี้วัดที่เคยกรอกในเครื่องนี้ขึ้น Sheets แล้ว ${todo.length} ช่อง`, 'ok');
+}
+function meetT(t, v) { return t.op === '>=' ? v >= t.val : v <= t.val; }
+function fmtV(v, f) {
+  if (v === null || v === undefined || isNaN(v)) return '–';
+  if (f === 'pct') return v.toFixed(1) + '%';
+  if (f === 'num1') return v.toFixed(1);
+  if (f === 'int') return String(Math.round(v));
+  return v < 1 ? v.toFixed(3) : v.toFixed(2);
+}
+
+function recalcInd() {
+  const I = window._ind; if (!I) return;
+  const per = I.cols.filter(c => !c.total);
+  const SUMF = ['pe_ext', 'c_ext', 'e_ext'], ALLF = ['pd', 'pe_hosp'];
+  const V = {};
+  I.cols.forEach(c => {
+    const a = I.auto[c.k], m = {};
+    if (!c.total) [...SUMF, ...ALLF].forEach(f => m[f] = manVal(f, c.k));
+    else {
+      SUMF.forEach(f => m[f] = per.reduce((s, p) => s + (manVal(f, p.k) || 0), 0));
+      ALLF.forEach(f => { const vs = per.map(p => manVal(f, p.k)); m[f] = per.length && vs.every(v => v > 0) ? vs.reduce((s, v) => s + v, 0) : null; });
+    }
+    const pe = a.pe + (m.pe_ext || 0), cc = a.c + (m.c_ext || 0), e = a.e + (m.e_ext || 0);
+    V[c.k] = {m, a, comp: a.n ? a.pass / a.n * 100 : null, adm: a.adm_n ? a.adm_p / a.adm_n * 100 : null,
+      pe_tot: pe, c_tot: cc, e_tot: e, c_pct: pe ? cc / pe * 100 : null,
+      share: m.pe_hosp > 0 ? pe / m.pe_hosp * 100 : null,
+      r_pe: m.pd > 0 ? pe / m.pd * 1000 : null, r_c: m.pd > 0 ? cc / m.pd * 1000 : null};
+  });
+  I.V = V;
+
+  document.querySelectorAll('#ind-main .calc').forEach(td => {
+    const v = V[td.dataset.k]; if (!v) return;
+    const t = td.dataset.calc; let html = '', num = null;
+    if (t === 'sum') { const x = v.m[td.dataset.f]; html = x === null ? '–' : `<b>${(+x).toLocaleString()}</b>`; }
+    else if (t === 'pe_tot' || t === 'c_tot' || t === 'e_tot') { num = v[t]; html = `<b>${num}</b>`; }
+    else if (t === 'c_pct') { num = v.c_pct; html = num === null ? '–' : `<b>${num.toFixed(1)}%</b> <small>(${v.c_tot}/${v.pe_tot})</small>`; }
+    else if (t === 'share') { num = v.share; html = num === null ? '–' : `<b>${num.toFixed(1)}%</b> <small>(${v.pe_tot}/${v.m.pe_hosp})</small>`; }
+    else if (t === 'r_pe' || t === 'r_c') { num = v[t]; html = num === null ? '–' : `<b>${fmtV(num, 'rate')}</b> <small>(${t === 'r_pe' ? v.pe_tot : v.c_tot})</small>`; }
+    td.innerHTML = html;
+    if (num !== null && td.dataset.op) {
+      const ok = meetT({op: td.dataset.op, val: +td.dataset.tv}, num);
+      td.style.background = ok ? '#ecfdf5' : '#fff1f2'; td.style.color = ok ? '#065f46' : '#991b1b';
+    } else { td.style.background = ''; td.style.color = html === '–' ? '#94a3b8' : ''; }
+  });
+  renderScorecard(); renderIndCharts(); updIndStatus();
+}
+
+const SC_DEF = [
+  {id: 'comp', l: 'ร้อยละการปฏิบัติตามแนวทาง MR', sub: 'ภาพรวม · ผ่านครบ 3 เกณฑ์', t: {op: '>=', val: 80, txt: '≥ 80%'}, fmt: 'pct'},
+  {id: 'adm', l: 'ร้อยละการปฏิบัติตามแนวทาง MR แรกรับ', sub: 'ขั้นตอนแรกรับ (ภายใน 24 ชม.)', t: {op: '>=', val: 80, txt: '≥ 80%'}, fmt: 'pct'},
+  {id: 'e_tot', l: 'อุบัติการณ์ PE (MR) ระดับ E ขึ้นไป', sub: 'รวมทุกแหล่ง (ครั้ง)', t: {op: '<=', val: 0, txt: '0 ครั้ง'}, fmt: 'int'},
+  {id: 'c_pct', l: 'ร้อยละ PE ระดับ C ขึ้นไปที่เกิดจาก MR', sub: 'ต่อ PE จาก MR ทั้งหมด', t: {op: '<=', val: 5, txt: '≤ 5%'}, fmt: 'pct', hint: 'ยังไม่พบ PE ในช่วงที่เลือก'},
+  {id: 'share', l: 'ร้อยละ PE ที่เกิดจาก MR', sub: 'ต่อ PE ทั้งหมดของ รพ.', t: {op: '<=', val: 20, txt: '≤ 20%'}, fmt: 'pct', hint: '✏️ กรอก "PE ทั้งหมดของ รพ." ในตารางด้านล่าง'},
+  {id: 'r_pe', l: 'อัตรา PE ที่เกิดจาก MR', sub: 'ครั้ง / 1,000 วันนอน', t: {op: '<=', val: 0.5, txt: '≤ 0.5'}, fmt: 'rate', hint: '✏️ กรอก "วันนอนรวม" ในตารางด้านล่าง'},
+  {id: 'r_c', l: 'อัตรา PE ระดับ C ขึ้นไป', sub: 'ครั้ง / 1,000 วันนอน', t: {op: '<=', val: 0.05, txt: '≤ 0.05'}, fmt: 'rate', hint: '✏️ กรอก "วันนอนรวม" ในตารางด้านล่าง'},
+];
+
+function sparkSVG(series, d) {
+  const pts = series.map((s, i) => ({...s, i})).filter(s => s.v !== null);
+  if (pts.length < 2) return '';
+  const W = 220, H = 46, px = 6, py = 7, n = series.length;
+  const vals = pts.map(p => p.v).concat([d.t.val]);
+  let lo = Math.min(...vals), hi = Math.max(...vals); if (hi === lo) { hi += 1; lo = Math.max(0, lo - 1); }
+  const X = i => px + i * (W - 2 * px) / Math.max(1, n - 1), Y = v => H - py - (v - lo) / (hi - lo) * (H - 2 * py);
+  let path = '', prev = -2;
+  pts.forEach(p => { path += (p.i === prev + 1 ? 'L' : 'M') + X(p.i).toFixed(1) + ',' + Y(p.v).toFixed(1); prev = p.i; });
+  const ty = Y(d.t.val).toFixed(1), last = pts[pts.length - 1], ok = meetT(d.t, last.v);
+  return `<svg class="sc-spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+    <line x1="${px}" x2="${W - px}" y1="${ty}" y2="${ty}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3"/>
+    <path d="${path}" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.map(p => `<circle cx="${X(p.i).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${p === last ? 4.5 : 3}" fill="${p === last ? (ok ? '#059669' : '#dc2626') : '#fff'}" stroke="${p === last ? '#fff' : '#2563eb'}" stroke-width="${p === last ? 2 : 1.5}"><title>${p.l}: ${fmtV(p.v, d.fmt)}</title></circle>`).join('')}
+  </svg>`;
+}
+
+function renderScorecard() {
+  const I = window._ind, box = document.getElementById('ind-score'); if (!I || !box || !I.V) return;
+  const per = I.cols.filter(c => !c.total);
+  const prevWord = {q: 'ไตรมาสก่อน', fy: 'ปีงบก่อน', m: 'เดือนก่อน'}[I.mode] || 'ช่วงก่อน';
+  box.innerHTML = SC_DEF.map(d => {
+    const series = per.map(c => ({l: c.l, v: I.V[c.k][d.id]}));
+    let li = -1; for (let i = series.length - 1; i >= 0; i--) if (series[i].v !== null) { li = i; break; }
+    const tot = I.V.all ? I.V.all[d.id] : null;
+    if (li < 0) return `<div class="sc" style="--sc:#cbd5e1;"><div class="sc-t">${d.l}</div><div class="sc-s">${d.sub}</div>
+      <div class="sc-empty">${d.hint || 'ยังไม่มีข้อมูลในช่วงที่เลือก'}</div><div class="sc-row"><span>เป้า ${d.t.txt}</span></div></div>`;
+    const cur = series[li], ok = meetT(d.t, cur.v);
+    let pi = -1; for (let i = li - 1; i >= 0; i--) if (series[i].v !== null) { pi = i; break; }
+    let delta = '<span></span>';
+    if (pi >= 0) {
+      const df = cur.v - series[pi].v, good = d.t.op === '>=' ? df > 0 : df < 0;
+      delta = Math.abs(df) < 1e-9 ? `<span class="sc-d">● คงที่จาก${prevWord}</span>`
+        : `<span class="sc-d ${good ? 'good' : 'bad'}">${df > 0 ? '▲' : '▼'} ${fmtV(Math.abs(df), d.fmt === 'pct' ? 'num1' : d.fmt)}${d.fmt === 'pct' ? ' จุด' : ''} จาก${prevWord}</span>`;
+    }
+    return `<div class="sc" style="--sc:${ok ? '#059669' : '#dc2626'};">
+      <div class="sc-t">${d.l}</div><div class="sc-s">${d.sub}</div>
+      <div class="sc-v"><b>${fmtV(cur.v, d.fmt)}</b><span>${cur.l}</span></div>
+      <div class="sc-row"><span class="sc-pill ${ok ? 'ok' : 'bad'}">${ok ? '✓ ผ่านเป้า' : '✕ ไม่ผ่านเป้า'}</span><span>เป้า ${d.t.txt}</span></div>
+      ${sparkSVG(series, d)}
+      <div class="sc-row">${delta}<span>รวมทั้งช่วง: <b style="color:#334155;">${fmtV(tot, d.fmt)}</b></span></div>
+    </div>`;
+  }).join('');
+}
+
+function niceMax(v) { const m = Math.max(1, v); const p = Math.pow(10, Math.floor(Math.log10(m))); return [1, 2, 2.5, 5, 10].find(x => x * p >= m) * p; }
+function barTop(x, y, w, base, r) {
+  const h = base - y; r = Math.min(r, h, w / 2);
+  if (h <= 0) return '';
+  return `M${x},${base}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${base}Z`;
+}
+
+function renderIndCharts() {
+  const I = window._ind, box = document.getElementById('ind-charts'); if (!I || !box || !I.V) return;
+  const per = I.cols.filter(c => !c.total);
+  if (!per.length) { box.innerHTML = ''; return; }
+  const n = per.length, W = Math.max(380, n * 68 + 60), H = 240, L = 40, R = 14, T = 24, B = 36, pw = W - L - R, ph = H - T - B, base = T + ph;
+  const slot = pw / n, bw = Math.min(42, slot * 0.56), cx = i => L + slot * i + slot / 2;
+  const xLabels = per.map((c, i) => `<text x="${cx(i)}" y="${H - 14}" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">${c.l}</text>`).join('');
+
+  // Chart A: compliance per period
+  const yA = v => base - v / 100 * ph;
+  const gridA = [0, 20, 40, 60, 80, 100].map(v => `<line x1="${L}" x2="${W - R}" y1="${yA(v)}" y2="${yA(v)}" stroke="#eef2f7"/><text x="${L - 6}" y="${yA(v) + 3.5}" text-anchor="end" font-size="10" fill="#94a3b8">${v}</text>`).join('');
+  const barsA = per.map((c, i) => {
+    const v = I.V[c.k].comp, a = I.V[c.k].a; if (v === null) return '';
+    const ok = v >= 80, x = cx(i) - bw / 2, y = yA(v);
+    return `<g><path d="${barTop(x, y, bw, base, 4)}" fill="${ok ? '#059669' : '#dc2626'}"><title>${c.l}: ${v.toFixed(1)}% (${a.pass}/${a.n}) — ${ok ? 'ผ่านเป้า' : 'ต่ำกว่าเป้า'}</title></path>
+      <text x="${cx(i)}" y="${y - 6}" text-anchor="middle" font-size="11.5" font-weight="800" fill="#0f172a">${v.toFixed(1)}</text></g>`;
+  }).join('');
+  const tgtA = `<line x1="${L}" x2="${W - R}" y1="${yA(80)}" y2="${yA(80)}" stroke="#475569" stroke-width="1.5" stroke-dasharray="5 4" opacity=".7"/><text x="${W - R}" y="${yA(80) - 5}" text-anchor="end" font-size="10.5" font-weight="700" fill="#475569">เป้า 80%</text>`;
+  const chartA = `<div class="mini-chart"><div class="mini-chart-title">ร้อยละการปฏิบัติตามแนวทาง MR (ภาพรวม)</div>
+    <svg class="ic-svg" viewBox="0 0 ${W} ${H}">${gridA}${tgtA}${barsA}<line x1="${L}" x2="${W - R}" y1="${base}" y2="${base}" stroke="#cbd5e1"/>${xLabels}</svg>
+    <div class="ic-legend"><span><i style="background:#059669"></i>✓ ผ่านเป้า</span><span><i style="background:#dc2626"></i>✕ ต่ำกว่าเป้า</span><span><i class="dash"></i>เป้าหมาย ≥ 80%</span></div></div>`;
+
+  // Chart B: PE count per period, stacked by source
+  const totals = per.map(c => I.V[c.k].pe_tot), rawMax = Math.max(1, ...totals);
+  const stepRaw = rawMax / 4, p10 = Math.pow(10, Math.floor(Math.log10(Math.max(1, stepRaw))));
+  const stepB = Math.max(1, [1, 2, 5, 10].find(x => x * p10 >= stepRaw) * p10), mx = Math.ceil(rawMax / stepB) * stepB;
+  const yB = v => base - v / mx * ph;
+  const ticks = []; for (let v = 0; v <= mx + 1e-9; v += stepB) ticks.push(v);
+  const gridB = ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${yB(v)}" y2="${yB(v)}" stroke="#eef2f7"/><text x="${L - 6}" y="${yB(v) + 3.5}" text-anchor="end" font-size="10" fill="#94a3b8">${Number.isInteger(v) ? v : v.toFixed(1)}</text>`).join('');
+  const barsB = per.map((c, i) => {
+    const v = I.V[c.k], sys = v.a.pe, ext = v.m.pe_ext || 0, tot = sys + ext; if (!tot) return '';
+    const x = cx(i) - bw / 2, ySys = yB(sys), yTot = yB(tot);
+    const tip = `${c.l}: PE รวม ${tot} (ระบบประเมิน ${sys} · แหล่งอื่น ${ext}) · ระดับ C+ ${v.c_tot} · ระดับ E+ ${v.e_tot}`;
+    const sysPath = sys ? (ext ? `<rect x="${x}" y="${ySys}" width="${bw}" height="${base - ySys}" fill="#2563eb"><title>${tip}</title></rect>` : `<path d="${barTop(x, ySys, bw, base, 4)}" fill="#2563eb"><title>${tip}</title></path>`) : '';
+    const extPath = ext ? `<path d="${barTop(x, yTot, bw, ySys - (sys ? 2 : 0), 4)}" fill="#93c5fd"><title>${tip}</title></path>` : '';
+    return `<g>${sysPath}${extPath}<text x="${cx(i)}" y="${yTot - 6}" text-anchor="middle" font-size="11.5" font-weight="800" fill="#0f172a">${tot}</text></g>`;
+  }).join('');
+  const anyPE = totals.some(t => t > 0);
+  const chartB = `<div class="mini-chart"><div class="mini-chart-title">จำนวน PE ที่เกิดจาก MR (ครั้ง) แยกตามแหล่งข้อมูล</div>
+    ${anyPE ? `<svg class="ic-svg" viewBox="0 0 ${W} ${H}">${gridB}${barsB}<line x1="${L}" x2="${W - R}" y1="${base}" y2="${base}" stroke="#cbd5e1"/>${xLabels}</svg>
+    <div class="ic-legend"><span><i style="background:#2563eb"></i>จากการประเมินในระบบนี้</span><span><i style="background:#93c5fd"></i>จากแหล่งอื่น (กรอกเอง)</span><span style="color:var(--text-muted);">ชี้ที่แท่งเพื่อดูระดับ C+ / E+</span></div>`
+    : `<div class="sc-empty" style="padding:40px 0;text-align:center;">ยังไม่พบ PE ในช่วงที่เลือก<br>กรอก PE จากแหล่งอื่นได้ในตารางข้อ 3.2</div>`}</div>`;
+
+  box.innerHTML = chartA + chartB;
+}
+
+function tableForExport(id) {
+  const t = document.getElementById(id); if (!t) return null;
+  const clone = t.cloneNode(true);
+  clone.querySelectorAll('input').forEach(i => i.replaceWith(document.createTextNode(i.value || '')));
+  clone.setAttribute('border', '1');
+  clone.style.borderCollapse = 'collapse'; clone.style.fontFamily = 'Sarabun, Tahoma, sans-serif'; clone.style.fontSize = '12pt';
+  clone.querySelectorAll('th,td').forEach(c => { c.style.border = '1px solid #94a3b8'; c.style.padding = '4px 8px'; });
+  clone.querySelectorAll('th').forEach(c => { c.style.background = '#4472c4'; c.style.color = '#ffffff'; });
+  clone.querySelectorAll('td.tgt').forEach(c => { c.style.textAlign = 'center'; });
+  return clone;
+}
+
+async function copyTable(id) {
+  const clone = tableForExport(id); if (!clone) return;
+  const html = clone.outerHTML;
+  const text = [...clone.rows].map(r => [...r.cells].map(c => c.textContent.replace(/\s+/g, ' ').trim()).join('\t')).join('\n');
+  try {
+    await navigator.clipboard.write([new ClipboardItem({'text/html': new Blob([html], {type: 'text/html'}), 'text/plain': new Blob([text], {type: 'text/plain'})})]);
+  } catch (e) {
+    const d = document.createElement('div'); d.contentEditable = 'true'; d.style.cssText = 'position:fixed;left:-9999px;top:0;';
+    d.innerHTML = html; document.body.appendChild(d);
+    const rg = document.createRange(); rg.selectNodeContents(d); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(rg);
+    document.execCommand('copy'); sel.removeAllRanges(); d.remove();
+  }
+  toast('คัดลอกตารางแล้ว — วางใน PowerPoint / Word / Excel ได้เลย', 'ok');
+}
+
+function tableCSV(id, name) {
+  const clone = tableForExport(id); if (!clone) return;
+  const rows = [...clone.rows].map(r => [...r.cells].map(c => `"${c.textContent.replace(/\s+/g, ' ').trim().replace(/"/g, '""')}"`).join(','));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿' + rows.join('\n')], {type: 'text/csv;charset=utf-8;'}));
+  a.download = name + '_' + new Date().toISOString().substring(0, 10) + '.csv';
+  a.click();
+}
+
 // ===== DASHBOARD =====
 async function loadAndDash() {
   document.getElementById('dash-wrap').innerHTML='<div class="loading-txt">⏳ กำลังโหลด...</div>';
   try {
     const r=await gasCall({action:'getAll'});
-    if(r.ok){setRecs(r.data);renderDash();}
+    if(r.ok){setRecs(r.data);renderDash();loadInd();}
     else document.getElementById('dash-wrap').innerHTML='<div class="empty">โหลดไม่สำเร็จ</div>';
   } catch(e){document.getElementById('dash-wrap').innerHTML='<div class="empty">เชื่อมต่อไม่ได้</div>';}
 }
@@ -1929,6 +2543,8 @@ function getDashFilt() {
 const CLT_COLORS = {'อายุรกรรม':'#2563eb','ENT':'#0d9488','ศัลยกรรม':'#7c3aed','ศัลยกรรมกระดูก':'#ea580c','สูติกรรม':'#db2777','เด็ก':'#16a34a','อื่นๆ':'#64748b'};
 const CLT_ORDER = [...new Set(WARDS.map(w=>w.c))];
 function cltColor(c){ return CLT_COLORS[c] || '#475569'; }
+function wardIdx(w){ const i = WARDS.findIndex(x=>x.n===w); return i<0 ? 999 : i; }
+function cltIdx(c){ const i = CLT_ORDER.indexOf(c); return i<0 ? 99 : i; }
 function pctColor(p){ return p>=80 ? '#059669' : p>=60 ? '#d97706' : '#dc2626'; }
 function ring(p, size=88) {
   const c = pctColor(p);
@@ -2027,11 +2643,7 @@ function renderDash() {
   const stepSt=groupBy(data,r=>STEPN[r.step]||r.step||'-');
   const monSt=groupBy(data,r=>r.month||getMon(r.date)||'ไม่ระบุ');
 
-  const wardArr=Object.entries(wardSt).sort((a,b)=>{
-    const pa=a[1].p/a[1].t, pb=b[1].p/b[1].t;
-    if(pa<0.8&&pb>=0.8)return -1; if(pa>=0.8&&pb<0.8)return 1;
-    return b[1].t-a[1].t;
-  });
+  const wardArr=Object.entries(wardSt).sort((a,b)=>wardIdx(a[0])-wardIdx(b[0]));
 
   const sevSt={};
   meRecs.forEach(r=>{(r.meSev||'').split(',').forEach(s=>{s=s.trim();if(s&&s!=='-'){sevSt[s]=(sevSt[s]||0)+1;}});});
@@ -2141,10 +2753,10 @@ function renderDash() {
     <span><i style="background:#d97706"></i>60–79%</span>
     <span><i style="background:#dc2626"></i>&lt; 60%</span>
     <span><i class="lg-target"></i>เส้นเป้าหมาย 80%</span>
-    <span>เรียงจากหอที่ % ต่ำสุดก่อน</span>
+    <span class="seg seg-sm" style="margin-left:auto;"><button class="${window._wardSort!=='pct'?'on':''}" onclick="window._wardSort='order';renderDash()">เรียงตามลำดับหอ</button><button class="${window._wardSort==='pct'?'on':''}" onclick="window._wardSort='pct';renderDash()">% ต่ำสุดก่อน</button></span>
   </div>
   ${cltInfo.map((x,i)=>{
-    const wl = x.wards.map(w=>[w,x.wst[w]]).sort((a,b)=>(a[1].p/a[1].t)-(b[1].p/b[1].t) || b[1].t-a[1].t);
+    const wl = x.wards.map(w=>[w,x.wst[w]]).sort((window._wardSort==='pct') ? ((a,b)=>(a[1].p/a[1].t)-(b[1].p/b[1].t) || b[1].t-a[1].t) : ((a,b)=>wardIdx(a[0])-wardIdx(b[0])));
     return `<div class="wgroup open" id="cltg_${i}" style="--cc:${cltColor(x.c)}">
       <div class="wgroup-head" onclick="this.parentElement.classList.toggle('open')">
         <span class="clt-dot"></span><b>${x.c}</b>
@@ -2175,6 +2787,8 @@ function renderDash() {
     </div>`;
   }).join('')}`;
 
+  const ind = buildIndicators(data);
+
   const sysStepHtml = `
   <div class="chart-grid">
     <div class="mini-chart">
@@ -2204,13 +2818,13 @@ function renderDash() {
   const wardMonthCount = {};
   data.forEach(r => {
     const w = r.ward || 'ไม่ระบุ';
-    const mon = r.month || getMon(r.date) || '?';
+    const mon = ymKey(r.date) || '?';
     const key = w + '||' + mon;
     wardMonthCount[key] = (wardMonthCount[key] || 0) + 1;
   });
 
   // Get distinct months in filtered data
-  const distinctMons = [...new Set(data.map(r => r.month || getMon(r.date) || '?'))].filter(Boolean);
+  const distinctMons = [...new Set(data.map(r => ymKey(r.date) || '?'))].filter(Boolean).sort();
   const distinctWards = [...new Set(data.map(r => r.ward || 'ไม่ระบุ'))];
 
   // Per ward: get latest month's count and average
@@ -2264,7 +2878,7 @@ function renderDash() {
     <table style="min-width:500px;">
       <thead><tr>
         <th>หอผู้ป่วย</th>
-        ${distinctMons.map(m=>`<th style="text-align:center;">${m}</th>`).join('')}
+        ${distinctMons.map(m=>`<th style="text-align:center;">${ymLabel(m)}</th>`).join('')}
         <th style="text-align:center;">เฉลี่ย</th>
         <th style="text-align:center;">สถานะ</th>
       </tr></thead>
@@ -2341,19 +2955,11 @@ function renderDash() {
     <div class="met ${meCplus>0?'met-w':'met-p'}"><div class="met-val">${meCplus}</div><div class="met-lbl">ME ระดับ C+</div></div>
   </div>
 
-  <!-- ตัวชี้วัดหลัก -->
-  <div class="sec-title">ตัวชี้วัดหลัก</div>
-  <div class="mini-chart" style="margin-bottom:1rem;">
-    <table><thead><tr><th>ตัวชี้วัด</th><th>ผล</th><th>เป้าหมาย</th><th>สถานะ</th></tr></thead>
-    <tbody>
-      <tr><td>% MR Coverage</td><td><b>${pct}%</b></td><td>≥ 80%</td><td><span class="tag ${parseFloat(pct)>=80?'tag-p':'tag-f'}">${parseFloat(pct)>=80?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
-      <tr><td>ME ระดับ E+</td><td><b>${meHigh} ครั้ง</b></td><td>= 0</td><td><span class="tag ${meHigh===0?'tag-p':'tag-f'}">${meHigh===0?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
-      <tr><td>ME ระดับ C+ (%)</td><td><b>${total?(meCplus/total*100).toFixed(2):0}%</b></td><td>&lt; 1.5%</td><td><span class="tag ${total&&(meCplus/total*100)<1.5?'tag-p':'tag-f'}">${total&&(meCplus/total*100)<1.5?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
-    </tbody></table>
-  </div>
+  ${ind.main}
 
   ${cltOverviewHtml}
   ${wardGroupHtml}
+  ${ind.matrix}
 
   <!-- ==================== SECTION: ข้อ 1 ยาโรคเรื้อรัง ==================== -->
   <div class="sec-title" style="background:var(--gray-light);padding:6px 10px;border-radius:var(--radius);font-size:13px;">📋 ข้อ 1 — มียาโรคเรื้อรังหรือไม่</div>
@@ -2546,6 +3152,7 @@ function renderDash() {
   ${evalHtml}
   ${samplingHtml}
   `;
+  recalcInd();
 }
 function showTab(t, btn) {
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
@@ -2560,6 +3167,8 @@ function showTab(t, btn) {
 // ===== INIT =====
 document.getElementById('f-date').value=new Date().toISOString().substring(0,10);
 initUI();
+document.getElementById('f-date').addEventListener('change', renderWardProgress);
+document.getElementById('f-an').addEventListener('input', checkAN);
 buildQ();
 checkConn();
 </script>
