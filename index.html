@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบประเมิน MR — รพ.มหาสารคาม v5</title>
+<title>ระบบประเมิน MR — รพ.มหาสารคาม v6</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@400;600;700&display=swap');
 :root{
@@ -60,7 +60,7 @@ body{font-family:'Sarabun',sans-serif;font-size:14px;background:#f0f4ff;color:va
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
 label{font-size:11px;font-weight:800;color:#334155;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;}
-input[type=text],input[type=date],input[type=time],input[type=number],select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border-md);border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;color:var(--text);background:var(--white);outline:none;transition:all .2s;}
+input[type=text],input[type=date],select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border-md);border-radius:var(--radius);font-family:'Sarabun',sans-serif;font-size:13px;color:var(--text);background:var(--white);outline:none;transition:all .2s;}
 input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12);}
 input[readonly]{background:var(--gray-light);color:var(--text-muted);}
 
@@ -246,6 +246,74 @@ tr:hover td{background:#eff6ff;}
 .login-err{color:#dc2626;font-size:12px;font-weight:700;margin-top:10px;min-height:18px;background:#fff1f2;border-radius:6px;padding:6px 10px;display:none;}
 .login-user-badge{position:fixed;top:18px;right:18px;background:rgba(255,255,255,.15);color:white;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;z-index:201;display:none;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.2);}
 
+/* ===== v6: EVALUATOR CHIPS ===== */
+.eval-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.eval-chip{padding:6px 14px 6px 6px;border-radius:22px;border:1.5px solid var(--border-md);background:white;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:#475569;transition:all .15s;display:inline-flex;align-items:center;gap:7px;}
+.eval-chip .av{width:24px;height:24px;border-radius:50%;background:#e2e8f0;color:#475569;font-size:12px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;}
+.eval-chip:hover{border-color:var(--blue);color:var(--blue);}
+.eval-chip.sel{background:linear-gradient(135deg,var(--blue),var(--indigo));color:white;border-color:transparent;box-shadow:0 2px 10px rgba(37,99,235,.35);}
+.eval-chip.sel .av{background:rgba(255,255,255,.25);color:white;}
+.eval-hint{font-size:11px;color:var(--text-muted);margin-top:5px;}
+
+/* ===== v6: CLT CARDS ===== */
+.clt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:1.25rem;}
+.clt-card{background:white;border:1px solid var(--border);border-top:4px solid var(--cc);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--shadow);cursor:pointer;transition:all .2s;}
+.clt-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.clt-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.clt-dot{width:10px;height:10px;border-radius:50%;background:var(--cc);flex-shrink:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--cc) 22%,transparent);}
+.clt-name{font-weight:800;font-size:15px;flex:1;color:#0f172a;}
+.clt-body{display:flex;align-items:center;gap:16px;}
+.ring{border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ring-in{width:74%;height:74%;background:white;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;}
+.ring-in b{font-size:19px;font-weight:800;}
+.ring-in small{font-size:9px;color:var(--text-muted);font-weight:700;letter-spacing:.03em;}
+.clt-stats{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;}
+.clt-stats div{display:flex;flex-direction:column;}
+.clt-stats span{font-size:10.5px;color:var(--text-muted);font-weight:600;}
+.clt-stats b{font-size:18px;font-weight:800;color:#0f172a;line-height:1.2;}
+.c-green{color:#059669!important}.c-red{color:#dc2626!important}.c-amber{color:#d97706!important}
+.clt-foot{margin-top:12px;padding-top:8px;border-top:1px dashed var(--border);font-size:11.5px;color:var(--text-muted);font-weight:600;display:flex;justify-content:space-between;gap:6px;}
+
+/* ===== v6: WARD GROUPS ===== */
+.legend-row{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--text-muted);margin-bottom:10px;font-weight:600;}
+.legend-row span{display:inline-flex;align-items:center;gap:5px;}
+.legend-row i{width:14px;height:8px;border-radius:3px;display:inline-block;}
+.legend-row i.lg-target{width:2px;height:13px;background:#0f172a;border-radius:1px;}
+.wgroup{background:white;border:1px solid var(--border);border-left:5px solid var(--cc);border-radius:var(--radius-lg);margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden;scroll-margin-top:80px;}
+.wgroup-head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:linear-gradient(90deg,color-mix(in srgb,var(--cc) 9%,white),white);user-select:none;}
+.wgroup-head b{font-size:14px;}
+.wg-meta{font-size:11.5px;color:var(--text-muted);flex:1;}
+.wg-pct{font-size:17px;font-weight:800;}
+.wg-caret{transition:transform .2s;color:var(--text-muted);}
+.wgroup.open .wg-caret{transform:rotate(180deg);}
+.wgroup-body{display:none;padding:4px 12px 10px;}
+.wgroup.open .wgroup-body{display:block;}
+.wrow{display:grid;grid-template-columns:minmax(170px,1.4fr) minmax(160px,2fr) 80px 210px 56px;gap:12px;align-items:center;padding:9px 8px;border-bottom:1px solid #f1f5f9;cursor:pointer;border-radius:8px;}
+.wrow:hover{background:#f8fafc;}
+.wrow-h{cursor:default;font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;padding-top:6px;padding-bottom:6px;}
+.wrow-h:hover{background:none;}
+.wrow-fail{background:#fff8f8;}
+.wname{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;min-width:0;flex-wrap:wrap;}
+.wcaret{color:var(--text-light);font-size:10px;width:10px;}
+.sys-pill{font-size:9.5px;font-weight:700;padding:1px 7px;border-radius:10px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;white-space:nowrap;}
+.wbar{display:flex;align-items:center;gap:8px;}
+.wbar b{font-size:13px;min-width:42px;text-align:right;}
+.pbar{flex:1;height:12px;background:#eef2f7;border-radius:6px;position:relative;}
+.pbar-fill{height:100%;border-radius:6px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.pbar-target{position:absolute;left:80%;top:-3px;bottom:-3px;width:2px;background:#0f172a;opacity:.55;border-radius:1px;}
+.ctr{text-align:center;font-size:12px;font-weight:600;}
+.q456{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;}
+.qdot{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;border:1px solid;white-space:nowrap;}
+.muted{color:var(--text-light);}
+.wdetail{padding:6px 10px 12px 28px;background:#fafbff;border-bottom:1px solid #eef2f7;}
+.bar-val{min-width:120px;font-size:13px;font-weight:800;}
+.bar-val small{font-weight:600;color:var(--text-muted);font-size:11px;}
+@media(max-width:760px){
+  .wrow{grid-template-columns:1fr 1fr;gap:6px;}
+  .wrow-h{display:none;}
+  .wrow>.ctr{text-align:left;justify-content:flex-start;}
+}
+
 </style>
 </head>
 <body>
@@ -255,7 +323,7 @@ tr:hover td{background:#eff6ff;}
   <div class="login-box">
     <div class="login-logo">💊</div>
     <div class="login-title">ระบบประเมิน MR</div>
-    <div class="login-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v5</div>
+    <div class="login-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v6</div>
     <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:11px;color:#1d4ed8;margin-bottom:20px;text-align:left;"><b>💊 เฉพาะเภสัชกร รพ.มหาสารคาม</b><br>ชื่อผู้ใช้: ชื่อของคุณ (ภาษาอังกฤษ)<br>รหัสผ่าน: <b>รหัสส่วนตัวของคุณ</b></div>
     <div class="login-field">
       <label>ชื่อผู้ใช้</label>
@@ -286,7 +354,7 @@ tr:hover td{background:#eff6ff;}
     <div class="topbar-icon">💊</div>
     <div>
       <div class="topbar-title">ระบบประเมิน Medication Reconciliation</div>
-      <div class="topbar-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v5</div>
+      <div class="topbar-sub">โรงพยาบาลมหาสารคาม · IPD MR Assessment v6</div>
     </div>
   </div>
   <div class="sync-status" onclick="checkConn()" title="คลิกตรวจสอบการเชื่อมต่อ">
@@ -306,17 +374,16 @@ tr:hover td{background:#eff6ff;}
   <div id="sec-form" class="sec active">
     <div class="card">
       <div class="card-title">ข้อมูลทั่วไป</div>
-      <div class="g3">
+      <div class="g2">
         <div><label>AN (เลข Admission) *</label><input type="text" id="f-an" placeholder="เช่น 6800001"/></div>
         <div><label>วันที่ประเมิน *</label><input type="date" id="f-date"/></div>
-        <div>
-          <label>ผู้ประเมิน</label>
-          <div style="display:flex;gap:6px;">
-            <input type="text" id="f-eval" placeholder="ชื่อผู้ประเมิน" style="flex:1;"/>
-            <button class="btn-s" onclick="saveEval()" title="จำชื่อนี้" style="padding:8px 10px;font-size:12px;white-space:nowrap;">💾 จำ</button>
-          </div>
-          <div id="saved-evals" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;"></div>
-        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label>ผู้ประเมิน *</label>
+        <div class="eval-chips" id="eval-chips"></div>
+        <input type="text" id="f-eval-other" placeholder="ระบุชื่อผู้ประเมิน..." style="display:none;margin-top:8px;max-width:320px;" oninput="onEvalOther(this.value)"/>
+        <input type="hidden" id="f-eval"/>
+        <div class="eval-hint">💡 ระบบจำผู้ประเมินที่เลือกล่าสุดไว้ในเครื่องนี้ ครั้งหน้าเลือกให้อัตโนมัติ</div>
       </div>
       <div class="g3">
         <div>
@@ -348,55 +415,6 @@ tr:hover td{background:#eff6ff;}
         </div>
         <div><label>หมายเหตุ</label><input type="text" id="f-note" placeholder="(ไม่บังคับ)"/></div>
       </div>
-    </div>
-
-    <div class="card" id="research-card">
-      <div class="card-title">ข้อมูลเพิ่มเติมสำหรับงานวิจัย (ไม่บังคับ)</div>
-      <div class="g3">
-        <div>
-          <label>ช่วงศึกษา</label>
-          <select id="f-studyperiod">
-            <option value="">--</option>
-            <option value="Baseline">Baseline</option>
-            <option value="Post">Post</option>
-          </select>
-        </div>
-        <div><label>วันที่ระบบเริ่มใช้จริง (วอร์ด)</label><input type="date" id="f-golive"/></div>
-        <div><label>จำนวนรายการยาก่อนรับ</label><input type="number" id="f-drugcount" min="0" placeholder="เช่น 5"/></div>
-      </div>
-      <div class="g3">
-        <div><label>จำนวนแหล่งข้อมูลที่ใช้ทำ BPMH</label><input type="number" id="f-bpmhsource" min="0" placeholder="เช่น 2"/></div>
-        <div>
-          <label>มีใบ Refer ประกอบหรือไม่</label>
-          <select id="f-referdoc">
-            <option value="">--</option>
-            <option value="ใช่">ใช่</option>
-            <option value="ไม่ใช่">ไม่ใช่</option>
-          </select>
-        </div>
-        <div>
-          <label>Discrepancy ถึงตัวผู้ป่วยหรือไม่</label>
-          <select id="f-discreach">
-            <option value="">--</option>
-            <option value="ไม่มี discrepancy">ไม่มี discrepancy</option>
-            <option value="ใช่ (ถึงผู้ป่วยแล้ว)">ใช่ (ถึงผู้ป่วยแล้ว)</option>
-            <option value="ไม่ใช่ (แก้ไขก่อนถึงผู้ป่วย)">ไม่ใช่ (แก้ไขก่อนถึงผู้ป่วย)</option>
-          </select>
-        </div>
-      </div>
-      <div style="margin-bottom:14px;">
-        <label>ประเภท Discrepancy (เลือกได้มากกว่า 1)</label>
-        <div class="chip-row" id="disc-type-wrap"></div>
-      </div>
-      <div class="g3">
-        <div><label>เวลาเริ่มทำ MR</label><input type="time" id="f-mrstart"/></div>
-        <div><label>เวลาสิ้นสุดทำ MR</label><input type="time" id="f-mrend"/></div>
-        <div><label>อายุผู้ป่วย (ปี)</label><input type="number" id="f-age" min="0" max="120" placeholder="เช่น 65"/></div>
-      </div>
-      <div class="g3">
-        <div><label>จำนวนโรคร่วม</label><input type="number" id="f-comorbid" min="0" placeholder="เช่น 3"/></div>
-      </div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:-6px;">💡 ช่องเหล่านี้ไม่บังคับกรอก แต่ถ้าเป็นเคสในช่วงเก็บข้อมูลวิจัย ควรกรอกให้ครบเพื่อใช้วิเคราะห์ DiD และคำนวณต้นทุนภายหลัง</div>
     </div>
 
     <div class="card">
@@ -532,6 +550,7 @@ tr:hover td{background:#eff6ff;}
 </div>
 
 <div class="toast" id="toast"></div>
+<datalist id="eval-list"><option value="พรพิมล"><option value="ศิรินย์"><option value="ครุพร"><option value="เพชรลดา"></datalist>
 
 <!-- EDIT MODAL -->
 <div class="modal-overlay" id="edit-modal">
@@ -574,6 +593,7 @@ const WARDS = [
   {n:"อายุรกรรมชาย 2",s:"1",c:"อายุรกรรม"},
   {n:"อายุรกรรมหญิง 1",s:"1",c:"อายุรกรรม"},
   {n:"อายุรกรรมหญิง 2",s:"1",c:"อายุรกรรม"},
+  {n:"เฉพาะโรค",s:"1",c:"อายุรกรรม"},
   {n:"ICUอายุรกรรม 1",s:"1",c:"อายุรกรรม"},
   {n:"ICUอายุรกรรม 2",s:"1",c:"อายุรกรรม"},
   {n:"ICUอายุรกรรม 3",s:"1",c:"อายุรกรรม"},
@@ -633,7 +653,6 @@ const HIGH_SEV = ["E","F","G","H","I"];
 const MID_SEV = ["C","D"];
 const ME_TYPE = ["PE (Potential Error)","DE (Dispensing Error)","AE (Administration Error)"];
 const ME_KIND = ["Omission (ไม่ได้รับยา)","Wrong drug (ผิดชนิด)","Wrong dose (ผิดขนาด)","Wrong frequency (ความถี่ผิด)","Wrong route (ทางผิด)","Wrong time (เวลาผิด)","Commission (สั่งซ้ำ)","Other"];
-const DISC_TYPE = ["Omission","Commission","Dose","Frequency","Route","Duplication","Duration","ไม่มี discrepancy"];
 const SYSN = {"1":"SCAN","2":"Hybrid","3":"Paperless","4":"ผสมผสาน"};
 const STEPN = {"1":"แรกรับ","2":"ย้ายตึก","3":"Post-op","4":"กลับบ้าน"};
 const MONTHS_TH = ["ต.ค.","พ.ย.","ธ.ค.","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย."];
@@ -663,7 +682,7 @@ const MK_HOSP = [
 // ===== 77 จังหวัด =====
 const PROVINCES = ["กระบี่", "กรุงเทพมหานคร", "กาญจนบุรี", "กาฬสินธุ์", "กำแพงเพชร", "ขอนแก่น", "จันทบุรี", "ฉะเชิงเทรา", "ชลบุรี", "ชัยนาท", "ชัยภูมิ", "ชุมพร", "เชียงราย", "เชียงใหม่", "ตรัง", "ตราด", "ตาก", "นครนายก", "นครปฐม", "นครพนม", "นครราชสีมา", "นครศรีธรรมราช", "นครสวรรค์", "นนทบุรี", "นราธิวาส", "น่าน", "บึงกาฬ", "บุรีรัมย์", "ปทุมธานี", "ประจวบคีรีขันธ์", "ปราจีนบุรี", "ปัตตานี", "พระนครศรีอยุธยา", "พะเยา", "พังงา", "พัทลุง", "พิจิตร", "พิษณุโลก", "เพชรบุรี", "เพชรบูรณ์", "แพร่", "ภูเก็ต", "มหาสารคาม", "มุกดาหาร", "แม่ฮ่องสอน", "ยโสธร", "ยะลา", "ร้อยเอ็ด", "ระนอง", "ระยอง", "ราชบุรี", "ลพบุรี", "ลำปาง", "ลำพูน", "เลย", "ศรีสะเกษ", "สกลนคร", "สงขลา", "สตูล", "สมุทรปราการ", "สมุทรสงคราม", "สมุทรสาคร", "สระแก้ว", "สระบุรี", "สิงห์บุรี", "สุโขทัย", "สุพรรณบุรี", "สุราษฎร์ธานี", "สุรินทร์", "หนองคาย", "หนองบัวลำภู", "อ่างทอง", "อำนาจเจริญ", "อุดรธานี", "อุตรดิตถ์", "อุทัยธานี", "อุบลราชธานี"];
 
-let ans = {}, meSevArr = [], meTypArr = [], meKindArr = [], hospArr = [], discTypeArr = [], allRecs = [];
+let ans = {}, meSevArr = [], meTypArr = [], meKindArr = [], hospArr = [], allRecs = [];
 let editId = null;
 
 // ===== TOAST =====
@@ -689,7 +708,7 @@ async function gasCall(params) {
     params.callback = cbName;
     const url = new URL(GAS_URL);
     Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
-    const timer = setTimeout(() => { cleanup(); reject(new Error('timeout')); }, 20000);
+    const timer = setTimeout(() => { cleanup(); reject(new Error('timeout')); }, 45000);
     function cleanup() {
       clearTimeout(timer); delete window[cbName];
       const s = document.getElementById(cbName); if (s) s.remove();
@@ -708,7 +727,7 @@ async function checkConn() {
   try {
     const r = await gasCall({action:'getAll'});
     if (r.ok) {
-      allRecs = r.data || [];
+      setRecs(r.data);
       setSyncUI('ok', `เชื่อมต่อแล้ว · ${allRecs.length} รายการ`);
     } else setSyncUI('err', 'เชื่อมต่อไม่ได้');
   } catch(e) { setSyncUI('err', 'ออฟไลน์'); }
@@ -823,16 +842,7 @@ function initUI() {
   createMS('ms-dclt', allCLTs, 'ทั้งหมด', 'dclt');
   createMS('ms-dsys', allSys, 'ทั้งหมด', 'dsys');
 
-  renderDiscTypeChips();
   loadSavedEvals();
-}
-
-function renderDiscTypeChips() {
-  const wrap = document.getElementById('disc-type-wrap');
-  if (!wrap) return;
-  wrap.innerHTML = DISC_TYPE.map(t =>
-    `<button type="button" class="chip${discTypeArr.includes(t)?' sel':''}" onclick="toggleChip(discTypeArr,'${t.replace(/'/g,"\\'")}',this)">${t}</button>`
-  ).join('');
 }
 
 function onWardChange() {
@@ -844,33 +854,57 @@ function onWardChange() {
   }
 }
 
-// ===== EVALUATOR MEMORY =====
-function saveEval() {
-  const val = document.getElementById('f-eval').value.trim();
-  if (!val) return;
-  let evals = JSON.parse(localStorage.getItem('mr_evals')||'[]');
-  if (!evals.includes(val)) { evals.push(val); localStorage.setItem('mr_evals', JSON.stringify(evals)); }
-  loadSavedEvals();
-  toast('จำชื่อแล้ว: '+val, 'ok');
+// ===== EVALUATOR (v6) =====
+const EVALUATORS = ["พรพิมล","ศิรินย์","ครุพร","เพชรลดา"];
+const EVAL_ALIAS = {"motto":"พรพิมล"};
+function normEval(n) {
+  const v = (n==null ? '' : String(n)).trim();
+  return EVAL_ALIAS[v.toLowerCase()] || v;
+}
+function lsGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function lsSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+let evalChoice = '';
+
+function renderEvalChips() {
+  const wrap = document.getElementById('eval-chips');
+  if (!wrap) return;
+  const all = [...EVALUATORS, 'อื่นๆ'];
+  wrap.innerHTML = all.map(n => {
+    const av = n === 'อื่นๆ' ? '+' : n.replace(/^[เแโใไ]/,'').charAt(0);
+    return `<button type="button" class="eval-chip${evalChoice===n?' sel':''}" onclick="pickEval('${n}')"><span class="av">${av}</span>${n}</button>`;
+  }).join('');
+}
+
+function pickEval(name) {
+  evalChoice = name;
+  const other = document.getElementById('f-eval-other');
+  const hid = document.getElementById('f-eval');
+  if (name === 'อื่นๆ') {
+    other.style.display = '';
+    other.value = lsGet('mr_eval_other') || '';
+    hid.value = normEval(other.value);
+    setTimeout(() => other.focus(), 0);
+  } else {
+    other.style.display = 'none';
+    hid.value = name;
+  }
+  lsSet('mr_eval_last', name);
+  renderEvalChips();
+}
+
+function onEvalOther(v) {
+  document.getElementById('f-eval').value = normEval(v);
+  lsSet('mr_eval_other', v);
 }
 
 function loadSavedEvals() {
-  const evals = JSON.parse(localStorage.getItem('mr_evals')||'[]');
-  const wrap = document.getElementById('saved-evals');
-  wrap.innerHTML = evals.map(e =>
-    `<span style="background:var(--blue-light);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;"
-      onclick="document.getElementById('f-eval').value='${e}'">
-      ${e}
-      <span onclick="removeEval('${e}');event.stopPropagation();" style="opacity:.6;font-size:10px;">✕</span>
-    </span>`
-  ).join('');
+  let last = normEval(lsGet('mr_eval_last') || '');
+  if (last && !EVALUATORS.includes(last) && last !== 'อื่นๆ') last = '';
+  if (last) pickEval(last); else renderEvalChips();
 }
 
-function removeEval(name) {
-  let evals = JSON.parse(localStorage.getItem('mr_evals')||'[]');
-  evals = evals.filter(e=>e!==name);
-  localStorage.setItem('mr_evals', JSON.stringify(evals));
-  loadSavedEvals();
+function setRecs(arr) {
+  allRecs = (arr || []).map(r => ({...r, evaluator: normEval(r.evaluator)}));
 }
 
 // ===== BUILD QUESTIONS =====
@@ -1100,10 +1134,11 @@ async function saveRec() {
   const sys=document.getElementById('f-sys').value;
   const clt=document.getElementById('f-clt').value;
   const step=document.getElementById('f-step').value;
-  const ev=document.getElementById('f-eval').value.trim();
+  const ev=normEval(document.getElementById('f-eval').value);
   const note=document.getElementById('f-note').value.trim();
 
   if (!an||!date||!ward||!step) { toast('กรุณากรอก AN, วันที่, หอผู้ป่วย และขั้นตอนให้ครบ','err'); return; }
+  if (!ev) { toast('กรุณาเลือกผู้ประเมิน','err'); return; }
   if (ans['q4']===undefined||ans['q5']===undefined||ans['q6']===undefined) { toast('กรุณาตอบข้อ 4, 5, 6 ก่อนบันทึก','err'); return; }
 
   const btn=document.getElementById('btn-save');
@@ -1122,21 +1157,7 @@ async function saveRec() {
     meTyp: meTypArr.length?meTypArr.join(' / '):'-',
     meKind: meKindArr.length?meKindArr.join(' / '):'-',
     meDetail: document.getElementById('me-detail')?.value||'-',
-    pass: getStatus(), fy: getFY(date), quarter: getQ(date), month: getMon(date),
-    // ===== ฟิลด์วิจัยเพิ่มเติม (ไม่บังคับ) =====
-    studyPeriod: document.getElementById('f-studyperiod').value || '-',
-    goLiveDate: document.getElementById('f-golive').value || '-',
-    drugCountPreAdmit: document.getElementById('f-drugcount').value || '-',
-    bpmhSourceCount: document.getElementById('f-bpmhsource').value || '-',
-    hasReferDoc: document.getElementById('f-referdoc').value || '-',
-    mrCompleteFull: getStatus()==='pass' ? 'ใช่' : 'ไม่ใช่',
-    discrepancyType: discTypeArr.length ? discTypeArr.join(' / ') : '-',
-    discrepancyReachedPatient: document.getElementById('f-discreach').value || '-',
-    mrStartTime: document.getElementById('f-mrstart').value || '-',
-    mrEndTime: document.getElementById('f-mrend').value || '-',
-    wardType: clt || '-',
-    patientAge: document.getElementById('f-age').value || '-',
-    comorbidityCount: document.getElementById('f-comorbid').value || '-'
+    pass: getStatus(), fy: getFY(date), quarter: getQ(date), month: getMon(date)
   };
 
   try {
@@ -1152,11 +1173,6 @@ function clearAll() {
   document.getElementById('f-date').value=new Date().toISOString().substring(0,10);
   ['f-ward','f-sys','f-step'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-clt').value='';
-  // ล้างฟิลด์วิจัย
-  ['f-studyperiod','f-golive','f-drugcount','f-bpmhsource','f-referdoc','f-mrstart','f-mrend','f-age','f-comorbid','f-discreach'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.value='';
-  });
-  discTypeArr=[]; renderDiscTypeChips();
   ans={}; meSevArr=[]; meTypArr=[]; meKindArr=[]; hospArr=[];
   buildQ();  // full rebuild so button states reset cleanly
   document.getElementById('res-pass').style.display='none';
@@ -1168,7 +1184,7 @@ async function loadAndFilter() {
   document.getElementById('rec-wrap').innerHTML='<div class="loading-txt">⏳ กำลังโหลดข้อมูล...</div>';
   try {
     const r=await gasCall({action:'getAll'});
-    if (r.ok) { allRecs=r.data||[]; renderRec(); setSyncUI('ok',`เชื่อมต่อแล้ว · ${allRecs.length} รายการ`); }
+    if (r.ok) { setRecs(r.data); renderRec(); setSyncUI('ok',`เชื่อมต่อแล้ว · ${allRecs.length} รายการ`); }
     else document.getElementById('rec-wrap').innerHTML='<div class="empty">โหลดไม่สำเร็จ: '+r.msg+'</div>';
   } catch(e) { document.getElementById('rec-wrap').innerHTML='<div class="empty">เชื่อมต่อไม่ได้</div>'; }
 }
@@ -1333,22 +1349,6 @@ function viewRec(id) {
       <div style="margin-bottom:4px;"><b>ชนิด:</b> ${r.meKind||'-'}</div>
       <div><b>รายละเอียด:</b> ${r.meDetail||'-'}</div>
     </div>`:''}
-    ${(r.studyPeriod&&r.studyPeriod!=='-')||(r.discrepancyType&&r.discrepancyType!=='-')||(r.drugCountPreAdmit&&r.drugCountPreAdmit!=='-')?`
-    <div style="margin-top:12px;padding:12px 16px;border-radius:8px;background:var(--indigo-light);border:1px solid #c7d2fe;">
-      <div style="font-size:12px;font-weight:700;color:var(--indigo);margin-bottom:8px;">🔬 ข้อมูลวิจัยเพิ่มเติม</div>
-      <div style="font-size:12px;line-height:1.9;">
-        ช่วงศึกษา: <b>${r.studyPeriod&&r.studyPeriod!=='-'?r.studyPeriod:'-'}</b> ·
-        วันที่ระบบเริ่มใช้จริง: <b>${r.goLiveDate&&r.goLiveDate!=='-'?isoToThai(r.goLiveDate):'-'}</b><br>
-        จำนวนรายการยาก่อนรับ: <b>${r.drugCountPreAdmit||'-'}</b> ·
-        จำนวนแหล่งข้อมูล BPMH: <b>${r.bpmhSourceCount||'-'}</b> ·
-        มีใบ Refer: <b>${r.hasReferDoc||'-'}</b><br>
-        MR สมบูรณ์ครบองค์ประกอบ: <b>${r.mrCompleteFull||'-'}</b><br>
-        ประเภท Discrepancy: <b>${r.discrepancyType||'-'}</b> ·
-        ถึงผู้ป่วยหรือไม่: <b>${r.discrepancyReachedPatient||'-'}</b><br>
-        เวลาทำ MR: <b>${r.mrStartTime||'-'} – ${r.mrEndTime||'-'}</b><br>
-        อายุผู้ป่วย: <b>${r.patientAge||'-'}</b> ปี · จำนวนโรคร่วม: <b>${r.comorbidityCount||'-'}</b>
-      </div>
-    </div>`:''}
     <div style="margin-top:12px;padding:12px 16px;border-radius:8px;background:${r.pass==='pass'?'var(--green-light)':'var(--red-light)'};border:1px solid ${r.pass==='pass'?'#84e1bc':'#f8b4b4'};">
       <b>ผลการประเมิน: ${r.pass==='pass'?'✅ ผ่านเกณฑ์ (MR Coverage)':'❌ ไม่ผ่านเกณฑ์'}</b>
     </div>
@@ -1367,7 +1367,7 @@ function openEdit(id) {
     <div class="g3">
       <div><label>AN</label><input type="text" id="e-an" value="${r.an||''}"/></div>
       <div><label>วันที่ประเมิน</label><input type="date" id="e-date" value="${r.date||''}"/></div>
-      <div><label>ผู้ประเมิน</label><input type="text" id="e-eval" value="${r.evaluator||''}"/></div>
+      <div><label>ผู้ประเมิน</label><input type="text" id="e-eval" list="eval-list" value="${normEval(r.evaluator)}" placeholder="เลือกหรือพิมพ์ชื่อ"/></div>
     </div>
     <div class="g3">
       <div><label>หอผู้ป่วย</label>
@@ -1465,44 +1465,7 @@ function openEdit(id) {
       <div><label>ME ประเภท</label><input type="text" id="e-metyp" value="${r.meTyp&&r.meTyp!=='-'?r.meTyp:''}"/></div>
       <div><label>ME ชนิด</label><input type="text" id="e-mekind" value="${r.meKind&&r.meKind!=='-'?r.meKind:''}"/></div>
     </div>
-    <div><label>ME รายละเอียด</label><textarea id="e-medetail" rows="2">${r.meDetail&&r.meDetail!=='-'?r.meDetail:''}</textarea></div>
-    <hr style="margin:12px 0;border-color:var(--border);">
-    <div style="font-size:11px;font-weight:700;color:var(--indigo);margin-bottom:8px;text-transform:uppercase;">🔬 ข้อมูลวิจัยเพิ่มเติม (ไม่บังคับ)</div>
-    <div class="g3">
-      <div><label>ช่วงศึกษา</label>
-        <select id="e-studyperiod">
-          <option value="-" ${!(r.studyPeriod&&r.studyPeriod!=='-')?'selected':''}>-</option>
-          <option value="Baseline" ${r.studyPeriod==='Baseline'?'selected':''}>Baseline</option>
-          <option value="Post" ${r.studyPeriod==='Post'?'selected':''}>Post</option>
-        </select></div>
-      <div><label>วันที่ระบบเริ่มใช้จริง</label><input type="date" id="e-golive" value="${r.goLiveDate&&r.goLiveDate!=='-'?r.goLiveDate:''}"/></div>
-      <div><label>จำนวนรายการยาก่อนรับ</label><input type="number" id="e-drugcount" value="${r.drugCountPreAdmit&&r.drugCountPreAdmit!=='-'?r.drugCountPreAdmit:''}"/></div>
-    </div>
-    <div class="g3">
-      <div><label>จำนวนแหล่งข้อมูล BPMH</label><input type="number" id="e-bpmhsource" value="${r.bpmhSourceCount&&r.bpmhSourceCount!=='-'?r.bpmhSourceCount:''}"/></div>
-      <div><label>มีใบ Refer</label>
-        <select id="e-referdoc">
-          <option value="-" ${!(r.hasReferDoc&&r.hasReferDoc!=='-')?'selected':''}>-</option>
-          <option value="ใช่" ${r.hasReferDoc==='ใช่'?'selected':''}>ใช่</option>
-          <option value="ไม่ใช่" ${r.hasReferDoc==='ไม่ใช่'?'selected':''}>ไม่ใช่</option>
-        </select></div>
-      <div><label>Discrepancy ถึงผู้ป่วย</label>
-        <select id="e-discreach">
-          <option value="-" ${!(r.discrepancyReachedPatient&&r.discrepancyReachedPatient!=='-')?'selected':''}>-</option>
-          <option value="ไม่มี discrepancy" ${r.discrepancyReachedPatient==='ไม่มี discrepancy'?'selected':''}>ไม่มี discrepancy</option>
-          <option value="ใช่ (ถึงผู้ป่วยแล้ว)" ${r.discrepancyReachedPatient==='ใช่ (ถึงผู้ป่วยแล้ว)'?'selected':''}>ใช่ (ถึงผู้ป่วยแล้ว)</option>
-          <option value="ไม่ใช่ (แก้ไขก่อนถึงผู้ป่วย)" ${r.discrepancyReachedPatient==='ไม่ใช่ (แก้ไขก่อนถึงผู้ป่วย)'?'selected':''}>ไม่ใช่ (แก้ไขก่อนถึงผู้ป่วย)</option>
-        </select></div>
-    </div>
-    <div><label>ประเภท Discrepancy (คั่นด้วย /)</label><input type="text" id="e-disctype" value="${r.discrepancyType&&r.discrepancyType!=='-'?r.discrepancyType:''}" placeholder="เช่น Omission / Dose"/></div>
-    <div class="g3" style="margin-top:14px;">
-      <div><label>เวลาเริ่มทำ MR</label><input type="time" id="e-mrstart" value="${r.mrStartTime&&r.mrStartTime!=='-'?r.mrStartTime:''}"/></div>
-      <div><label>เวลาสิ้นสุดทำ MR</label><input type="time" id="e-mrend" value="${r.mrEndTime&&r.mrEndTime!=='-'?r.mrEndTime:''}"/></div>
-      <div><label>อายุผู้ป่วย</label><input type="number" id="e-age" value="${r.patientAge&&r.patientAge!=='-'?r.patientAge:''}"/></div>
-    </div>
-    <div class="g3">
-      <div><label>จำนวนโรคร่วม</label><input type="number" id="e-comorbid" value="${r.comorbidityCount&&r.comorbidityCount!=='-'?r.comorbidityCount:''}"/></div>
-    </div>`;
+    <div><label>ME รายละเอียด</label><textarea id="e-medetail" rows="2">${r.meDetail&&r.meDetail!=='-'?r.meDetail:''}</textarea></div>`;
   document.getElementById('edit-modal').classList.add('open');
 }
 
@@ -1520,7 +1483,7 @@ async function saveEdit() {
     sys:document.getElementById('e-sys').value,
     clt:document.getElementById('e-clt').value,
     step:document.getElementById('e-step').value,
-    evaluator:document.getElementById('e-eval').value,
+    evaluator:normEval(document.getElementById('e-eval').value),
     note:document.getElementById('e-note').value,
     q1:document.getElementById('e-q1').value,
     q2:document.getElementById('e-q2').value,
@@ -1536,21 +1499,7 @@ async function saveEdit() {
     meTyp:document.getElementById('e-metyp').value||'-',
     meKind:document.getElementById('e-mekind').value||'-',
     meDetail:document.getElementById('e-medetail').value||'-',
-    pass, fy:getFY(date), quarter:getQ(date), month:getMon(date),
-    // ===== ฟิลด์วิจัยเพิ่มเติม =====
-    studyPeriod:document.getElementById('e-studyperiod').value||'-',
-    goLiveDate:document.getElementById('e-golive').value||'-',
-    drugCountPreAdmit:document.getElementById('e-drugcount').value||'-',
-    bpmhSourceCount:document.getElementById('e-bpmhsource').value||'-',
-    hasReferDoc:document.getElementById('e-referdoc').value||'-',
-    mrCompleteFull: pass==='pass' ? 'ใช่' : 'ไม่ใช่',
-    discrepancyType:document.getElementById('e-disctype').value||'-',
-    discrepancyReachedPatient:document.getElementById('e-discreach').value||'-',
-    mrStartTime:document.getElementById('e-mrstart').value||'-',
-    mrEndTime:document.getElementById('e-mrend').value||'-',
-    wardType:document.getElementById('e-clt').value||'-',
-    patientAge:document.getElementById('e-age').value||'-',
-    comorbidityCount:document.getElementById('e-comorbid').value||'-'
+    pass, fy:getFY(date), quarter:getQ(date), month:getMon(date)
   };
   try {
     const res=await gasCall({action:'update', record:JSON.stringify(upd)});
@@ -1586,20 +1535,14 @@ function recToRow(r) {
     rv(r,'q4','q4_mr_form_24h'), rv(r,'q5','q5_drug_order'), rv(r,'q6','q6_doctor_sign'),
     rv(r,'q7','q7_last_dose'), rv(r,'q8','q8_me_found'),
     r.meSev||'-', r.meTyp||'-', r.meKind||'-', r.meDetail||'-',
-    r.pass==='pass'?'ผ่าน':'ไม่ผ่าน', r.evaluator||'-', r.note||'-',
-    r.studyPeriod||'-', r.goLiveDate||'-', r.drugCountPreAdmit||'-', r.bpmhSourceCount||'-',
-    r.hasReferDoc||'-', r.mrCompleteFull||'-', r.discrepancyType||'-', r.discrepancyReachedPatient||'-',
-    r.mrStartTime||'-', r.mrEndTime||'-', r.patientAge||'-', r.comorbidityCount||'-'
+    r.pass==='pass'?'ผ่าน':'ไม่ผ่าน', r.evaluator||'-', r.note||'-'
   ];
 }
 
 const HDR = ['AN','วันที่','หอผู้ป่วย','CLT','ระบบ','ขั้นตอน','ไตรมาส','ปีงบ','เดือน',
   'ยาโรคเรื้อรัง','ยาใน/นอกรพ.','ใน/นอกจังหวัด','อำเภอ','แหล่งยาในจังหวัด','แหล่งยานอกจังหวัด',
   'ยาเหลือ','พบใบMR','คำสั่งยา','ลายเซนต์','Last dose','พบME',
-  'ME Severity','ME Type','ME ชนิด','ME Detail','ผล','ผู้ประเมิน','หมายเหตุ',
-  'ช่วงศึกษา','วันที่ระบบเริ่มใช้จริง','จำนวนรายการยาก่อนรับ','จำนวนแหล่งข้อมูลBPMH',
-  'มีใบRefer','MRสมบูรณ์ครบองค์ประกอบ','ประเภทDiscrepancy','Discrepancyถึงผู้ป่วย',
-  'เวลาเริ่มMR','เวลาสิ้นสุดMR','อายุผู้ป่วย','จำนวนโรคร่วม'];
+  'ME Severity','ME Type','ME ชนิด','ME Detail','ผล','ผู้ประเมิน','หมายเหตุ'];
 
 function doExportCSV() {
   const data=getFilt();
@@ -1953,7 +1896,7 @@ async function loadAndDash() {
   document.getElementById('dash-wrap').innerHTML='<div class="loading-txt">⏳ กำลังโหลด...</div>';
   try {
     const r=await gasCall({action:'getAll'});
-    if(r.ok){allRecs=r.data||[];renderDash();}
+    if(r.ok){setRecs(r.data);renderDash();}
     else document.getElementById('dash-wrap').innerHTML='<div class="empty">โหลดไม่สำเร็จ</div>';
   } catch(e){document.getElementById('dash-wrap').innerHTML='<div class="empty">เชื่อมต่อไม่ได้</div>';}
 }
@@ -1982,18 +1925,45 @@ function getDashFilt() {
   });
 }
 
+// ===== VISUAL HELPERS (v6) =====
+const CLT_COLORS = {'อายุรกรรม':'#2563eb','ENT':'#0d9488','ศัลยกรรม':'#7c3aed','ศัลยกรรมกระดูก':'#ea580c','สูติกรรม':'#db2777','เด็ก':'#16a34a','อื่นๆ':'#64748b'};
+const CLT_ORDER = [...new Set(WARDS.map(w=>w.c))];
+function cltColor(c){ return CLT_COLORS[c] || '#475569'; }
+function pctColor(p){ return p>=80 ? '#059669' : p>=60 ? '#d97706' : '#dc2626'; }
+function ring(p, size=88) {
+  const c = pctColor(p);
+  return `<div class="ring" style="width:${size}px;height:${size}px;background:conic-gradient(${c} ${(Math.min(100,p)*3.6).toFixed(1)}deg,#e8edf4 0)"><div class="ring-in"><b style="color:${c}">${p.toFixed(0)}%</b><small>COVERAGE</small></div></div>`;
+}
+function progBar(p) {
+  const c = pctColor(p);
+  return `<div class="pbar"><div class="pbar-fill" style="width:${Math.min(100,p).toFixed(1)}%;background:linear-gradient(90deg,${c}aa,${c})"></div><div class="pbar-target" title="เป้า 80%"></div></div>`;
+}
+function qDot(y, t, l) {
+  if (!t) return '';
+  const p = y/t*100, c = pctColor(p);
+  return `<span class="qdot" style="background:${c}14;color:${c};border-color:${c}55" title="ข้อ ${l}: ผ่าน ${y}/${t}">${l} · ${p.toFixed(0)}%</span>`;
+}
+function toggleWard(id) {
+  const el = document.getElementById(id), c = document.getElementById(id+'_c');
+  if (!el) return;
+  const open = el.style.display === 'none';
+  el.style.display = open ? '' : 'none';
+  if (c) c.textContent = open ? '▾' : '▸';
+}
+function openClt(i) {
+  const g = document.getElementById('cltg_'+i);
+  if (!g) return;
+  g.classList.add('open');
+  g.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
 function makeBar(label, pass, total) {
-  const p=(pass/total*100);
-  const col=p>=80?'#16a34a':p>=60?'#d97706':'#dc2626';
-  const bgLight=p>=80?'rgba(22,163,74,.18)':p>=60?'rgba(217,119,6,.18)':'rgba(220,38,38,.18)';
-  const lbl=label.length>22?label.substring(0,21)+'…':label;
-  const pStr=`${p.toFixed(0)}% (${pass}/${total})`;
+  const p = pass/total*100, c = pctColor(p);
+  const lbl = label.length>22 ? label.substring(0,21)+'…' : label;
   return `<div class="bar-row">
-    <div class="bar-lbl">${lbl}</div>
-    <div class="bar-track" style="background:#dde3ee;">
-      <div class="bar-fill" style="width:${p.toFixed(0)}%;background:${bgLight};"></div>
-      <span class="bar-pct" style="color:${col};font-size:13px;font-weight:800;text-shadow:none;left:0;right:0;text-align:left;padding-left:10px;">${pStr}</span>
-    </div>
+    <div class="bar-lbl" title="${label}">${lbl}</div>
+    <div style="flex:1;">${progBar(p)}</div>
+    <div class="bar-val" style="color:${c};">${p.toFixed(0)}% <small>(${pass}/${total})</small></div>
   </div>`;
 }
 
@@ -2002,7 +1972,7 @@ function groupBy(arr, keyFn) {
 }
 
 function clearAllData() {
-  if (!currentUser || currentUser.role !== 'admin') {
+  if (typeof currentUser === 'undefined' || !currentUser || currentUser.role !== 'admin') {
     toast('เฉพาะ Admin เท่านั้นที่ลบข้อมูลทั้งหมดได้', 'err');
     return;
   }
@@ -2114,8 +2084,7 @@ function renderDash() {
       {q:'7', lbl:'Last dose', get:r=>rv(r,'q7','q7_last_dose'), pos:'พบ'},
       {q:'8', lbl:'พบ ME', get:r=>rv(r,'q8','q8_me_found'), pos:'ไม่พบ', me:true},
     ];
-    return `<tr><td colspan="4" style="padding:0;">
-      <table style="width:100%;font-size:11px;border-top:1px dashed var(--border);">
+    return `<table style="width:100%;font-size:11px;background:white;border:1px solid var(--border);border-radius:8px;">
         <thead><tr style="background:#f0f4ff;">
           <th style="padding:4px 8px;width:40px;">ข้อ</th>
           <th style="padding:4px 8px;">หัวข้อ</th>
@@ -2128,34 +2097,95 @@ function renderDash() {
             <td style="padding:3px 8px;">${qcw(row.get,row.pos)}</td>
           </tr>`).join('')}
         </tbody>
-      </table>
-    </td></tr>`;
+      </table>`;
   }
 
-  // Ward pass/fail table rows with expandable detail
-  const wardPassRows=wardArr.filter(([w,s])=>s.p/s.t>=0.8).map(([w,s])=>{
-    const p=(s.p/s.t*100).toFixed(1);
-    const wid='wd_'+w.replace(/[^a-z0-9]/gi,'_');
-    return `<tr style="cursor:pointer;" onclick="document.getElementById('${wid}').style.display=document.getElementById('${wid}').style.display==='none'?'':'none'">
-      <td style="font-size:12px;">${w} <span style="font-size:10px;color:var(--blue);">▼ ดูรายละเอียด</span></td>
-      <td>${s.t}</td><td style="color:var(--green);font-weight:600;">${s.p}</td>
-      <td>${s.t-s.p}</td>
-      <td><span class="tag tag-p">${p}% ✅</span></td>
-    </tr>
-    <tr id="${wid}" style="display:none;">${wardQDetail(w)}</tr>`;
-  }).join('');
+  // ===== CLT + WARD VISUALS (v6) =====
+  const cltKeys = Object.keys(cltSt).sort((a,b)=>{
+    const ia = CLT_ORDER.indexOf(a), ib = CLT_ORDER.indexOf(b);
+    return (ia<0?99:ia) - (ib<0?99:ib);
+  });
+  const cltInfo = cltKeys.map(c=>{
+    const recs = data.filter(r=>(r.clt||'ไม่ระบุ')===c);
+    const s = cltSt[c], p = s.p/s.t*100;
+    const me = recs.filter(r=>rv(r,'q8','q8_me_found')==='พบ').length;
+    const wst = groupBy(recs, r=>r.ward||'ไม่ระบุ');
+    const wards = Object.keys(wst);
+    const wFail = wards.filter(w=>wst[w].p/wst[w].t<0.8).length;
+    return {c, s, p, me, wst, wards, wFail, recs};
+  });
 
-  const wardFailRows=wardArr.filter(([w,s])=>s.p/s.t<0.8).map(([w,s])=>{
-    const p=(s.p/s.t*100).toFixed(1);
-    const wid='wd_'+w.replace(/[^a-z0-9]/gi,'_');
-    return `<tr style="background:#fff5f5;cursor:pointer;" onclick="document.getElementById('${wid}').style.display=document.getElementById('${wid}').style.display==='none'?'':'none'">
-      <td style="font-size:12px;font-weight:600;">${w} <span style="font-size:10px;color:var(--red);">▼ ดูรายละเอียด</span></td>
-      <td>${s.t}</td><td style="color:var(--green);font-weight:600;">${s.p}</td>
-      <td style="color:var(--red);font-weight:700;">${s.t-s.p}</td>
-      <td><span class="tag tag-f">${p}% ❌</span></td>
-    </tr>
-    <tr id="${wid}" style="display:none;background:#fff5f5;">${wardQDetail(w)}</tr>`;
-  }).join('');
+  const cltOverviewHtml = `
+  <div class="sec-title">🏛 ภาพรวมรายกลุ่มงาน CLT <span style="font-weight:600;text-transform:none;letter-spacing:0;color:var(--text-muted);font-size:11px;">· คลิกการ์ดเพื่อไปที่รายหอ</span></div>
+  <div class="clt-grid">${cltInfo.map((x,i)=>`
+    <div class="clt-card" style="--cc:${cltColor(x.c)}" onclick="openClt(${i})">
+      <div class="clt-head"><span class="clt-dot"></span><span class="clt-name">${x.c}</span>
+        <span class="tag ${x.p>=80?'tag-p':'tag-f'}">${x.p>=80?'✅ ผ่าน':'❌ ต่ำกว่าเป้า'}</span></div>
+      <div class="clt-body">${ring(x.p)}
+        <div class="clt-stats">
+          <div><span>แฟ้มที่ประเมิน</span><b>${x.s.t}</b></div>
+          <div><span>พบ ME</span><b class="${x.me?'c-amber':''}">${x.me}</b></div>
+          <div><span>ผ่าน</span><b class="c-green">${x.s.p}</b></div>
+          <div><span>ไม่ผ่าน</span><b class="${x.s.t-x.s.p?'c-red':''}">${x.s.t-x.s.p}</b></div>
+        </div>
+      </div>
+      <div class="clt-foot"><span>🏥 ${x.wards.length} หอ</span>${x.wFail?`<span class="c-red">ต่ำกว่า 80%: ${x.wFail} หอ</span>`:'<span class="c-green">ทุกหอผ่าน 80%</span>'}</div>
+    </div>`).join('')}
+  </div>`;
+
+  let wIdx = 0;
+  const wardGroupHtml = `
+  <div class="sec-title">🏥 MR Coverage รายหอผู้ป่วย <span style="font-weight:600;text-transform:none;letter-spacing:0;color:var(--text-muted);font-size:11px;">· จัดกลุ่มตาม CLT · คลิกหอเพื่อดูรายละเอียดทุกข้อ</span></div>
+  <div class="legend-row">
+    <span><i style="background:#059669"></i>≥ 80%</span>
+    <span><i style="background:#d97706"></i>60–79%</span>
+    <span><i style="background:#dc2626"></i>&lt; 60%</span>
+    <span><i class="lg-target"></i>เส้นเป้าหมาย 80%</span>
+    <span>เรียงจากหอที่ % ต่ำสุดก่อน</span>
+  </div>
+  ${cltInfo.map((x,i)=>{
+    const wl = x.wards.map(w=>[w,x.wst[w]]).sort((a,b)=>(a[1].p/a[1].t)-(b[1].p/b[1].t) || b[1].t-a[1].t);
+    return `<div class="wgroup open" id="cltg_${i}" style="--cc:${cltColor(x.c)}">
+      <div class="wgroup-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="clt-dot"></span><b>${x.c}</b>
+        <span class="wg-meta">${x.wards.length} หอ · ${x.s.t} แฟ้ม · ผ่าน ${x.s.p}</span>
+        <span class="wg-pct" style="color:${pctColor(x.p)}">${x.p.toFixed(1)}%</span><span class="wg-caret">▾</span>
+      </div>
+      <div class="wgroup-body">
+        <div class="wrow wrow-h"><div>หอผู้ป่วย</div><div>MR Coverage</div><div class="ctr">ผ่าน/ทั้งหมด</div><div class="ctr">เกณฑ์ข้อ 4 · 5 · 6</div><div class="ctr">ME</div></div>
+        ${wl.map(([w,s])=>{
+          const id = 'wd_'+(wIdx++);
+          const wr = x.recs.filter(r=>(r.ward||'ไม่ระบุ')===w);
+          const p = s.p/s.t*100;
+          const q4y = wr.filter(r=>rv(r,'q4','q4_mr_form_24h')==='พบ').length;
+          const q5y = wr.filter(r=>rv(r,'q5','q5_drug_order')==='มี').length;
+          const q6y = wr.filter(r=>rv(r,'q6','q6_doctor_sign')==='มี').length;
+          const me = wr.filter(r=>rv(r,'q8','q8_me_found')==='พบ').length;
+          const sys = getSysName(WARDS.find(z=>z.n===w)?.s || wr[0]?.sys);
+          return `<div class="wrow ${p<80?'wrow-fail':''}" onclick="toggleWard('${id}')">
+            <div class="wname"><span class="wcaret" id="${id}_c">▸</span>${w}<span class="sys-pill">${sys}</span></div>
+            <div class="wbar">${progBar(p)}<b style="color:${pctColor(p)}">${p.toFixed(0)}%</b></div>
+            <div class="ctr">${s.p}/${s.t}</div>
+            <div class="ctr q456">${qDot(q4y,wr.length,'4')}${qDot(q5y,wr.length,'5')}${qDot(q6y,wr.length,'6')}</div>
+            <div class="ctr">${me?`<span class="tag tag-w">${me}</span>`:'<span class="muted">0</span>'}</div>
+          </div>
+          <div class="wdetail" id="${id}" style="display:none;">${wardQDetail(w)}</div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('')}`;
+
+  const sysStepHtml = `
+  <div class="chart-grid">
+    <div class="mini-chart">
+      <div class="mini-chart-title">MR Coverage รายระบบบันทึก</div>
+      ${Object.entries(sysSt).map(([c,s])=>makeBar(c,s.p,s.t)).join('')}
+    </div>
+    <div class="mini-chart">
+      <div class="mini-chart-title">MR Coverage รายขั้นตอน MR</div>
+      ${Object.entries(stepSt).map(([c,s])=>makeBar(c,s.p,s.t)).join('')}
+    </div>
+  </div>`;
 
   // Global Q stats
   const q1=qCount(data,r=>rv(r,'q1'),'มี');
@@ -2321,6 +2351,9 @@ function renderDash() {
       <tr><td>ME ระดับ C+ (%)</td><td><b>${total?(meCplus/total*100).toFixed(2):0}%</b></td><td>&lt; 1.5%</td><td><span class="tag ${total&&(meCplus/total*100)<1.5?'tag-p':'tag-f'}">${total&&(meCplus/total*100)<1.5?'✅ ผ่าน':'❌ ไม่ผ่าน'}</span></td></tr>
     </tbody></table>
   </div>
+
+  ${cltOverviewHtml}
+  ${wardGroupHtml}
 
   <!-- ==================== SECTION: ข้อ 1 ยาโรคเรื้อรัง ==================== -->
   <div class="sec-title" style="background:var(--gray-light);padding:6px 10px;border-radius:var(--radius);font-size:13px;">📋 ข้อ 1 — มียาโรคเรื้อรังหรือไม่</div>
@@ -2504,38 +2537,8 @@ function renderDash() {
     </div>
   </div>
 
-  <!-- ==================== SECTION: สรุปรายหอผู้ป่วย (เปิด/ปิดรายละเอียด) ==================== -->
-  <div class="sec-title" style="background:var(--blue-light);padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--blue);">🏥 สรุป MR Coverage รายหอผู้ป่วย (คลิกหอเพื่อดูรายละเอียดทุกข้อ)</div>
-  ${wardFailRows?`<div style="margin-bottom:6px;padding:6px 10px;background:var(--red-light);border-radius:var(--radius);font-size:12px;font-weight:700;color:var(--red);">
-    ❌ ยังไม่ผ่าน 80% จำนวน ${wardArr.filter(([w,s])=>s.p/s.t<0.8).length} หอ
-  </div>`:'<div style="margin-bottom:6px;padding:6px 10px;background:var(--green-light);border-radius:var(--radius);font-size:12px;font-weight:700;color:var(--green);">✅ ทุกหอผ่านเกณฑ์ 80% แล้ว</div>'}
-  <div class="mini-chart" style="margin-bottom:1rem;">
-    <table style="width:100%;">
-      <thead><tr><th>หอผู้ป่วย</th><th>ทั้งหมด</th><th>ผ่าน</th><th>ไม่ผ่าน</th><th>% Coverage</th></tr></thead>
-      <tbody>${wardFailRows||''}${wardPassRows||''}</tbody>
-    </table>
-  </div>
-
-  <!-- BAR CHART -->
-  <div class="sec-title">% MR Coverage รายหอผู้ป่วย</div>
-  <div class="bar-wrap">${wardArr.map(([w,s])=>makeBar(w,s.p,s.t)).join('')}</div>
-
-  <!-- CLT + SYSTEM -->
-  <div class="chart-grid">
-    <div class="mini-chart">
-      <div class="mini-chart-title">ผลรายกลุ่มงาน CLT</div>
-      <table><thead><tr><th>CLT</th><th>ทั้งหมด</th><th>ผ่าน</th><th>%</th><th>สถานะ</th></tr></thead>
-      <tbody>${Object.entries(cltSt).map(([c,s])=>{const p=(s.p/s.t*100).toFixed(1);return`<tr><td>${c}</td><td>${s.t}</td><td>${s.p}</td><td>${p}%</td><td><span class="tag ${parseFloat(p)>=80?'tag-p':'tag-f'}">${parseFloat(p)>=80?'✅':'❌'}</span></td></tr>`;}).join('')}</tbody></table>
-    </div>
-    <div class="mini-chart">
-      <div class="mini-chart-title">รายระบบ</div>
-      <table><thead><tr><th>ระบบ</th><th>ทั้งหมด</th><th>ผ่าน</th><th>%</th></tr></thead>
-      <tbody>${Object.entries(sysSt).map(([c,s])=>{const p=(s.p/s.t*100).toFixed(1);return`<tr><td>${c}</td><td>${s.t}</td><td>${s.p}</td><td><span class="tag ${parseFloat(p)>=80?'tag-p':'tag-f'}">${p}%</span></td></tr>`;}).join('')}</tbody></table>
-      <div class="mini-chart-title" style="margin-top:12px;">รายขั้นตอน</div>
-      <table><thead><tr><th>ขั้นตอน</th><th>ทั้งหมด</th><th>ผ่าน</th><th>%</th></tr></thead>
-      <tbody>${Object.entries(stepSt).map(([c,s])=>{const p=(s.p/s.t*100).toFixed(1);return`<tr><td>${c}</td><td>${s.t}</td><td>${s.p}</td><td><span class="tag ${parseFloat(p)>=80?'tag-p':'tag-f'}">${p}%</span></td></tr>`;}).join('')}</tbody></table>
-    </div>
-  </div>
+  <div class="sec-title">⚙️ รายระบบ / รายขั้นตอน</div>
+  ${sysStepHtml}
 
   ${monArr.length?`
   <div class="sec-title">รายเดือน</div>
