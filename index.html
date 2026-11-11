@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบประเมิน MR — รพ.มหาสารคาม v6.5</title>
+<title>ระบบประเมิน MR — รพ.มหาสารคาม v6.6</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@400;600;700&display=swap');
 :root{
@@ -706,7 +706,6 @@ const WARDS = [
   {n:"ICUอายุรกรรม 2",s:"1",c:"อายุรกรรม"},
   {n:"ICUอายุรกรรม 3",s:"1",c:"อายุรกรรม"},
   {n:"CCU",s:"1",c:"อายุรกรรม"},
-  {n:"ศัลยกรรมยูโร",s:"3",c:"อายุรกรรม"},
   // CLT ENT
   {n:"ตา",s:"2",c:"ENT"},
   {n:"หู คอ จมูก",s:"2",c:"ENT"},
@@ -716,6 +715,7 @@ const WARDS = [
   {n:"ศัลยกรรมหญิง",s:"3",c:"ศัลยกรรม"},
   {n:"60/3",s:"3",c:"ศัลยกรรม"},
   {n:"ศัลยกรรมทั่วไป",s:"3",c:"ศัลยกรรม"},
+  {n:"ศัลยกรรมยูโร",s:"3",c:"ศัลยกรรม"},
   {n:"ICUtrauma 7",s:"3",c:"ศัลยกรรม"},
   {n:"ศัลยกรรมอุบัติเหตุชั้น 8",s:"3",c:"ศัลยกรรม"},
   {n:"พิเศษอุบัติเหตุ ชั้น 10",s:"3",c:"ศัลยกรรม"},
@@ -1029,7 +1029,7 @@ function setRecs(arr) {
   lastLoadAt = Date.now();
   allRecs = (arr || []).map(r => {
     const w = WARDS.find(x => x.n === r.ward);
-    return {...r, evaluator: normEval(r.evaluator), clt: r.clt || (w ? w.c : ''), meKind: normKind(r.meKind)};
+    return {...r, evaluator: normEval(r.evaluator), clt: (w ? w.c : '') || r.clt || '', meKind: normKind(r.meKind)};
   });
 }
 
